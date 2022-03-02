@@ -1,0 +1,10 @@
+# dotnet stuff
+obj/
+bin/
+
+# visual studio stuff
+.vs/
+
+# generic binaries
+*.dll
+*.exe
