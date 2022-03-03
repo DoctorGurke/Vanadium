@@ -14,7 +14,7 @@ public class Program {
 		// init the settings for our main window
 		var nativeWindowSettings = new NativeWindowSettings() {
 			Size = new Vector2i(1920, 1080),
-			Title = "Vanadium Renderer"
+			Title = "Vanadium"
 		};
 
 		// init and run our window type

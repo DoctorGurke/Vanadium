@@ -37,6 +37,8 @@ public class Window : GameWindow {
 	private Texture _texture0;
 	private Texture _texture1;
 
+	private Camera _camera;
+
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -85,10 +87,16 @@ public class Window : GameWindow {
 
 		_shader.SetInt("texture0", 0);
 		_shader.SetInt("texture1", 1);
+
+		// init camera
+		_camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
+		CursorGrabbed = true;
 	}
 
-	protected override void OnRenderFrame(FrameEventArgs args) {
-		base.OnRenderFrame(args);
+	protected override void OnRenderFrame(FrameEventArgs e) {
+		base.OnRenderFrame(e);
+
+		//var fps = (int)(1f / e.Time);
 
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -101,26 +109,78 @@ public class Window : GameWindow {
 
 		_shader.SetFloat("tintAmount", tintAmount);
 
-		var transform = Matrix4.Identity;
-		transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
-		transform *= Matrix4.CreateScale(tintAmount * 0.1f + 0.5f);
+		var model = Matrix4.Identity;
+		//model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
+		//model *= Matrix4.CreateScale(tintAmount * 0.1f + 0.5f);
 		//transform *= Matrix4.CreateTranslation((float) Math.Sin(tintAmount), (float) Math.Cos(tintAmount), 0.0f);
 
-		_shader.SetMatrix4("transform", transform);
+		_shader.SetMatrix4("model", model);
+		_shader.SetMatrix4("view", _camera.GetViewMatrix());
+		_shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
 
 		GL.BindVertexArray(_vertexArrayObject);
-
 		GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
 		
 		SwapBuffers();
 	}
 
-	protected override void OnUpdateFrame(FrameEventArgs args) {
-		base.OnUpdateFrame(args);
+	private bool _firstMove = true;
+
+	private Vector2 _lastPos;
+
+	protected override void OnUpdateFrame(FrameEventArgs e) {
+		base.OnUpdateFrame(e);
+
+		// do not process any input if we're not focused
+		if(!IsFocused) {
+			return;
+		}
+
+		var input = KeyboardState;
 
 		// close the window when ESC is pressed down
-		if(KeyboardState.IsKeyDown(Keys.Escape)) {
+		if(input.IsKeyDown(Keys.Escape)) {
 			Close();
+		}
+
+		const float cameraSpeed = 1.5f;
+		const float sensitivity = 0.2f;
+
+		if(input.IsKeyDown(Keys.W)) {
+			_camera.Position += _camera.Front * cameraSpeed * (float)e.Time; // Forward
+		}
+
+		if(input.IsKeyDown(Keys.S)) {
+			_camera.Position -= _camera.Front * cameraSpeed * (float)e.Time; // Backwards
+		}
+		if(input.IsKeyDown(Keys.A)) {
+			_camera.Position -= _camera.Right * cameraSpeed * (float)e.Time; // Left
+		}
+		if(input.IsKeyDown(Keys.D)) {
+			_camera.Position += _camera.Right * cameraSpeed * (float)e.Time; // Right
+		}
+		if(input.IsKeyDown(Keys.Space)) {
+			_camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
+		}
+		if(input.IsKeyDown(Keys.LeftControl)) {
+			_camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
+		}
+
+		// Get the mouse state
+		var mouse = MouseState;
+
+		if(_firstMove) {
+			_lastPos = new Vector2(mouse.X, mouse.Y);
+			_firstMove = false;
+		} else {
+			// Calculate the offset of the mouse position
+			var deltaX = mouse.X - _lastPos.X;
+			var deltaY = mouse.Y - _lastPos.Y;
+			_lastPos = new Vector2(mouse.X, mouse.Y);
+
+			// Apply the camera pitch and yaw (we clamp the pitch in the camera class)
+			_camera.Yaw += deltaX * sensitivity;
+			_camera.Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
 		}
 	}
 
