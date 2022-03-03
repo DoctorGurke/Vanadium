@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -33,7 +34,8 @@ public class Window : GameWindow {
 
 	private Stopwatch _timer;
 
-	private Texture _texture;
+	private Texture _texture0;
+	private Texture _texture1;
 
 	protected override void OnLoad() {
 		base.OnLoad();
@@ -75,8 +77,14 @@ public class Window : GameWindow {
 		_timer = new Stopwatch();
 		_timer.Start();
 
-		_texture = Texture.LoadFromFile("resources/textures/rudy.jpg");
-		_texture.Use(TextureUnit.Texture0);
+		_texture0 = Texture.LoadFromFile("resources/textures/rudy.jpg");
+		_texture0.Use(TextureUnit.Texture0);
+
+		_texture1 = Texture.LoadFromFile("resources/textures/mask_debug.jpg");
+		_texture1.Use(TextureUnit.Texture1);
+
+		_shader.SetInt("texture0", 0);
+		_shader.SetInt("texture1", 1);
 	}
 
 	protected override void OnRenderFrame(FrameEventArgs args) {
@@ -84,15 +92,21 @@ public class Window : GameWindow {
 
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 
-		_texture.Use(TextureUnit.Texture0);
+		_texture0.Use(TextureUnit.Texture0);
+		_texture1.Use(TextureUnit.Texture1);
 		_shader.Use();
 
 		double time = _timer.Elapsed.TotalSeconds;
 		float tintAmount = ((float)Math.Sin(time) + 1 ) / 2;
 
-		if (_shader.UniformLocations.TryGetValue("tintAmount", out int tintAmountLocation)) {
-			GL.Uniform1(tintAmountLocation, tintAmount);
-		}
+		_shader.SetFloat("tintAmount", tintAmount);
+
+		var transform = Matrix4.Identity;
+		transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
+		transform *= Matrix4.CreateScale(tintAmount * 0.1f + 0.5f);
+		//transform *= Matrix4.CreateTranslation((float) Math.Sin(tintAmount), (float) Math.Cos(tintAmount), 0.0f);
+
+		_shader.SetMatrix4("transform", transform);
 
 		GL.BindVertexArray(_vertexArrayObject);
 
