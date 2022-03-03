@@ -3,7 +3,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
-public class Camera {
+public abstract class Camera {
 	public static Camera ActiveCamera { get; private set; }
 	internal CameraSetup setup;
 
@@ -53,46 +53,7 @@ public class Camera {
 		if(setup.ZFar == 0) setup.ZFar = 1000.0f;
 	}
 
-	private bool _firstMove = true;
-
-	private Vector2 _lastPos;
-
-	public virtual void BuildInput(KeyboardState keyboard, MouseState mouse) {
-		const float cameraSpeed = 1.5f;
-
-		if(keyboard.IsKeyDown(Keys.W)) {
-			Position += Rotation.Forward * cameraSpeed * Time.Delta; // Forward
-		}
-
-		if(keyboard.IsKeyDown(Keys.S)) {
-			Position -= Rotation.Forward * cameraSpeed * Time.Delta; // Backwards
-		}
-		if(keyboard.IsKeyDown(Keys.A)) {
-			Position -= Rotation.Right * cameraSpeed * Time.Delta; // Left
-		}
-		if(keyboard.IsKeyDown(Keys.D)) {
-			Position += Rotation.Right * cameraSpeed * Time.Delta; // Right
-		}
-		if(keyboard.IsKeyDown(Keys.Space)) {
-			Position += Rotation.Up * cameraSpeed * Time.Delta; // Up
-		}
-		if(keyboard.IsKeyDown(Keys.LeftControl)) {
-			Position -= Rotation.Up * cameraSpeed * Time.Delta; // Down
-		}
-
-		if(_firstMove) {
-			_lastPos = new Vector2(mouse.X, mouse.Y);
-			_firstMove = false;
-		} else {
-			// Calculate the offset of the mouse position
-			var deltaX = mouse.X - _lastPos.X;
-			var deltaY = mouse.Y - _lastPos.Y;
-			_lastPos = new Vector2(mouse.X, mouse.Y);
-
-			Rotation = Rotation.RotateAroundAxis(Vector3.Up, -deltaX * 0.1f);
-			Rotation = Rotation.RotateAroundAxis(Vector3.Right, -deltaY * 0.1f);
-		}
-	}
+	public virtual void BuildInput(KeyboardState keyboard, MouseState mouse) { }
 
 	public Matrix4 ViewMatrix => Matrix4.LookAt(Position, Position + Rotation.Forward, Rotation.Up);
 	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar);

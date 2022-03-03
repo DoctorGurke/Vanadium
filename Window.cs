@@ -37,8 +37,6 @@ public class Window : GameWindow {
 	private Texture _texture0;
 	private Texture _texture1;
 
-	private Camera _camera;
-
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -89,7 +87,7 @@ public class Window : GameWindow {
 		_shader.SetInt("texture1", 1);
 
 		// init camera
-		_ = new Camera();
+		_ = new FirstPersonCamera();
 		CursorGrabbed = true;
 	}
 
