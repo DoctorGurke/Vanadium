@@ -10,10 +10,11 @@ public class Window : GameWindow {
 
 	private readonly float[] _vertices =
 	{
-		0.5f,  0.5f, 0.0f, // top right
-        0.5f, -0.5f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, // top left
+		// vert pos			// vert color
+		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f  // top left
     };
 
 	private readonly uint[] _indices =
@@ -43,8 +44,12 @@ public class Window : GameWindow {
 		_vertexArrayObject = GL.GenVertexArray();
 		GL.BindVertexArray(_vertexArrayObject);
 
-		GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+		// vertex positions
+		GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
 		GL.EnableVertexAttribArray(0);
+
+		GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
+		GL.EnableVertexAttribArray(1);
 
 		// create, bind and populate ebo
 		_elementBufferObject = GL.GenBuffer();
