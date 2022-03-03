@@ -89,7 +89,7 @@ public class Window : GameWindow {
 		_shader.SetInt("texture1", 1);
 
 		// init camera
-		_camera = new Camera(Vector3.Zero, Size.X / (float)Size.Y);
+		_ = new Camera();
 		CursorGrabbed = true;
 	}
 
@@ -110,16 +110,16 @@ public class Window : GameWindow {
 		_shader.SetFloat("tintAmount", tintAmount);
 
 		var model = Matrix4.Identity;
-		model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
-		model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 14));
-		model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 3));
+		//model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
+		//model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 14));
+		//model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 3));
 		//model *= Matrix4.CreateScale(tintAmount);
 		//transform *= Matrix4.CreateTranslation((float) Math.Sin(tintAmount), (float) Math.Cos(tintAmount), 0.0f);
 
 		_shader.SetMatrix4("model", model);
-		var view = _camera.GetViewMatrix();
+		var view = Camera.ActiveCamera.ViewMatrix;
 		_shader.SetMatrix4("view", view);
-		var proj = _camera.GetProjectionMatrix();
+		var proj = Camera.ActiveCamera.ProjectionMatrix;
 		_shader.SetMatrix4("projection", proj);
 
 		GL.BindVertexArray(_vertexArrayObject);
@@ -128,68 +128,30 @@ public class Window : GameWindow {
 		SwapBuffers();
 	}
 
-	private bool _firstMove = true;
-
-	private Vector2 _lastPos;
-
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
+
+		Time.Update((float) e.Time);
+		Camera.BuildActiveCamera();
 
 		// do not process any input if we're not focused
 		if(!IsFocused) {
 			return;
 		}
 
-		var input = KeyboardState;
+		Camera.ActiveCamera.BuildInput(KeyboardState, MouseState);
 
+		var input = KeyboardState;
 		// close the window when ESC is pressed down
 		if(input.IsKeyDown(Keys.Escape)) {
 			Close();
-		}
-
-		const float cameraSpeed = 1.5f;
-
-		if(input.IsKeyDown(Keys.W)) {
-			_camera.Position += _camera.Rotation.Forward * cameraSpeed * (float)e.Time; // Forward
-		}
-
-		if(input.IsKeyDown(Keys.S)) {
-			_camera.Position -= _camera.Rotation.Forward * cameraSpeed * (float)e.Time; // Backwards
-		}
-		if(input.IsKeyDown(Keys.A)) {
-			_camera.Position -= _camera.Rotation.Right * cameraSpeed * (float)e.Time; // Left
-		}
-		if(input.IsKeyDown(Keys.D)) {
-			_camera.Position += _camera.Rotation.Right * cameraSpeed * (float)e.Time; // Right
-		}
-		if(input.IsKeyDown(Keys.Space)) {
-			_camera.Position += _camera.Rotation.Up * cameraSpeed * (float)e.Time; // Up
-		}
-		if(input.IsKeyDown(Keys.LeftControl)) {
-			_camera.Position -= _camera.Rotation.Up * cameraSpeed * (float)e.Time; // Down
-		}
-
-		// Get the mouse state
-		var mouse = MouseState;
-
-		if(_firstMove) {
-			_lastPos = new Vector2(mouse.X, mouse.Y);
-			_firstMove = false;
-		} else {
-			// Calculate the offset of the mouse position
-			var deltaX = mouse.X - _lastPos.X;
-			var deltaY = mouse.Y - _lastPos.Y;
-			_lastPos = new Vector2(mouse.X, mouse.Y);
-
-
-			_camera.Rotation = _camera.Rotation.RotateAroundAxis(Vector3.Up, -deltaX * 0.1f);
-			_camera.Rotation = _camera.Rotation.RotateAroundAxis(Vector3.Right, -deltaY * 0.1f);
 		}
 	}
 
 	protected override void OnResize(ResizeEventArgs e) {
 		base.OnResize(e);
 
+		Screen.UpdateSize(Size.X, Size.Y);
 		GL.Viewport(0, 0, Size.X, Size.Y);
 	}
 

@@ -1,56 +1,99 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
-// Taken from https://github.com/opentk/LearnOpenTK
-// This is the camera class as it could be set up after the tutorials on the website.
-// It is important to note there are a few ways you could have set up this camera.
-// For example, you could have also managed the player input inside the camera class,
-// and a lot of the properties could have been made into functions.
-
-// TL;DR: This is just one of many ways in which we could have set up the camera.
-// Check out the web version if you don't know why we are doing a specific thing or want to know more about the code.
 public class Camera {
 	public static Camera ActiveCamera { get; private set; }
+	internal CameraSetup setup;
 
-	public Rotation Rotation { get; set; } = Rotation.Identity;
-	public Vector3 Position { get; set; }
-
-	// The field of view of the camera (radians)
-	private float _fov = MathHelper.PiOver2;
-
-	public Camera(Vector3 position, float aspectRatio) {
-		ActiveCamera = this;
-		Position = position;
-		AspectRatio = aspectRatio;
+	public Vector3 Position {
+		get => setup.Position;
+		set => setup.Position = value;
 	}
 
-	// This is simply the aspect ratio of the viewport, used for the projection matrix.
-	public float AspectRatio { private get; set; }
+	public Rotation Rotation {
+		get => setup.Rotation;
+		set => setup.Rotation = value;
+	}
 
-	// The field of view (FOV) is the vertical angle of the camera view.
-	// This has been discussed more in depth in a previous tutorial,
-	// but in this tutorial, you have also learned how we can use this to simulate a zoom feature.
-	// We convert from degrees to radians as soon as the property is set to improve performance.
-	public float Fov {
-		get => MathHelper.RadiansToDegrees(_fov);
-		set {
-			var angle = MathHelper.Clamp(value, 1f, 90f);
-			_fov = MathHelper.DegreesToRadians(angle);
+	public float FieldOfView {
+		get => setup.FieldOfView;
+		set => setup.FieldOfView = value;
+	}
+
+	public float ZNear {
+		get => setup.ZNear;
+		set => setup.ZNear = value;
+	}
+
+	public float ZFar {
+		get => setup.ZFar;
+		set => setup.ZFar = value;
+	}
+
+	public Camera() {
+		ActiveCamera = this;
+		Activate();
+	}
+
+	public virtual void Activate() {
+		Position = Vector3.Zero;
+		Rotation = Rotation.Identity;
+	}
+
+	public static void BuildActiveCamera() {
+		ActiveCamera.BuildView(ref ActiveCamera.setup);
+	}
+
+	public virtual void BuildView(ref CameraSetup setup) {
+		if(setup.FieldOfView == 0) setup.FieldOfView = 90;
+
+		if(setup.ZNear == 0) setup.ZNear = 0.001f;
+		if(setup.ZFar == 0) setup.ZFar = 1000.0f;
+	}
+
+	private bool _firstMove = true;
+
+	private Vector2 _lastPos;
+
+	public virtual void BuildInput(KeyboardState keyboard, MouseState mouse) {
+		const float cameraSpeed = 1.5f;
+
+		if(keyboard.IsKeyDown(Keys.W)) {
+			Position += Rotation.Forward * cameraSpeed * Time.Delta; // Forward
+		}
+
+		if(keyboard.IsKeyDown(Keys.S)) {
+			Position -= Rotation.Forward * cameraSpeed * Time.Delta; // Backwards
+		}
+		if(keyboard.IsKeyDown(Keys.A)) {
+			Position -= Rotation.Right * cameraSpeed * Time.Delta; // Left
+		}
+		if(keyboard.IsKeyDown(Keys.D)) {
+			Position += Rotation.Right * cameraSpeed * Time.Delta; // Right
+		}
+		if(keyboard.IsKeyDown(Keys.Space)) {
+			Position += Rotation.Up * cameraSpeed * Time.Delta; // Up
+		}
+		if(keyboard.IsKeyDown(Keys.LeftControl)) {
+			Position -= Rotation.Up * cameraSpeed * Time.Delta; // Down
+		}
+
+		if(_firstMove) {
+			_lastPos = new Vector2(mouse.X, mouse.Y);
+			_firstMove = false;
+		} else {
+			// Calculate the offset of the mouse position
+			var deltaX = mouse.X - _lastPos.X;
+			var deltaY = mouse.Y - _lastPos.Y;
+			_lastPos = new Vector2(mouse.X, mouse.Y);
+
+			Rotation = Rotation.RotateAroundAxis(Vector3.Up, -deltaX * 0.1f);
+			Rotation = Rotation.RotateAroundAxis(Vector3.Right, -deltaY * 0.1f);
 		}
 	}
 
-	// Get the view matrix using the amazing LookAt function described more in depth on the web tutorials
-	public Matrix4 GetViewMatrix() {
-		var pos = Position;
-		var target = Position + Rotation.Forward;
-		var up = Rotation.Up;
-		//Debug.WriteLine($"{pos} | {target} | {up}");
-		return Matrix4.LookAt(pos, target, up);
-	}
-
-	// Get the projection matrix using the same method we have used up until this point
-	public Matrix4 GetProjectionMatrix() {
-		return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
-	}
+	public Matrix4 ViewMatrix => Matrix4.LookAt(Position, Position + Rotation.Forward, Rotation.Up);
+	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar);
 }
