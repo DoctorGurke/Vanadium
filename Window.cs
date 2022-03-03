@@ -10,11 +10,11 @@ public class Window : GameWindow {
 
 	private readonly float[] _vertices =
 	{
-		// vert pos				// vert color
-		 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f  // top left
+		// vert pos				// uv0			// vert color
+		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f,		1.0f, 0.0f, 0.0f, // top right
+         0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 1.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,		0.0f, 1.0f,		1.0f, 1.0f, 0.0f  // top left
     };
 
 	private readonly uint[] _indices =
@@ -33,6 +33,8 @@ public class Window : GameWindow {
 
 	private Stopwatch _timer;
 
+	private Texture _texture;
+
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -46,23 +48,35 @@ public class Window : GameWindow {
 		_vertexArrayObject = GL.GenVertexArray();
 		GL.BindVertexArray(_vertexArrayObject);
 
-		// vertex positions
-		GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
-		GL.EnableVertexAttribArray(0);
+		// use shader first to get attributes
+		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
+		_shader.Use();
 
-		GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
-		GL.EnableVertexAttribArray(1);
+		// vertex positions
+		var vertexPositionLocation = _shader.GetAttribLocation("aPosition");
+		GL.EnableVertexAttribArray(vertexPositionLocation);
+		GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+
+		// uv0
+		var uv0Location = _shader.GetAttribLocation("aTexCoord0");
+		GL.EnableVertexAttribArray(uv0Location);
+		GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
+
+		// vertex color
+		var vertexColorLocation = _shader.GetAttribLocation("aColor");
+		GL.EnableVertexAttribArray(vertexColorLocation);
+		GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 5 * sizeof(float));
 
 		// create, bind and populate ebo
 		_elementBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementBufferObject);
 		GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
 
-		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
-		_shader.Use();
-
 		_timer = new Stopwatch();
 		_timer.Start();
+
+		_texture = Texture.LoadFromFile("resources/textures/rudy.jpg");
+		_texture.Use(TextureUnit.Texture0);
 	}
 
 	protected override void OnRenderFrame(FrameEventArgs args) {
@@ -70,6 +84,7 @@ public class Window : GameWindow {
 
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 
+		_texture.Use(TextureUnit.Texture0);
 		_shader.Use();
 
 		double time = _timer.Elapsed.TotalSeconds;

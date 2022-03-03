@@ -2,11 +2,14 @@
 
 out vec4 outputColor;
 
+in vec2 texCoord0;
 in vec3 vertexColor;
 
+uniform sampler2D texture0;
 uniform float tintAmount;
 
 void main()
 {
-    outputColor = vec4(mix(vertexColor, vec3(0.0, 0.0, 0.0), tintAmount), 1.0);
+    vec4 col = texture(texture0, texCoord0);
+    outputColor = vec4(mix(vertexColor, col.rgb, tintAmount), 1.0);
 }
