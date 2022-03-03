@@ -13,7 +13,7 @@ public class Program {
     public static void Main(string[] args) {
 		// init the settings for our main window
 		var nativeWindowSettings = new NativeWindowSettings() {
-			Size = new Vector2i(1920, 1080),
+			Size = new Vector2i(1280, 800),
 			Title = "Vanadium"
 		};
 
