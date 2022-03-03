@@ -8,13 +8,15 @@
     <StartupObject>Vanadium.Program</StartupObject>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <IsPublishable>False</IsPublishable>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
-
+	
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="favicon.ico" />
     <None Update="shaders\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
