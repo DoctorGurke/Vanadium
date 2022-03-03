@@ -10,11 +10,11 @@ public class Window : GameWindow {
 
 	private readonly float[] _vertices =
 	{
-		// vert pos			// vert color
-		 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
-        -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f  // top left
+		// vert pos				// vert color
+		 0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f, // top right
+         0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f  // top left
     };
 
 	private readonly uint[] _indices =
@@ -30,6 +30,8 @@ public class Window : GameWindow {
 	private int _elementBufferObject;
 
 	private Shader _shader;
+
+	private Stopwatch _timer;
 
 	protected override void OnLoad() {
 		base.OnLoad();
@@ -58,6 +60,9 @@ public class Window : GameWindow {
 
 		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
 		_shader.Use();
+
+		_timer = new Stopwatch();
+		_timer.Start();
 	}
 
 	protected override void OnRenderFrame(FrameEventArgs args) {
@@ -66,6 +71,13 @@ public class Window : GameWindow {
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 
 		_shader.Use();
+
+		double time = _timer.Elapsed.TotalSeconds;
+		float tintAmount = ((float)Math.Sin(time) + 1 ) / 2;
+
+		if (_shader.UniformLocations.TryGetValue("tintAmount", out int tintAmountLocation)) {
+			GL.Uniform1(tintAmountLocation, tintAmount);
+		}
 
 		GL.BindVertexArray(_vertexArrayObject);
 

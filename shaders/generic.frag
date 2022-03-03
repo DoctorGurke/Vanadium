@@ -4,7 +4,9 @@ out vec4 outputColor;
 
 in vec3 vertexColor;
 
+uniform float tintAmount;
+
 void main()
 {
-    outputColor = vec4(vertexColor, 1.0);
+    outputColor = vec4(mix(vertexColor, vec3(0.0, 0.0, 0.0), tintAmount), 1.0);
 }

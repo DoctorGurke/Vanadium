@@ -7,7 +7,7 @@ namespace Vanadium;
 public class Shader {
 	public readonly int Handle;
 
-	private readonly Dictionary<string, int> _uniformLocations;
+	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
 	// This is how you create a simple shader.
 	// Shaders are written in GLSL, which is a language very similar to C in its semantics.
@@ -63,9 +63,6 @@ public class Shader {
 		// First, we have to get the number of active uniforms in the shader.
 		GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
-		// Next, allocate the dictionary to hold the locations.
-		_uniformLocations = new Dictionary<string, int>();
-
 		// Loop over all the uniforms,
 		for(var i = 0; i < numberOfUniforms; i++) {
 			// get the name of this uniform,
@@ -75,7 +72,7 @@ public class Shader {
 			var location = GL.GetUniformLocation(Handle, key);
 
 			// and then add it to the dictionary.
-			_uniformLocations.Add(key, location);
+			UniformLocations.Add(key, location);
 		}
 	}
 
@@ -131,7 +128,7 @@ public class Shader {
 	/// <param name="data">The data to set</param>
 	public void SetInt(string name, int data) {
 		GL.UseProgram(Handle);
-		GL.Uniform1(_uniformLocations[name], data);
+		GL.Uniform1(UniformLocations[name], data);
 	}
 
 	/// <summary>
@@ -141,7 +138,7 @@ public class Shader {
 	/// <param name="data">The data to set</param>
 	public void SetFloat(string name, float data) {
 		GL.UseProgram(Handle);
-		GL.Uniform1(_uniformLocations[name], data);
+		GL.Uniform1(UniformLocations[name], data);
 	}
 
 	/// <summary>
@@ -156,7 +153,7 @@ public class Shader {
 	/// </remarks>
 	public void SetMatrix4(string name, Matrix4 data) {
 		GL.UseProgram(Handle);
-		GL.UniformMatrix4(_uniformLocations[name], true, ref data);
+		GL.UniformMatrix4(UniformLocations[name], true, ref data);
 	}
 
 	/// <summary>
@@ -166,6 +163,6 @@ public class Shader {
 	/// <param name="data">The data to set</param>
 	public void SetVector3(string name, Vector3 data) {
 		GL.UseProgram(Handle);
-		GL.Uniform3(_uniformLocations[name], data);
+		GL.Uniform3(UniformLocations[name], data);
 	}
 }
