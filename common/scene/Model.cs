@@ -14,8 +14,15 @@ public class Model {
 
 		AssimpContext importer = new AssimpContext();
 		importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
-		var scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs);
-		if(scene == null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode == null) {
+
+		Scene scene = null;
+		try {
+			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs);
+		} catch(FileNotFoundException ex) {
+			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
+			return null;
+		}
+		if(scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null) {
 			Debug.WriteLine("ASSIMP IMPORT ERROR");
 			return null; // TODO: error model instead of nullable
 		}
@@ -70,7 +77,7 @@ public class Model {
 		}
 
 		for(int f = 0; f < mesh.FaceCount; f++) {
-			Assimp.Face face = mesh.Faces[f];
+			Face face = mesh.Faces[f];
 			for(int i = 0; i < face.IndexCount; i++) {
 				indices.Add(face.Indices[i]);
 			}

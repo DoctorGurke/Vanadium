@@ -33,6 +33,10 @@ public class Mesh {
 	private Shader _shader;
 
 	private void SetupMesh() {
+		// use shader first to get attributes
+		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
+		_shader.Use();
+
 		// create, bind and populate vbo
 		vbo = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
@@ -40,10 +44,6 @@ public class Mesh {
 
 		vao = GL.GenVertexArray();
 		GL.BindVertexArray(vao);
-
-		// use shader first to get attributes
-		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
-		_shader.Use();
 
 		// vertex positions
 		var vertexPositionLocation = _shader.GetAttribLocation("vPosition");
@@ -64,6 +64,8 @@ public class Mesh {
 		ebo = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
 		GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Count * sizeof(uint), _indices.ToArray(), BufferUsageHint.StaticDraw);
+
+		GL.BindVertexArray(0);
 
 		_timer = new Stopwatch();
 		_timer.Start();
@@ -97,7 +99,7 @@ public class Mesh {
 		//model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
 		//model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 14));
 		//model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 3));
-		//model *= Matrix4.CreateScale(0.1f);
+		//model *= Matrix4.CreateScale(0.05f);
 
 		_shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
