@@ -34,44 +34,25 @@ public class Shader {
 		return data;
 	}
 
-	// This is how you create a simple shader.
-	// Shaders are written in GLSL, which is a language very similar to C in its semantics.
-	// The GLSL source is compiled *at runtime*, so it can optimize itself for the graphics card it's currently being used on.
-	// A commented example of GLSL can be found in shader.vert.
 	public Shader(string vertPath, string fragPath) {
-		// There are several different types of shaders, but the only two you need for basic rendering are the vertex and fragment shaders.
-		// The vertex shader is responsible for moving around vertices, and uploading that data to the fragment shader.
-		//   The vertex shader won't be too important here, but they'll be more important later.
-		// The fragment shader is responsible for then converting the vertices to "fragments", which represent all the data OpenGL needs to draw a pixel.
-		//   The fragment shader is what we'll be using the most here.
-
-		// Load vertex shader and compile
+		// load vertex shader and compile
 		var shaderSource = Load(vertPath);
-
-		// GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
 		var vertexShader = GL.CreateShader(ShaderType.VertexShader);
-
-		// Now, bind the GLSL source code
 		GL.ShaderSource(vertexShader, shaderSource);
-
-		// And then compile
 		CompileShader(vertexShader);
 
-		// We do the same for the fragment shader.
+		// load fragment shader and compile
 		shaderSource = Load(fragPath);
 		var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
 		GL.ShaderSource(fragmentShader, shaderSource);
 		CompileShader(fragmentShader);
 
-		// These two shaders must then be merged into a shader program, which can then be used by OpenGL.
-		// To do this, create a program...
+		// create opengl shader program
 		Handle = GL.CreateProgram();
 
-		// Attach both shaders...
+		// attach vert + fragment shaders and link
 		GL.AttachShader(Handle, vertexShader);
 		GL.AttachShader(Handle, fragmentShader);
-
-		// And then link them together.
 		LinkProgram(Handle);
 
 		// When the shader program is linked, it no longer needs the individual shaders attached to it; the compiled code is copied into the shader program.

@@ -11,6 +11,8 @@ public class Window : GameWindow {
 	public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(gameWindowSettings, nativeWindowSettings) { }
 
 	private Model? model;
+	private SceneObject sceneObject1;
+	private SceneObject sceneObject2;
 
 	// debugging
 	private static DebugProc _debugProcCallback = DebugCallback;
@@ -33,7 +35,16 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
-		model = Model.Load("resources/models/icosphere.fbx");
+		sceneObject1 = new();
+		sceneObject1.Model = Model.Load("resources/models/vertex_color_test.fbx");
+
+		sceneObject2 = new SceneObject {
+			Position = Vector3.Up * 5 + Vector3.Right * 3
+		};
+		sceneObject2.Parent = sceneObject1;
+		sceneObject2.Model = Model.Load("resources/models/icosphere.fbx");
+
+		//model = Model.Load("resources/models/vertex_color_test.fbx");
 
 		// init camera
 		_ = new FirstPersonCamera {
@@ -50,7 +61,9 @@ public class Window : GameWindow {
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-		model?.Draw();
+		//model?.Draw();
+		sceneObject1.Render();
+		sceneObject2.Render();
 
 		SwapBuffers();
 	}

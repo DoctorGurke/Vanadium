@@ -6,23 +6,25 @@ namespace Vanadium;
 
 public class Mesh {
 
-	private List<Vertex > _vertices;
+	public Model Model;
+	private List<Vertex> _vertices;
 	private List<int> _indices;
 
 	public struct Vertex {
 		public Vector3 position;
 		public Vector3 normal;
 		public Vector2 uv;
+		public Vector3 color;
 
-		public Vertex(Vector3 position, Vector3 normal, Vector2 uv) {
+		public Vertex(Vector3 position, Vector3 normal, Vector2 uv, Vector3 color) {
 			this.position = position;
 			this.normal = normal;
 			this.uv = uv;
+			this.color = color;
 		}
 	}
 
 	public Mesh(List<Vertex> vertices, List<int> indices) {
-		Debug.WriteLine($"new mesh v:{vertices.Count} i:{indices.Count}");
 		_vertices = vertices;
 		_indices = indices;
 		SetupMesh();
@@ -47,18 +49,31 @@ public class Mesh {
 
 		// vertex positions
 		var vertexPositionLocation = _shader.GetAttribLocation("vPosition");
-		GL.EnableVertexAttribArray(vertexPositionLocation);
-		GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), 0);
+		if(vertexPositionLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexPositionLocation);
+			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), 0);
+		}
 
 		// vertex normal
 		var vertexNormalLocation = _shader.GetAttribLocation("vNormal");
-		GL.EnableVertexAttribArray(vertexNormalLocation);
-		GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
+		if(vertexNormalLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexNormalLocation);
+			GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
+		}
 
 		// uv0
 		var uv0Location = _shader.GetAttribLocation("vTexCoord0");
-		GL.EnableVertexAttribArray(uv0Location);
-		GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv"));
+		if(uv0Location >= 0) {
+			GL.EnableVertexAttribArray(uv0Location);
+			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv"));
+		}
+
+		// vertex color
+		var vertexColorLocation = _shader.GetAttribLocation("vColor");
+		if(vertexColorLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexColorLocation);
+			GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "color"));
+		}
 
 		// create, bind and populate ebo
 		ebo = GL.GenBuffer();
@@ -91,16 +106,11 @@ public class Mesh {
 		_shader.Use();
 
 		double time = _timer.Elapsed.TotalSeconds;
-		float tintAmount = ((float)Math.Sin(time) + 1) / 2;
+		//float tintAmount = ((float)Math.Sin(time) + 1) / 2;
 
-		_shader.Set("tintAmount", tintAmount);
+		//_shader.Set("tintAmount", tintAmount);
 
-		var model = Matrix4.Identity;
-		//model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
-		//model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 14));
-		//model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 3));
-		//model *= Matrix4.CreateScale(0.05f);
-
+		var model = Model.SceneObject.GlobalTransform.ModelMatrix;
 		_shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
 		_shader.Set("view", view);

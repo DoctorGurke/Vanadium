@@ -8,6 +8,8 @@ namespace Vanadium;
 public class Model {
 	private List<Mesh> _meshes = new();
 
+	public SceneObject SceneObject { get; set; }
+
 	public static Model? Load(string path) {
 		Debug.WriteLine($"loading model: {path}");
 		var fileName = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", path);
@@ -15,12 +17,12 @@ public class Model {
 		AssimpContext importer = new AssimpContext();
 		importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
 
-		Scene scene = null;
+		Scene? scene = null;
 		try {
 			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs);
 		} catch(FileNotFoundException ex) {
 			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
-			return null;
+			return null; // TODO: error model instead of nullable
 		}
 		if(scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null) {
 			Debug.WriteLine("ASSIMP IMPORT ERROR");
@@ -58,6 +60,7 @@ public class Model {
 			Vector3 pos = new();
 			Vector3 normal = new();
 			Vector2 uv = new Vector2(0, 0);
+			Vector3 color = new(1.0f, 1.0f, 1.0f);
 
 			pos.x = mesh.Vertices[v].X;
 			pos.y = mesh.Vertices[v].Y;
@@ -72,7 +75,13 @@ public class Model {
 				uv.Y = mesh.TextureCoordinateChannels[0][v].Y;
 			}
 
-			vertex = new Mesh.Vertex(pos, normal, uv);
+			if(mesh.VertexColorChannelCount >= 1) {
+				color.x = mesh.VertexColorChannels[0][v].R;
+				color.y = mesh.VertexColorChannels[0][v].G;
+				color.z = mesh.VertexColorChannels[0][v].B;
+			}
+
+			vertex = new Mesh.Vertex(pos, normal, uv, color);
 			vertices.Add(vertex);
 		}
 
@@ -83,7 +92,9 @@ public class Model {
 			}
 		}
 
+		Debug.WriteLine($"new mesh v:{vertices.Count} i:{indices.Count} m:{mesh.MaterialIndex} sm:{scene.MaterialCount}");
 		Mesh fmesh = new Mesh(vertices, indices);
+		fmesh.Model = this;
 		return fmesh;
 	}
 }

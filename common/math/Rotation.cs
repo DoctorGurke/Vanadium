@@ -49,6 +49,9 @@ public struct Rotation : IEquatable<Rotation> {
 	public Vector3 Up => Vector3.Up * this;
 	public Vector3 Down => Vector3.Down * this;
 
+	public Matrix4 Matrix => Matrix4.CreateFromQuaternion(_quat);
+	public Rotation Inverse => Quaternion.Invert(_quat);
+
 	public static Rotation From(float pitch, float yaw, float roll) {
 		return Quaternion.FromEulerAngles(pitch.DegreeToRadian(), roll.DegreeToRadian(), yaw.DegreeToRadian());
 	}
