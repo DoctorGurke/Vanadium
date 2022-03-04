@@ -12,13 +12,14 @@ public class FirstPersonCamera : Camera {
 	private float targetYaw = 0;
 
 	public override void BuildInput(KeyboardState keyboard, MouseState mouse) {
-		const float cameraSpeed = 1.5f;
-		const float cameraSensitivity = 0.1f;
+		var fast = keyboard.IsKeyDown(Keys.LeftShift);
+
+		float cameraSpeed = fast ? 10 : 1.5f;
+		float cameraSensitivity = 0.1f;
 
 		if(keyboard.IsKeyDown(Keys.W)) {
 			Position += Rotation.Forward * cameraSpeed * Time.Delta; // Forward
 		}
-
 		if(keyboard.IsKeyDown(Keys.S)) {
 			Position -= Rotation.Forward * cameraSpeed * Time.Delta; // Backwards
 		}
