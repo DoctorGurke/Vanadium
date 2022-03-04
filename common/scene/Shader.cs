@@ -1,5 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using System.Text.RegularExpressions;
 
 namespace Vanadium;
 
@@ -8,6 +9,30 @@ public class Shader {
 	public readonly int Handle;
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
+
+	public static string Load(string path) {
+		var data = File.ReadAllText(path);
+
+		// scan data for any include 'macros'
+		var includeMatches = Regex.Matches(data, "#include .+");
+
+		foreach(var match in includeMatches) {
+			var matchstring = $"{match}".Clean();
+			var includePath = matchstring.Replace("#include", "").Clean();
+
+			// make sure a file isn't trying to include itself
+			if(includePath == path) {
+				Debug.WriteLine($"Recursive include for {includePath} found! Defusing...");
+				data.Replace(matchstring, "");
+				continue;
+			}
+
+			var includeData = Load(includePath);
+			data = data.Replace(matchstring, includeData);
+		}
+
+		return data;
+	}
 
 	// This is how you create a simple shader.
 	// Shaders are written in GLSL, which is a language very similar to C in its semantics.
@@ -21,7 +46,7 @@ public class Shader {
 		//   The fragment shader is what we'll be using the most here.
 
 		// Load vertex shader and compile
-		var shaderSource = File.ReadAllText(vertPath);
+		var shaderSource = Load(vertPath);
 
 		// GL.CreateShader will create an empty shader (obviously). The ShaderType enum denotes which type of shader will be created.
 		var vertexShader = GL.CreateShader(ShaderType.VertexShader);
@@ -33,7 +58,7 @@ public class Shader {
 		CompileShader(vertexShader);
 
 		// We do the same for the fragment shader.
-		shaderSource = File.ReadAllText(fragPath);
+		shaderSource = Load(fragPath);
 		var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
 		GL.ShaderSource(fragmentShader, shaderSource);
 		CompileShader(fragmentShader);
@@ -112,23 +137,18 @@ public class Shader {
 		return GL.GetAttribLocation(Handle, attribName);
 	}
 
-	// Uniform setters
-	// Uniforms are variables that can be set by user code, instead of reading them from the VBO.
-	// You use VBOs for vertex-related data, and uniforms for almost everything else.
-
-	// Setting a uniform is almost always the exact same, so I'll explain it here once, instead of in every method:
-	//     1. Bind the program you want to set the uniform on
-	//     2. Get a handle to the location of the uniform with GL.GetUniformLocation.
-	//     3. Use the appropriate GL.Uniform* function to set the uniform.
-
 	/// <summary>
 	/// Set a uniform int on this shader.
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void SetInt(string name, int data) {
-		GL.UseProgram(Handle);
-		GL.Uniform1(UniformLocations[name], data);
+	public void Set(string name, int data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform1(location, data);
+			return;
+		}
+		Debug.WriteLine($"Error setting int uniform {name} | {data}!");
 	}
 
 	/// <summary>
@@ -136,9 +156,27 @@ public class Shader {
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void SetFloat(string name, float data) {
-		GL.UseProgram(Handle);
-		GL.Uniform1(UniformLocations[name], data);
+	public void Set(string name, float data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform1(location, data);
+			return;
+		}
+		Debug.WriteLine($"Error setting float uniform {name} | {data}!");
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector3 data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform3(location, data);
+			return;
+		}
+		Debug.WriteLine($"Error setting vec3 uniform {name} | {data}!");
 	}
 
 	/// <summary>
@@ -151,18 +189,12 @@ public class Shader {
 	///   The matrix is transposed before being sent to the shader.
 	///   </para>
 	/// </remarks>
-	public void SetMatrix4(string name, Matrix4 data) {
-		GL.UseProgram(Handle);
-		GL.UniformMatrix4(UniformLocations[name], true, ref data);
-	}
-
-	/// <summary>
-	/// Set a uniform Vector3 on this shader.
-	/// </summary>
-	/// <param name="name">The name of the uniform</param>
-	/// <param name="data">The data to set</param>
-	public void SetVector3(string name, Vector3 data) {
-		GL.UseProgram(Handle);
-		GL.Uniform3(UniformLocations[name], data);
+	public void Set(string name, Matrix4 data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.UniformMatrix4(location, true, ref data);
+			return;
+		}
+		Debug.WriteLine($"Error setting mat4 uniform {name} | {data}!");
 	}
 }

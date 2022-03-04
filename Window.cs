@@ -55,17 +55,17 @@ public class Window : GameWindow {
 		_shader.Use();
 
 		// vertex positions
-		var vertexPositionLocation = _shader.GetAttribLocation("aPosition");
+		var vertexPositionLocation = _shader.GetAttribLocation("vPosition");
 		GL.EnableVertexAttribArray(vertexPositionLocation);
 		GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
 
 		// uv0
-		var uv0Location = _shader.GetAttribLocation("aTexCoord0");
+		var uv0Location = _shader.GetAttribLocation("vTexCoord0");
 		GL.EnableVertexAttribArray(uv0Location);
 		GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
 
 		// vertex color
-		var vertexColorLocation = _shader.GetAttribLocation("aColor");
+		var vertexColorLocation = _shader.GetAttribLocation("vColor");
 		GL.EnableVertexAttribArray(vertexColorLocation);
 		GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 5 * sizeof(float));
 
@@ -83,8 +83,8 @@ public class Window : GameWindow {
 		_texture1 = Texture.LoadFromFile("resources/textures/mask_debug.jpg");
 		_texture1.Use(TextureUnit.Texture1);
 
-		_shader.SetInt("texture0", 0);
-		_shader.SetInt("texture1", 1);
+		_shader.Set("texture0", 0);
+		_shader.Set("texture1", 1);
 
 		// init camera
 		_ = new FirstPersonCamera();
@@ -105,20 +105,19 @@ public class Window : GameWindow {
 		double time = _timer.Elapsed.TotalSeconds;
 		float tintAmount = ((float)Math.Sin(time) + 1 ) / 2;
 
-		_shader.SetFloat("tintAmount", tintAmount);
+		_shader.Set("tintAmount", tintAmount);
 
 		var model = Matrix4.Identity;
 		//model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 10));
 		//model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 14));
 		//model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians((float)_timer.Elapsed.TotalSeconds * 3));
 		//model *= Matrix4.CreateScale(tintAmount);
-		//transform *= Matrix4.CreateTranslation((float) Math.Sin(tintAmount), (float) Math.Cos(tintAmount), 0.0f);
 
-		_shader.SetMatrix4("model", model);
+		_shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
-		_shader.SetMatrix4("view", view);
+		_shader.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;
-		_shader.SetMatrix4("projection", proj);
+		_shader.Set("projection", proj);
 
 		GL.BindVertexArray(_vertexArrayObject);
 		GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
