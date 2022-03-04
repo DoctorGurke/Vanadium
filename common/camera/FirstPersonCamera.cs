@@ -13,8 +13,9 @@ public class FirstPersonCamera : Camera {
 
 	public override void BuildInput(KeyboardState keyboard, MouseState mouse) {
 		var fast = keyboard.IsKeyDown(Keys.LeftShift);
+		var slow = keyboard.IsKeyDown(Keys.LeftAlt);
 
-		float cameraSpeed = fast ? 10 : 1.5f;
+		float cameraSpeed = slow ? 0.5f : fast ? 10 : 1.5f;
 		float cameraSensitivity = 0.1f;
 
 		if(keyboard.IsKeyDown(Keys.W)) {
