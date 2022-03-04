@@ -37,10 +37,7 @@ public abstract class Camera {
 		Activate();
 	}
 
-	public virtual void Activate() {
-		Position = Vector3.Zero;
-		Rotation = Rotation.Identity;
-	}
+	public virtual void Activate() { }
 
 	public static void BuildActiveCamera() {
 		ActiveCamera.BuildView(ref ActiveCamera.setup);
