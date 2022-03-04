@@ -61,6 +61,7 @@ public struct Rotation : IEquatable<Rotation> {
 	public Rotation RotateAroundAxis(Vector3 axis, float degrees) {
 		return this * FromAxis(axis, degrees);
 	}
+	public Vector3 EulerAngles => _quat.ToEulerAngles();
 
 	public static Vector3 operator *(Rotation f, Vector3 c1) {
 		return OpenTK.Mathematics.Vector3.Transform(c1._vec, f._quat);
