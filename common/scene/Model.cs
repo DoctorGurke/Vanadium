@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Vanadium;
 
 public class Model {
-	private List<Mesh> _meshes = new();
+	private Mesh[] _meshes;
 
 	public SceneObject SceneObject { get; set; }
 
@@ -17,9 +17,9 @@ public class Model {
 		AssimpContext importer = new AssimpContext();
 		importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
 
-		Scene? scene = null;
+		Scene? scene;
 		try {
-			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs);
+			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate);
 		} catch(FileNotFoundException ex) {
 			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
 			return null; // TODO: error model instead of nullable
@@ -30,6 +30,7 @@ public class Model {
 		}
 
 		var model = new Model();
+		model._meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode(scene.RootNode, scene);
 		Debug.WriteLine($"finished loading model: {path}");
 		return model;
@@ -44,7 +45,7 @@ public class Model {
 	private void ProcessNode(Node node, Scene scene) {
 		foreach(int index in node.MeshIndices) {
 			Assimp.Mesh mesh = scene.Meshes[index];
-			_meshes.Add(processMesh(mesh, scene));
+			_meshes[index] = processMesh(mesh, scene);
 		}
 		for(int i = 0; i < node.ChildCount; i++) {
 			ProcessNode(node.Children[i], scene);
@@ -52,8 +53,8 @@ public class Model {
 	}
 
 	private Mesh processMesh(Assimp.Mesh mesh, Scene scene) {
-		List<Mesh.Vertex> vertices = new List<Mesh.Vertex>();
-		List<int> indices = new List<int>();
+		Mesh.Vertex[] vertices = new Mesh.Vertex[mesh.VertexCount];
+		int[] indices = new int[mesh.FaceCount * 3];
 
 		for(int v = 0; v < mesh.VertexCount; v++) {
 			Mesh.Vertex vertex;
@@ -82,17 +83,17 @@ public class Model {
 			}
 
 			vertex = new Mesh.Vertex(pos, normal, uv, color);
-			vertices.Add(vertex);
+			vertices[v] = vertex;
 		}
 
 		for(int f = 0; f < mesh.FaceCount; f++) {
 			Face face = mesh.Faces[f];
 			for(int i = 0; i < face.IndexCount; i++) {
-				indices.Add(face.Indices[i]);
+				indices[f * 3 + i] = face.Indices[i];
 			}
 		}
 
-		Debug.WriteLine($"new mesh v:{vertices.Count} i:{indices.Count} m:{mesh.MaterialIndex} sm:{scene.MaterialCount}");
+		Debug.WriteLine($"new mesh v:{vertices.Length} i:{indices.Length} m:{mesh.MaterialIndex} sm:{scene.MaterialCount}");
 		Mesh fmesh = new Mesh(vertices, indices);
 		fmesh.Model = this;
 		return fmesh;
