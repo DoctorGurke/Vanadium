@@ -11,11 +11,11 @@ public class Window : GameWindow {
 
 	private readonly float[] _vertices =
 	{
-		// vert pos				// uv0			// vert color
-		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f,		1.0f, 0.0f, 0.0f, // top right
-         0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 1.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,		0.0f, 1.0f,		1.0f, 1.0f, 0.0f  // top left
+		// vert pos				// uv0
+		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,		1.0f, 0.0f,	// bottom right
+        -0.5f, -0.5f, 0.0f,		0.0f, 0.0f,	// bottom left
+        -0.5f,  0.5f, 0.0f,		0.0f, 1.0f,	// top left
     };
 
 	private readonly uint[] _indices =
@@ -57,17 +57,12 @@ public class Window : GameWindow {
 		// vertex positions
 		var vertexPositionLocation = _shader.GetAttribLocation("vPosition");
 		GL.EnableVertexAttribArray(vertexPositionLocation);
-		GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+		GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
 
 		// uv0
 		var uv0Location = _shader.GetAttribLocation("vTexCoord0");
 		GL.EnableVertexAttribArray(uv0Location);
-		GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
-
-		// vertex color
-		var vertexColorLocation = _shader.GetAttribLocation("vColor");
-		GL.EnableVertexAttribArray(vertexColorLocation);
-		GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 5 * sizeof(float));
+		GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
 		// create, bind and populate ebo
 		_elementBufferObject = GL.GenBuffer();
