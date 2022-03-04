@@ -27,13 +27,19 @@ public class Window : GameWindow {
 
 		GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-		//GL.Enable(EnableCap.DepthTest);
-		//GL.Enable(EnableCap.CullFace);
+		GL.Enable(EnableCap.CullFace);
+		GL.CullFace(CullFaceMode.Back);
 
-		model = Model.Load("resources/models/fcube.obj");
+		GL.Enable(EnableCap.DepthTest);
+		GL.DepthFunc(DepthFunction.Less);
+
+		model = Model.Load("resources/models/icosphere.fbx");
 
 		// init camera
-		_ = new FirstPersonCamera();
+		_ = new FirstPersonCamera {
+			Position = Vector3.Backward * 3
+		};
+
 		CursorGrabbed = true;
 	}
 
@@ -42,7 +48,7 @@ public class Window : GameWindow {
 
 		//var fps = (int)(1f / e.Time);
 
-		GL.Clear(ClearBufferMask.ColorBufferBit);
+		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 		model?.Draw();
 
