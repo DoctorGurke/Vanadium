@@ -110,7 +110,7 @@ public class Mesh {
 
 		//_shader.Set("tintAmount", tintAmount);
 
-		var model = Model.SceneObject.GlobalTransform.ModelMatrix;
+		var model = Model.SceneObject.GlobalTransform;
 		_shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
 		_shader.Set("view", view);

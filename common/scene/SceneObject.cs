@@ -1,4 +1,5 @@
-﻿using OpenTK.Windowing.Common;
+﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 
 namespace Vanadium;
 
@@ -39,7 +40,8 @@ public class SceneObject {
 		}
 	}
 	public Transform LocalTransform;
-	public Transform GlobalTransform => Parent is null ? LocalTransform : Parent.GlobalTransform + LocalTransform;
+	//public Transform GlobalTransform => Parent is null ? LocalTransform : Parent.GlobalTransform + LocalTransform;
+	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.ModelMatrix : Parent.GlobalTransform * LocalTransform.ModelMatrix;
 
 	private SceneObject _parent;
 	public SceneObject Parent {
@@ -58,14 +60,16 @@ public class SceneObject {
 		Position = Vector3.Zero;
 		Rotation = Rotation.Identity;
 		Scale = 1.0f;
+
+		SceneWorld.SceneObjects.Add(this);
 	}
 
-	public void Render() {
+	public void Draw() {
 		Model?.Draw();
 		OnRender();
 	}
 
 	protected virtual void OnRender() {
-		Rotation = Rotation.RotateAroundAxis(Vector3.Up, 10 * Time.Delta);
+		Rotation = Rotation.RotateAroundAxis(Vector3.Up, Time.Delta * 35);
 	}
 }

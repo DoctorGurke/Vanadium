@@ -10,10 +10,6 @@ namespace Vanadium;
 public class Window : GameWindow {
 	public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings) : base(gameWindowSettings, nativeWindowSettings) { }
 
-	private Model? model;
-	private SceneObject sceneObject1;
-	private SceneObject sceneObject2;
-
 	// debugging
 	private static DebugProc _debugProcCallback = DebugCallback;
 	private static GCHandle _debugProcCallbackHandle;
@@ -35,14 +31,23 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
-		sceneObject1 = new();
-		sceneObject1.Model = Model.Load("resources/models/vertex_color_test.fbx");
+		var origin = new SceneObject {
+			Scale = 0.1f
+		};
+		origin.Model = Model.Load("resources/models/icosphere.fbx");
 
-		sceneObject2 = new SceneObject {
-			Position = Vector3.Up * 5 + Vector3.Right * 3
+		var sceneObject1 = new SceneObject {
+			Position = Vector3.Right * 3
+		};
+		sceneObject1.Model = Model.Load("resources/models/icosphere.fbx");
+
+		var sceneObject2 = new SceneObject {
+			Position = Vector3.Up * 5 + Vector3.Right * 3,
+			Scale = 0.5f
+			//Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
 		};
 		sceneObject2.Parent = sceneObject1;
-		sceneObject2.Model = Model.Load("resources/models/icosphere.fbx");
+		sceneObject2.Model = Model.Load("resources/models/vertex_color_test.fbx");
 
 		//model = Model.Load("resources/models/vertex_color_test.fbx");
 
@@ -61,9 +66,7 @@ public class Window : GameWindow {
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-		//model?.Draw();
-		sceneObject1.Render();
-		sceneObject2.Render();
+		SceneWorld.Draw();
 
 		SwapBuffers();
 	}
@@ -81,10 +84,18 @@ public class Window : GameWindow {
 
 		Camera.ActiveCamera.BuildInput(KeyboardState, MouseState);
 
+		var mouse = MouseState;
 		var input = KeyboardState;
 		// close the window when ESC is pressed down
 		if(input.IsKeyDown(Keys.Escape)) {
 			Close();
+		}
+
+		if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
+			var ent = new SceneObject {
+				Position = Camera.ActiveCamera.Position
+			};
+			ent.Model = Model.Load("resources/models/cube.fbx");
 		}
 	}
 
