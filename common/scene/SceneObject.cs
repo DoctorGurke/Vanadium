@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 
 namespace Vanadium;
 
@@ -62,7 +61,10 @@ public class SceneObject {
 		Scale = 1.0f;
 
 		SceneWorld.SceneObjects.Add(this);
+		OnSpawn();
 	}
+
+	public virtual void OnSpawn() { }
 
 	public void Draw() {
 		Model?.Draw();
