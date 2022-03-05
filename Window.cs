@@ -14,6 +14,7 @@ public class Window : GameWindow {
 	private static DebugProc _debugProcCallback = DebugCallback;
 	private static GCHandle _debugProcCallbackHandle;
 
+	private Stopwatch Timer = new();
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -59,6 +60,7 @@ public class Window : GameWindow {
 		};
 
 		CursorGrabbed = true;
+		Timer.Start();
 	}
 
 	protected override void OnRenderFrame(FrameEventArgs e) {
@@ -76,7 +78,7 @@ public class Window : GameWindow {
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
 
-		Time.Update((float) e.Time);
+		Time.Update((float) e.Time, Timer.ElapsedMilliseconds * 0.001f);
 		Camera.BuildActiveCamera();
 
 		// do not process any input if we're not focused
