@@ -114,7 +114,7 @@ public class Window : GameWindow {
 	private static void DebugCallback(DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam) {
 		string messageString = Marshal.PtrToStringAnsi(message, length);
 		if(!(severity == DebugSeverity.DebugSeverityNotification))
-			Console.WriteLine($"{severity} : {type} \t | \t {messageString}");
+			Console.WriteLine($"{severity} : {type} | {messageString}");
 
 		if(type == DebugType.DebugTypeError) {
 			throw new Exception(messageString);
