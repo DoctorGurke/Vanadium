@@ -77,7 +77,7 @@ public class Model {
 			Mesh.Vertex vertex;
 			Vector3 pos = new();
 			Vector3 normal = new();
-			Vector2 uv = new Vector2(0, 0);
+			Vector2 uv = new(0, 0);
 			Vector3 color = new(1.0f, 1.0f, 1.0f);
 
 			pos.x = mesh.Vertices[v].X;
