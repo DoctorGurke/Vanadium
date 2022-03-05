@@ -3,16 +3,7 @@
 namespace Vanadium;
 
 public class SceneObject {
-	private Model _model;
-	public Model Model { 
-		get {
-			return _model;
-		} 
-		set {
-			value.SceneObject = this;
-			_model = value;
-		}
-	}
+	public Model Model;
 
 	public Vector3 Position { 
 		get {
@@ -67,7 +58,7 @@ public class SceneObject {
 	public virtual void OnSpawn() { }
 
 	public void Draw() {
-		Model?.Draw();
+		Model?.Draw(this);
 		OnRender();
 	}
 

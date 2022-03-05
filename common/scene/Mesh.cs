@@ -100,7 +100,7 @@ public class Mesh {
 	private Texture _texture0;
 	private Texture _texture1;
 
-	public void Draw() {
+	public void Draw(SceneObject sceneobject) {
 		_texture0.Use(TextureUnit.Texture0);
 		_texture1.Use(TextureUnit.Texture1);
 		_shader.Use();
@@ -110,7 +110,7 @@ public class Mesh {
 
 		//_shader.Set("tintAmount", tintAmount);
 
-		var model = Model.SceneObject.GlobalTransform;
+		var model = sceneobject.GlobalTransform;
 		_shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
 		_shader.Set("view", view);

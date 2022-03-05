@@ -8,15 +8,21 @@ namespace Vanadium;
 public class Model {
 	private Mesh[] _meshes;
 
-	public SceneObject SceneObject { get; set; }
-
 	public bool IsError = false;
 
 	public static string ErrorModel = "resources/models/error.fbx";
 
+	private static Dictionary<string, Model> PrecachedModels = new();
+
+	public static void Precache(string path) {
+		Load(path);
+	}
+
 	public static Model Load(string path) {
 
-		// TODO: precache models by path
+		if(PrecachedModels.TryGetValue(path, out var mdl)) {
+			return mdl;
+		}
 
 		Debug.WriteLine($"loading model: {path}");
 		var fileName = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", path);
@@ -39,6 +45,7 @@ public class Model {
 		var model = new Model();
 		model._meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode(scene.RootNode, scene);
+		PrecachedModels.Add(path, model);
 
 		if(path == ErrorModel)
 			model.IsError = true;
@@ -47,9 +54,9 @@ public class Model {
 		return model;
 	}
 
-	public void Draw() {
+	public void Draw(SceneObject sceneobject) {
 		foreach(var mesh in _meshes) {
-			mesh.Draw();
+			mesh.Draw(sceneobject);
 		}
 	}
 

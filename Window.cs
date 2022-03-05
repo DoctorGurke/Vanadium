@@ -31,6 +31,8 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
+		Model.Precache("resources/models/error.fbx");
+
 		var origin = new SceneObject {
 			Scale = 0.1f
 		};
