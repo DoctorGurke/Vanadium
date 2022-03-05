@@ -2,6 +2,8 @@
 
 #include shaders/common/common.vert
 
+#material float asd
+
 void main(void)
 {
 	vec4 pos = CommonVertexProcessing();

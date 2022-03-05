@@ -4,21 +4,22 @@ using System.Text.RegularExpressions;
 
 namespace Vanadium;
 
-// A simple class meant to help create shaders. Taken from https://github.com/opentk/LearnOpenTK
+// A simple class meant to help create shaders
 public class Shader {
 	public readonly int Handle;
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
-	public static string Load(string path) {
-		var data = File.ReadAllText(path);
+	private static string HandleIncludes(string data, string path) {
+		Debug.WriteLine($"handling includes for {path}");
+		// scan data for any #include macros
+		var regex = @"#include[\s](.+)";
+		var includeMatches = Regex.Matches(data, regex);
 
-		// scan data for any include 'macros'
-		var includeMatches = Regex.Matches(data, "#include .+");
-
-		foreach(var match in includeMatches) {
+		foreach(Match match in includeMatches) {
 			var matchstring = $"{match}".Clean();
-			var includePath = matchstring.Replace("#include", "").Clean();
+			var includePath = $"{match.Groups[1]}".Clean();
+			Debug.WriteLine($"include found ({includePath})");
 
 			// make sure a file isn't trying to include itself
 			if(includePath == path) {
@@ -30,6 +31,38 @@ public class Shader {
 			var includeData = Load(includePath);
 			data = data.Replace(matchstring, includeData);
 		}
+
+		return data;
+	}
+
+	private static string HandleMaterial(string data, string path) {
+		Debug.WriteLine($"handling material for {path}");
+
+		// scan data for any #material macros
+		var regex = @"#material[\s]\W*(float|int|sampler2D|vec2|vec3|vec4|mat4)\W*[\s](.+)";
+		var includeMatches = Regex.Matches(data, regex);
+
+		foreach(Match match in includeMatches) {
+			var matchstring = $"{match}".Clean();
+			var type = $"{match.Groups[1]}".Clean();
+			var name = $"{match.Groups[2]}".Clean();
+
+			var field = $"uniform {type} {name};";
+
+			Debug.WriteLine($"material found ({field})");
+
+			data = data.Replace(matchstring, field);
+		}
+
+		return data;
+	}
+
+	public static string Load(string path) {
+		var data = File.ReadAllText(path);
+
+		// handle any includes the shader file might have
+		data = HandleIncludes(data, path);
+		data = HandleMaterial(data, path);
 
 		return data;
 	}
