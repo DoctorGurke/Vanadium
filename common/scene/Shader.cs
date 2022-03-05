@@ -10,6 +10,16 @@ public class Shader {
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
+	public static string Load(string path) {
+		var data = File.ReadAllText(path);
+
+		// handle any includes the shader file might have
+		data = HandleIncludes(data, path);
+		data = HandleMaterial(data, path);
+
+		return data;
+	}
+
 	private static string HandleIncludes(string data, string path) {
 		Debug.WriteLine($"handling includes for {path}");
 		// scan data for any #include macros
@@ -39,7 +49,7 @@ public class Shader {
 		Debug.WriteLine($"handling material for {path}");
 
 		// scan data for any #material macros
-		var regex = @"#material[\s]\W*(float|int|sampler2D|vec2|vec3|vec4|mat4)\W*[\s](.+)";
+		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|vec2|vec3|vec4|mat4)\W*[\s](.+)";
 		var includeMatches = Regex.Matches(data, regex);
 
 		foreach(Match match in includeMatches) {
@@ -56,17 +66,6 @@ public class Shader {
 
 		return data;
 	}
-
-	public static string Load(string path) {
-		var data = File.ReadAllText(path);
-
-		// handle any includes the shader file might have
-		data = HandleIncludes(data, path);
-		data = HandleMaterial(data, path);
-
-		return data;
-	}
-
 	public Shader(string vertPath, string fragPath) {
 		// load vertex shader and compile
 		var shaderSource = Load(vertPath);
@@ -103,6 +102,7 @@ public class Shader {
 		GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
 		// Loop over all the uniforms,
+
 		for(var i = 0; i < numberOfUniforms; i++) {
 			// get the name of this uniform,
 			var key = GL.GetActiveUniform(Handle, i, out _, out _);

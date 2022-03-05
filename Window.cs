@@ -34,6 +34,8 @@ public class Window : GameWindow {
 
 		Model.Precache("resources/models/error.fbx");
 
+		Material.Load("resources/materials/test_mat.json");
+
 		var origin = new SceneObject {
 			Scale = 0.1f
 		};
