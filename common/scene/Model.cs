@@ -28,7 +28,6 @@ public class Model {
 		var fileName = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", path);
 
 		AssimpContext importer = new AssimpContext();
-		importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
 
 		Scene? scene;
 		try {
