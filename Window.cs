@@ -95,7 +95,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("resources/models/cube.fbx");
+			ent.Model = Model.Load("resources/models/asd.fbx");
 		}
 	}
 

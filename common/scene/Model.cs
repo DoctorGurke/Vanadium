@@ -10,7 +10,14 @@ public class Model {
 
 	public SceneObject SceneObject { get; set; }
 
-	public static Model? Load(string path) {
+	public bool IsError = false;
+
+	public static string ErrorModel = "resources/models/error.fbx";
+
+	public static Model Load(string path) {
+
+		// TODO: precache models by path
+
 		Debug.WriteLine($"loading model: {path}");
 		var fileName = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", path);
 
@@ -22,16 +29,20 @@ public class Model {
 			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate);
 		} catch(FileNotFoundException ex) {
 			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
-			return null; // TODO: error model instead of nullable
+			return Load(ErrorModel);
 		}
 		if(scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null) {
 			Debug.WriteLine("ASSIMP IMPORT ERROR");
-			return null; // TODO: error model instead of nullable
+			return Load(ErrorModel);
 		}
 
 		var model = new Model();
 		model._meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode(scene.RootNode, scene);
+
+		if(path == ErrorModel)
+			model.IsError = true;
+
 		Debug.WriteLine($"finished loading model: {path}");
 		return model;
 	}

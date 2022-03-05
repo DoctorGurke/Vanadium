@@ -3,14 +3,14 @@
 namespace Vanadium;
 
 public class SceneObject {
-	private Model? _model;
-	public Model? Model { 
+	private Model _model;
+	public Model Model { 
 		get {
 			return _model;
 		} 
 		set {
+			value.SceneObject = this;
 			_model = value;
-			_model.SceneObject = this;
 		}
 	}
 
