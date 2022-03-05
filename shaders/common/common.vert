@@ -12,11 +12,11 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-void CommonVertexProcessing(void) {
+vec4 CommonVertexProcessing(void) {
 	fPosition = vec3(vec4(vPosition, 1.0) * model);
 	fNormal = vNormal * mat3(transpose(inverse(model)));
 	fTexCoord0 = vTexCoord0;
 	fColor = vColor;
 
-    gl_Position = vec4(vPosition, 1.0) * model * view * projection;
+    return vec4(vPosition, 1.0) * model * view * projection;
 }

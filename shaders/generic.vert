@@ -4,5 +4,6 @@
 
 void main(void)
 {
-	CommonVertexProcessing();
+	vec4 pos = CommonVertexProcessing();
+	gl_Position = pos;
 }
