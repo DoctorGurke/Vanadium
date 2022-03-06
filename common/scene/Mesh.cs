@@ -58,63 +58,63 @@ public class Mesh {
 		GL.BindVertexArray(vao);
 
 		// vertex positions
-		var vertexPositionLocation = _material.Shader.GetAttribLocation("vPosition");
+		var vertexPositionLocation = _material.GetAttribLocation("vPosition");
 		if(vertexPositionLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexPositionLocation);
 			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), 0);
 		}
 
 		// vertex normal
-		var vertexNormalLocation = _material.Shader.GetAttribLocation("vNormal");
+		var vertexNormalLocation = _material.GetAttribLocation("vNormal");
 		if(vertexNormalLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexNormalLocation);
 			GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
 		}
 
 		// vertex tangent
-		var vertexTangentLocation = _material.Shader.GetAttribLocation("vTangent");
+		var vertexTangentLocation = _material.GetAttribLocation("vTangent");
 		if(vertexTangentLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexTangentLocation);
 			GL.VertexAttribPointer(vertexTangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "tangent"));
 		}
 
 		// vertex bitangent
-		var vertexBitangentLocation = _material.Shader.GetAttribLocation("vBitangent");
+		var vertexBitangentLocation = _material.GetAttribLocation("vBitangent");
 		if(vertexBitangentLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexBitangentLocation);
 			GL.VertexAttribPointer(vertexBitangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "bitangent"));
 		}
 
 		// uv0
-		var uv0Location = _material.Shader.GetAttribLocation("vTexCoord0");
+		var uv0Location = _material.GetAttribLocation("vTexCoord0");
 		if(uv0Location >= 0) {
 			GL.EnableVertexAttribArray(uv0Location);
 			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv0"));
 		}
 
 		// uv1
-		var uv1Location = _material.Shader.GetAttribLocation("vTexCoord1");
+		var uv1Location = _material.GetAttribLocation("vTexCoord1");
 		if(uv1Location >= 0) {
 			GL.EnableVertexAttribArray(uv1Location);
 			GL.VertexAttribPointer(uv1Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv1"));
 		}
 
 		// uv2
-		var uv2Location = _material.Shader.GetAttribLocation("vTexCoord2");
+		var uv2Location = _material.GetAttribLocation("vTexCoord2");
 		if(uv2Location >= 0) {
 			GL.EnableVertexAttribArray(uv2Location);
 			GL.VertexAttribPointer(uv2Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv2"));
 		}
 
 		// uv3
-		var uv3Location = _material.Shader.GetAttribLocation("vTexCoord3");
+		var uv3Location = _material.GetAttribLocation("vTexCoord3");
 		if(uv3Location >= 0) {
 			GL.EnableVertexAttribArray(uv3Location);
 			GL.VertexAttribPointer(uv3Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv3"));
 		}
 
 		// vertex color
-		var vertexColorLocation = _material.Shader.GetAttribLocation("vColor");
+		var vertexColorLocation = _material.GetAttribLocation("vColor");
 		if(vertexColorLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexColorLocation);
 			GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "color"));
@@ -142,11 +142,11 @@ public class Mesh {
 		//_shader.Set("tintAmount", tintAmount);
 
 		var model = sceneobject.GlobalTransform;
-		_material.Shader.Set("model", model);
+		_material.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
-		_material.Shader.Set("view", view);
+		_material.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;
-		_material.Shader.Set("projection", proj);
+		_material.Set("projection", proj);
 
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);

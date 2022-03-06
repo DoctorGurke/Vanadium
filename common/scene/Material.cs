@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Vanadium;
@@ -37,28 +38,30 @@ public class Material {
 
 	private static Dictionary<string, Material> PrecachedMaterials = new();
 
-	public static string ErrorMaterial = "materials/error";
+	public static Material ErrorMaterial => Load("materials/error");
 	public bool IsError = false;
 
 	public static Material Load(string path) {
-		path = $"resources/{path}.json";
+		path = $"resources/{path}.vanmat";
 
 		if(PrecachedMaterials.TryGetValue(path, out var material)) {
 			return material;
 		}
 
+		var mat = new Material();
+
 		if(!Json.ReadFromJson(path, out var data)) {
 			Log.Info($"ERROR LOADING MATERIAL {path}! MATERIAL FILE NOT FOUND!");
-			return Load(ErrorMaterial);
+			mat.IsError = true;
+			return mat;
 		}
 		var parameters = JObject.Parse(data);
 
 		if(!parameters.ContainsKey("shader")) {
 			Log.Info($"ERROR LOADING MATERIAL {path}! NO VALID SHADER NAME FOUND!");
-			return Load(ErrorMaterial);
+			mat.IsError = true;
+			return mat;
 		}
-
-		var mat = new Material();
 
 		// our material parameters get loaded into the material by the shader, according to #material macros
 		try {
@@ -67,18 +70,9 @@ public class Material {
 			mat.Shader = shader;
 		} catch {
 			Log.Info($"ERROR LOADING MATERIAL {path}! ERROR BUILDING SHADER!");
-			return Load(ErrorMaterial);
-		}
-		
-
-		Log.Info("material json");
-		foreach(var param in parameters.Properties()) {
-			mat.AddData(param.Name, $"{param.Value}");
-			Log.Info($"{param.Name} = {param.Value}");
-		}
-
-		if(path == ErrorMaterial)
 			mat.IsError = true;
+			return mat;
+		}
 
 		// the shader will have registered the parameter types and data at this point already, so we can parse the actual runtime types here
 		// which then get fed to the shader via Material.Use()
@@ -87,10 +81,124 @@ public class Material {
 		return mat;
 	}
 
+	public int GetAttribLocation(string attribname) {
+		if(IsError) {
+			return ErrorMaterial.Shader.GetAttribLocation(attribname);
+		}
+		return Shader.GetAttribLocation(attribname);
+	}
+
+	/// <summary>
+	/// Set a uniform int on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, bool data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform int on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, int data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform float on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, float data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform int on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, double data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector2 data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector3 data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector4 data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
+	/// <summary>
+	/// Set a uniform Matrix4 on this shader
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	/// <remarks>
+	///   <para>
+	///   The matrix is transposed before being sent to the shader.
+	///   </para>
+	/// </remarks>
+	public void Set(string name, Matrix4 data) {
+		if(IsError)
+			ErrorMaterial.Shader.Set(name, data);
+		else
+			Shader.Set(name, data);
+	}
+
 	/// <summary>
 	/// Use this Material's shader in the current GL context and set all material parameters.
 	/// </summary>
 	public void Use() {
+
+		if(IsError) {
+			ErrorMaterial.Use();
+			return;
+		}
+
 		Shader.Use();
 
 		Shader.Set("curTime", Time.Now);
