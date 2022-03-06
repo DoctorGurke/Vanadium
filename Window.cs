@@ -40,14 +40,14 @@ public class Window : GameWindow {
 		origin.Model = Model.Load("models/icosphere.fbx");
 
 		var sceneObject1 = new SceneObject {
-			Position = Vector3.Right * 3
+			Position = Vector3.Right * 3,
+			Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
 		};
 		sceneObject1.Model = Model.Load("models/suzanne.fbx");
 
 		var sceneObject2 = new SceneObject {
 			Position = Vector3.Up * 5 + Vector3.Right * 3,
 			Scale = 0.5f
-			//Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
 		};
 		sceneObject2.Parent = sceneObject1;
 		sceneObject2.Model = Model.Load("models/fancy.fbx");
@@ -109,7 +109,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("models/tex_test.fbx");
+			ent.Model = Model.Load("models/generic_test.fbx");
 		}
 	}
 

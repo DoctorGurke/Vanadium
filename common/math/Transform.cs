@@ -10,9 +10,9 @@ public struct Transform {
 
 	private Matrix4 GetModelMatrix() {
 		var model = Matrix4.Identity;
+		model *= Matrix4.CreateScale(Scale);
 		model *= Rotation.Matrix;
 		model *= Matrix4.CreateTranslation(Position);
-		model *= Matrix4.CreateScale(Scale);
 
 		return model;
 	}
