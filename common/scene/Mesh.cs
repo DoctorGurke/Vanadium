@@ -37,7 +37,7 @@ public class Mesh {
 	public Mesh(Vertex[] vertices, int[] indices, string material) {
 		_vertices = vertices;
 		_indices = indices;
-		_material = Material.Load(material);
+		_material = Material.Load($"{material}.vanmat");
 		SetupMesh();
 	}
 

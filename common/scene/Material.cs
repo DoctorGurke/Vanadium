@@ -38,11 +38,11 @@ public class Material {
 
 	private static Dictionary<string, Material> PrecachedMaterials = new();
 
-	public static Material ErrorMaterial => Load("materials/error");
+	public static Material ErrorMaterial => Load("materials/error.vanmat");
 	public bool IsError = false;
 
 	public static Material Load(string path) {
-		path = $"resources/{path}.vanmat";
+		path = $"resources/{path}";
 
 		if(PrecachedMaterials.TryGetValue(path, out var material)) {
 			return material;
