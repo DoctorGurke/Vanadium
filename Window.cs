@@ -52,8 +52,6 @@ public class Window : GameWindow {
 		sceneObject2.Parent = sceneObject1;
 		sceneObject2.Model = Model.Load("models/fancy.fbx");
 
-		//model = Model.Load("models/vertex_color_test.fbx");
-
 		// init camera
 		_ = new FirstPersonCamera {
 			Position = Vector3.Backward * 3
@@ -75,8 +73,20 @@ public class Window : GameWindow {
 		SwapBuffers();
 	}
 
+	private TimeSince TimeSinceSecondTick;
+	private int FramesPerSecond;
+	private double FrameTime;
+
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
+
+		FramesPerSecond = (int)(1f / e.Time);
+		FrameTime = e.Time;
+
+		if(TimeSinceSecondTick >= 1) {
+			TimeSinceSecondTick = 0;
+			OnSecondTick();
+		}
 
 		Time.Update((float) e.Time, Timer.ElapsedMilliseconds * 0.001f);
 		Camera.BuildActiveCamera();
@@ -101,6 +111,10 @@ public class Window : GameWindow {
 			};
 			ent.Model = Model.Load("models/generic_test.fbx");
 		}
+	}
+
+	public void OnSecondTick() {
+		Title = $"Vanadium FPS:{FramesPerSecond} FT: {FrameTime:0.####}s";
 	}
 
 	protected override void OnResize(ResizeEventArgs e) {

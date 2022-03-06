@@ -14,11 +14,15 @@ public class Program {
 		// init the settings for our main window
 		var nativeWindowSettings = new NativeWindowSettings() {
 			Size = new Vector2i(1280, 800),
-			Title = "Vanadium"
+			Title = "Vanadium",
+			WindowState = WindowState.Normal,
+			StartFocused = true
 		};
 
 		// init and run our window type
 		using(var window = new Window(GameWindowSettings.Default, nativeWindowSettings)) {
+			window.CenterWindow();
+			window.VSync = VSyncMode.On;
 			window.Run();
 		}
 	}
