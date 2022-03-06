@@ -77,24 +77,32 @@ public class Model {
 
 		for(int v = 0; v < mesh.VertexCount; v++) {
 			Mesh.Vertex vertex;
-			Vector2 uv = new(0, 0);
+			Vector2 uv0 = new();
+			Vector2 uv1 = new();
+			Vector2 uv2 = new();
+			Vector2 uv3 = new();
+
+			if(mesh.TextureCoordinateChannelCount > 0) {
+				uv0 = new(mesh.TextureCoordinateChannels[0][v].X, mesh.TextureCoordinateChannels[0][v].Y);
+			}
+			if(mesh.TextureCoordinateChannelCount > 1) {
+				uv1 = new(mesh.TextureCoordinateChannels[1][v].X, mesh.TextureCoordinateChannels[1][v].Y);
+			}
+			if(mesh.TextureCoordinateChannelCount > 2) {
+				uv2 = new(mesh.TextureCoordinateChannels[2][v].X, mesh.TextureCoordinateChannels[2][v].Y);
+			}
+			if(mesh.TextureCoordinateChannelCount > 3) {
+				uv3 = new(mesh.TextureCoordinateChannels[3][v].X, mesh.TextureCoordinateChannels[3][v].Y);
+			}
+
 			Vector3 color = new();
-
-			var pos = mesh.Vertices[v];
-			var normal = mesh.Normals[v];
-			var tangent = mesh.Tangents[v];
-			var bitangent = mesh.BiTangents[v];
-
-			uv.X = mesh.TextureCoordinateChannels[0][v].X;
-			uv.Y = mesh.TextureCoordinateChannels[0][v].Y;
-
-			if(mesh.VertexColorChannelCount >= 1) {
+			if(mesh.VertexColorChannelCount > 0) {
 				color.x = mesh.VertexColorChannels[0][v].R;
 				color.y = mesh.VertexColorChannels[0][v].G;
 				color.z = mesh.VertexColorChannels[0][v].B;
 			}
 
-			vertex = new Mesh.Vertex(pos, normal, tangent, bitangent, uv, color);
+			vertex = new Mesh.Vertex(mesh.Vertices[v], mesh.Normals[v], mesh.Tangents[v], mesh.BiTangents[v], uv0, uv1, uv2, uv3, color);
 			vertices[v] = vertex;
 		}
 

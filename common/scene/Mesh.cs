@@ -15,15 +15,21 @@ public class Mesh {
 		public Vector3 normal;
 		public Vector3 tangent;
 		public Vector3 bitangent;
-		public Vector2 uv;
+		public Vector2 uv0;
+		public Vector2 uv1;
+		public Vector2 uv2;
+		public Vector2 uv3;
 		public Vector3 color;
 
-		public Vertex(Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 uv, Vector3 color) {
+		public Vertex(Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector3 color) {
 			this.position = position;
 			this.normal = normal;
 			this.tangent = tangent;
 			this.bitangent = bitangent;
-			this.uv = uv;
+			this.uv0 = uv0;
+			this.uv1 = uv1;
+			this.uv2 = uv2;
+			this.uv3 = uv3;
 			this.color = color;
 		}
 	}
@@ -83,7 +89,28 @@ public class Mesh {
 		var uv0Location = _material.Shader.GetAttribLocation("vTexCoord0");
 		if(uv0Location >= 0) {
 			GL.EnableVertexAttribArray(uv0Location);
-			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv"));
+			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv0"));
+		}
+
+		// uv1
+		var uv1Location = _material.Shader.GetAttribLocation("vTexCoord1");
+		if(uv1Location >= 0) {
+			GL.EnableVertexAttribArray(uv1Location);
+			GL.VertexAttribPointer(uv1Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv1"));
+		}
+
+		// uv2
+		var uv2Location = _material.Shader.GetAttribLocation("vTexCoord2");
+		if(uv2Location >= 0) {
+			GL.EnableVertexAttribArray(uv2Location);
+			GL.VertexAttribPointer(uv2Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv2"));
+		}
+
+		// uv3
+		var uv3Location = _material.Shader.GetAttribLocation("vTexCoord3");
+		if(uv3Location >= 0) {
+			GL.EnableVertexAttribArray(uv3Location);
+			GL.VertexAttribPointer(uv3Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv3"));
 		}
 
 		// vertex color
