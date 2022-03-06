@@ -24,20 +24,20 @@ public class Mesh {
 		}
 	}
 
-	public Mesh(Vertex[] vertices, int[] indices) {
+	public Mesh(Vertex[] vertices, int[] indices, string material) {
 		_vertices = vertices;
 		_indices = indices;
+		_material = Material.Load(material);
 		SetupMesh();
 	}
 
 	private int vao, vbo, ebo;
 
-	private Shader _shader;
+	private Material _material;
 
 	private void SetupMesh() {
 		// use shader first to get attributes
-		_shader = new Shader("shaders/generic.vert", "shaders/generic.frag");
-		_shader.Use();
+		_material.Use();
 
 		// create, bind and populate vbo
 		vbo = GL.GenBuffer();
@@ -48,28 +48,28 @@ public class Mesh {
 		GL.BindVertexArray(vao);
 
 		// vertex positions
-		var vertexPositionLocation = _shader.GetAttribLocation("vPosition");
+		var vertexPositionLocation = _material.Shader.GetAttribLocation("vPosition");
 		if(vertexPositionLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexPositionLocation);
 			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), 0);
 		}
 
 		// vertex normal
-		var vertexNormalLocation = _shader.GetAttribLocation("vNormal");
+		var vertexNormalLocation = _material.Shader.GetAttribLocation("vNormal");
 		if(vertexNormalLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexNormalLocation);
 			GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
 		}
 
 		// uv0
-		var uv0Location = _shader.GetAttribLocation("vTexCoord0");
+		var uv0Location = _material.Shader.GetAttribLocation("vTexCoord0");
 		if(uv0Location >= 0) {
 			GL.EnableVertexAttribArray(uv0Location);
 			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv"));
 		}
 
 		// vertex color
-		var vertexColorLocation = _shader.GetAttribLocation("vColor");
+		var vertexColorLocation = _material.Shader.GetAttribLocation("vColor");
 		if(vertexColorLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexColorLocation);
 			GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "color"));
@@ -84,26 +84,12 @@ public class Mesh {
 
 		_timer = new Stopwatch();
 		_timer.Start();
-
-		_texture0 = Texture.LoadFromFile("resources/textures/rudy.jpg");
-		_texture0.Use(TextureUnit.Texture0);
-
-		_texture1 = Texture.LoadFromFile("resources/textures/mask_debug.jpg");
-		_texture1.Use(TextureUnit.Texture1);
-
-		_shader.Set("texture0", 0);
-		_shader.Set("texture1", 1);
 	}
 
 	private Stopwatch _timer;
 
-	private Texture _texture0;
-	private Texture _texture1;
-
 	public void Draw(SceneObject sceneobject) {
-		_texture0.Use(TextureUnit.Texture0);
-		_texture1.Use(TextureUnit.Texture1);
-		_shader.Use();
+		_material.Use();
 
 		double time = _timer.Elapsed.TotalSeconds;
 		//float tintAmount = ((float)Math.Sin(time) + 1) / 2;
@@ -111,11 +97,11 @@ public class Mesh {
 		//_shader.Set("tintAmount", tintAmount);
 
 		var model = sceneobject.GlobalTransform;
-		_shader.Set("model", model);
+		_material.Shader.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
-		_shader.Set("view", view);
+		_material.Shader.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;
-		_shader.Set("projection", proj);
+		_material.Shader.Set("projection", proj);
 
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);

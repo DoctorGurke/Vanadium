@@ -1,12 +1,12 @@
-﻿#version 330 core
+﻿#version 400 core
 
 #include shaders/common/common.frag
 
-uniform float tintAmount;
+#material sampler2D tex
 
 void main()
 {
-    vec4 col = texture(texture0, fTexCoord0);
-    //float tintmask = texture(texture1, fTexCoord0).r;
-    gl_Color = vec4(mix(col.rgb, fColor, 1), 1.0);
+    vec3 col = tex2D(tex, fTexCoord0).rgb;
+    float mask = tex2D(tintMask, fTexCoord0).r;
+    gl_Color = vec4(mix(col, tintColor, tintAmount * mask), 1.0);
 }

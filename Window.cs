@@ -24,7 +24,7 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DebugOutput);
 		GL.Enable(EnableCap.DebugOutputSynchronous);
 
-		GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		GL.Enable(EnableCap.CullFace);
 		GL.CullFace(CullFaceMode.Back);
@@ -32,19 +32,17 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
-		Model.Precache("resources/models/error.fbx");
-
-		Material.Load("resources/materials/test_mat.json");
+		Model.Precache("models/error.fbx");
 
 		var origin = new SceneObject {
 			Scale = 0.1f
 		};
-		origin.Model = Model.Load("resources/models/icosphere.fbx");
+		origin.Model = Model.Load("models/icosphere.fbx");
 
 		var sceneObject1 = new SceneObject {
 			Position = Vector3.Right * 3
 		};
-		sceneObject1.Model = Model.Load("resources/models/icosphere.fbx");
+		sceneObject1.Model = Model.Load("models/icosphere.fbx");
 
 		var sceneObject2 = new SceneObject {
 			Position = Vector3.Up * 5 + Vector3.Right * 3,
@@ -52,9 +50,9 @@ public class Window : GameWindow {
 			//Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
 		};
 		sceneObject2.Parent = sceneObject1;
-		sceneObject2.Model = Model.Load("resources/models/vertex_color_test.fbx");
+		sceneObject2.Model = Model.Load("models/fancy.fbx");
 
-		//model = Model.Load("resources/models/vertex_color_test.fbx");
+		//model = Model.Load("models/vertex_color_test.fbx");
 
 		// init camera
 		_ = new FirstPersonCamera {
@@ -101,7 +99,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("resources/models/asd.fbx");
+			ent.Model = Model.Load("models/tex_test.fbx");
 		}
 	}
 

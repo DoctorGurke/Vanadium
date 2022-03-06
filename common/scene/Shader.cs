@@ -10,17 +10,17 @@ public class Shader {
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
-	public static string Load(string path) {
+	public static string Load(string path, Material material) {
 		var data = File.ReadAllText(path);
 
 		// handle any includes the shader file might have
-		data = HandleIncludes(data, path);
-		data = HandleMaterial(data, path);
+		data = HandleIncludes(data, path, material);
+		data = HandleMaterial(data, path, material);
 
 		return data;
 	}
 
-	private static string HandleIncludes(string data, string path) {
+	private static string HandleIncludes(string data, string path, Material mat) {
 		Debug.WriteLine($"handling includes for {path}");
 		// scan data for any #include macros
 		var regex = @"#include[\s](.+)";
@@ -38,14 +38,14 @@ public class Shader {
 				continue;
 			}
 
-			var includeData = Load(includePath);
+			var includeData = Load(includePath, mat);
 			data = data.Replace(matchstring, includeData);
 		}
 
 		return data;
 	}
 
-	private static string HandleMaterial(string data, string path) {
+	private static string HandleMaterial(string data, string path, Material material) {
 		Debug.WriteLine($"handling material for {path}");
 
 		// scan data for any #material macros
@@ -60,21 +60,22 @@ public class Shader {
 			var field = $"uniform {type} {name};";
 
 			Debug.WriteLine($"material found ({field})");
+			material.AddParameter(type, name);
 
 			data = data.Replace(matchstring, field);
 		}
 
 		return data;
 	}
-	public Shader(string vertPath, string fragPath) {
+	public Shader(string vertPath, string fragPath, Material material) {
 		// load vertex shader and compile
-		var shaderSource = Load(vertPath);
+		var shaderSource = Load(vertPath, material);
 		var vertexShader = GL.CreateShader(ShaderType.VertexShader);
 		GL.ShaderSource(vertexShader, shaderSource);
 		CompileShader(vertexShader);
 
 		// load fragment shader and compile
-		shaderSource = Load(fragPath);
+		shaderSource = Load(fragPath, material);
 		var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
 		GL.ShaderSource(fragmentShader, shaderSource);
 		CompileShader(fragmentShader);
@@ -156,13 +157,22 @@ public class Shader {
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
+	public void Set(string name, bool data) {
+		Set(name, data ? 1 : 0);
+	}
+
+	/// <summary>
+	/// Set a uniform int on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
 	public void Set(string name, int data) {
 		if(UniformLocations.TryGetValue(name, out var location)) {
 			GL.UseProgram(Handle);
 			GL.Uniform1(location, data);
 			return;
 		}
-		Debug.WriteLine($"Error setting int uniform {name} | {data}!");
+		//Debug.WriteLine($"Error setting int uniform {name} | {data}!");
 	}
 
 	/// <summary>
@@ -176,7 +186,35 @@ public class Shader {
 			GL.Uniform1(location, data);
 			return;
 		}
-		Debug.WriteLine($"Error setting float uniform {name} | {data}!");
+		//Debug.WriteLine($"Error setting float uniform {name} | {data}!");
+	}
+
+	/// <summary>
+	/// Set a uniform int on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, double data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform1(location, data);
+			return;
+		}
+		//Debug.WriteLine($"Error setting int uniform {name} | {data}!");
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector2 data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform2(location, data);
+			return;
+		}
+		//Debug.WriteLine($"Error setting vec3 uniform {name} | {data}!");
 	}
 
 	/// <summary>
@@ -190,7 +228,21 @@ public class Shader {
 			GL.Uniform3(location, data);
 			return;
 		}
-		Debug.WriteLine($"Error setting vec3 uniform {name} | {data}!");
+		//Debug.WriteLine($"Error setting vec3 uniform {name} | {data}!");
+	}
+
+	/// <summary>
+	/// Set a uniform Vector3 on this shader.
+	/// </summary>
+	/// <param name="name">The name of the uniform</param>
+	/// <param name="data">The data to set</param>
+	public void Set(string name, Vector4 data) {
+		if(UniformLocations.TryGetValue(name, out var location)) {
+			GL.UseProgram(Handle);
+			GL.Uniform4(location, data);
+			return;
+		}
+		//Debug.WriteLine($"Error setting vec3 uniform {name} | {data}!");
 	}
 
 	/// <summary>
@@ -209,6 +261,6 @@ public class Shader {
 			GL.UniformMatrix4(location, true, ref data);
 			return;
 		}
-		Debug.WriteLine($"Error setting mat4 uniform {name} | {data}!");
+		//Debug.WriteLine($"Error setting mat4 uniform {name} | {data}!");
 	}
 }

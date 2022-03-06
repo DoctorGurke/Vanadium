@@ -10,7 +10,7 @@ public class Model {
 
 	public bool IsError = false;
 
-	public static string ErrorModel = "resources/models/error.fbx";
+	public static string ErrorModel = "models/error.fbx";
 
 	private static Dictionary<string, Model> PrecachedModels = new();
 
@@ -19,6 +19,7 @@ public class Model {
 	}
 
 	public static Model Load(string path) {
+		path = $"resources/{path}";
 
 		if(PrecachedModels.TryGetValue(path, out var mdl)) {
 			return mdl;
@@ -36,6 +37,7 @@ public class Model {
 			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
 			return Load(ErrorModel);
 		}
+
 		if(scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null) {
 			Debug.WriteLine("ASSIMP IMPORT ERROR");
 			return Load(ErrorModel);
@@ -110,8 +112,8 @@ public class Model {
 			}
 		}
 
-		Debug.WriteLine($"new mesh v:{vertices.Length} i:{indices.Length} m:{mesh.MaterialIndex} sm:{scene.MaterialCount}");
-		Mesh fmesh = new Mesh(vertices, indices);
+		Debug.WriteLine($"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}");
+		Mesh fmesh = new Mesh(vertices, indices, scene.Materials[mesh.MaterialIndex].Name);
 		fmesh.Model = this;
 		return fmesh;
 	}

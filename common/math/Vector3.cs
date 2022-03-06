@@ -144,4 +144,30 @@ public struct Vector3 : IEquatable<Vector3> {
 		return $"{x:0.####},{y:0.####},{z:0.####}";
 	}
 
+	/// <summary>
+	/// Given a string, try to convert this into a vector.Example input formats that work would be "1,1,1", "1;1;1", "[1 1 1]".
+	/// This handles a bunch of different seperators( ' ', ',', ';', '\n', '\r' ).
+	/// It also trims surrounding characters ('[', ']', ' ', '\n', '\r', '\t', '"').
+	/// </summary>
+	/// <param name="str">The string to parse</param>
+	/// <param name="parsed">The parsed vec3</param>
+	/// <returns>True if it parsed successfully, false otherwise</returns>
+	public static bool TryParse(string str, out Vector3 parsed) {
+		str = str.Trim('[', ']', ' ', '\n', '\r', '\t', '"');
+		string[] array = str.Split(new char[5]
+		{
+			' ',
+			',',
+			';',
+			'\n',
+			'\r'
+		}, StringSplitOptions.RemoveEmptyEntries);
+		if(array.Length != 3) {
+			parsed = Zero;
+			return false;
+		}
+
+		parsed = new Vector3(array[0].ToFloat(), array[1].ToFloat(), array[2].ToFloat());
+		return true;
+	}
 }

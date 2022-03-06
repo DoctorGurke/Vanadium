@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using System.Text.Json;
 
 namespace Vanadium;
@@ -33,8 +35,107 @@ public class Material {
 	/// </summary>
 	public Dictionary<string, string> MaterialData { get; private set; } = new();
 
+	private static Dictionary<string, Material> PrecachedMaterials = new();
+
+	public static string ErrorMaterial = "materials/error";
+	public bool IsError = false;
+
+	public static Material Load(string path) {
+		path = $"resources/{path}.json";
+
+		if(PrecachedMaterials.TryGetValue(path, out var material)) {
+			return material;
+		}
+
+		if(!Json.ReadFromJson(path, out var data)) {
+			Log.Info($"ERROR LOADING MATERIAL {path}! MATERIAL FILE NOT FOUND!");
+			return Load(ErrorMaterial);
+		}
+		var parameters = JObject.Parse(data);
+
+		if(!parameters.ContainsKey("shader")) {
+			Log.Info($"ERROR LOADING MATERIAL {path}! NO VALID SHADER NAME FOUND!");
+			return Load(ErrorMaterial);
+		}
+
+		var mat = new Material();
+
+		// our material parameters get loaded into the material by the shader, according to #material macros
+		var shadername = parameters["shader"];
+		var shader = new Shader($"{shadername}.vert", $"{shadername}.frag", mat);
+		mat.Shader = shader;
+
+		Log.Info("material json");
+		foreach(var param in parameters.Properties()) {
+			mat.AddData(param.Name, $"{param.Value}");
+			Log.Info($"{param.Name} = {param.Value}");
+		}
+
+		if(path == ErrorMaterial)
+			mat.IsError = true;
+
+		// the shader will have registered the parameter types and data at this point already, so we can parse the actual runtime types here
+		// which then get fed to the shader via Material.Use()
+		mat.SerializeMaterialParameters();
+		PrecachedMaterials.Add(path, mat);
+		return mat;
+	}
+
+	/// <summary>
+	/// Use this Material's shader in the current GL context and set all material parameters.
+	/// </summary>
+	public void Use() {
+		Shader.Use();
+
+		Shader.Set("curTime", Time.Now);
+
+		foreach(var data in BooleanData) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in IntegerData) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in UnsignedIntegerData) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in FloatData) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in DoubleData) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in Vector2Data) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in Vector3Data) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in Vector4Data) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		foreach(var data in Matrix4Data) {
+			Shader.Set(data.Key, data.Value);
+		}
+
+		for(int i = 0; i < TextureData.Count; i++) {
+			var data = TextureData.ElementAtOrDefault(i);
+			var tex = Texture.Load(data.Value);
+			tex.Use(TextureUnit.Texture0 + i);
+			Shader.Set(data.Key, i);
+		}
+	}
+
 	// this is kinda dumb
 	public void AddParameter(string type, string name) {
+		Log.Info($"adding parameter {type} {name}");
 		MaterialParamType paramtype = MaterialParamType.Unset;
 		switch(type) {
 			case "bool":
@@ -72,21 +173,96 @@ public class Material {
 	}
 
 	public void AddData(string name, string data) {
+		Log.Info($"adding material data {name} {data}");
 		MaterialData.Add(name, data);
 	}
 
-	public static void Load(string path) {
-		var data = Json.ReadFromJson(path);
-		var parameters = JObject.Parse(data);
-
-		if(!parameters.ContainsKey("shader")) {
-			Debug.WriteLine($"ERROR LOADING MATERIAL {path}! NO VALID SHADER NAME FOUND!");
-			return; // TODO error material
-		}
-		
-		Debug.WriteLine("material json--------------------");
-		foreach(var param in parameters.Properties()) {
-			Debug.WriteLine($"{param.Name} = {param.Value}");
+	// this is a bit dumb
+	public void SerializeMaterialParameters() {
+		Log.Info($"Serializing material parameters");
+		foreach(var param in MaterialData) {
+			Log.Info($"serializing for {param.Key} {param.Value}");
+			if(MaterialParameters.TryGetValue(param.Key, out var type)) {
+				switch(type) {
+					case MaterialParamType.Unset:
+						Log.Info("unset data!");
+						break;
+					case MaterialParamType.Boolean:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(bool.TryParse(param.Value, out var bdata)) {
+							BooleanData.Add(param.Key, bdata);
+						}
+						break;
+					case MaterialParamType.Integer:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(int.TryParse(param.Value, out var idata)) {
+							IntegerData.Add(param.Key, idata);
+						}
+						break;
+					case MaterialParamType.UnsignedInteger:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(uint.TryParse(param.Value, out var uidata)) {
+							UnsignedIntegerData.Add(param.Key, uidata);
+						}
+						break;
+					case MaterialParamType.Float:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(float.TryParse(param.Value, out var fdata)) {
+							FloatData.Add(param.Key, fdata);
+						}
+						break;
+					case MaterialParamType.Double:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(double.TryParse(param.Value, out var ddata)) {
+							DoubleData.Add(param.Key, ddata);
+						}
+						break;
+					case MaterialParamType.Vector2:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						// TODO make wrapper for vec2 and add TryParse directly to type
+						if(Parse.TryParse(param.Value, out Vector2 vec2data)) {
+							Vector2Data.Add(param.Key, vec2data);
+						}
+						break;
+					case MaterialParamType.Vector3:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						if(Vector3.TryParse(param.Value, out var vec3data)) {
+							Vector3Data.Add(param.Key, vec3data);
+						}
+						break;
+					case MaterialParamType.Vector4:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						// TODO make wrapper for vec4 and add TryParse directly to type
+						if(Parse.TryParse(param.Value, out Vector4 vec4data)) {
+							Vector4Data.Add(param.Key, vec4data);
+						}
+						break;
+					case MaterialParamType.Matrix4:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						// TODO make wrapper for mat4 and add TryParse directly to type (?)
+						if(Parse.TryParse(param.Value, out Matrix4 mat4data)) {
+							Matrix4Data.Add(param.Key, mat4data);
+						}
+						break;
+					case MaterialParamType.Sampler2D:
+						Log.Info($"parsing material data {param.Key} {param.Value}");
+						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
+						TextureData.Add(param.Key, param.Value);
+						break;
+				}
+			}
 		}
 	}
+
+	// this is dumb
+	private Dictionary<string, bool> BooleanData = new();
+	private Dictionary<string, int> IntegerData = new();
+	private Dictionary<string, uint> UnsignedIntegerData = new();
+	private Dictionary<string, float> FloatData = new();
+	private Dictionary<string, double> DoubleData = new();
+	private Dictionary<string, Vector2> Vector2Data = new();
+	private Dictionary<string, Vector3> Vector3Data = new();
+	private Dictionary<string, Vector4> Vector4Data = new();
+	private Dictionary<string, Matrix4> Matrix4Data = new();
+	private Dictionary<string, string> TextureData = new(); // just keep the path, we load it from the Texture class
 }
