@@ -21,7 +21,7 @@ public class Shader {
 	}
 
 	private static string HandleIncludes(string data, string path, Material mat) {
-		Debug.WriteLine($"handling includes for {path}");
+		Log.Info($"handling includes for {path}");
 		// scan data for any #include macros
 		var regex = @"#include[\s](.+)";
 		var includeMatches = Regex.Matches(data, regex);
@@ -29,11 +29,11 @@ public class Shader {
 		foreach(Match match in includeMatches) {
 			var matchstring = $"{match}".Clean();
 			var includePath = $"{match.Groups[1]}".Clean();
-			Debug.WriteLine($"include found ({includePath})");
+			Log.Info($"include found ({includePath})");
 
 			// make sure a file isn't trying to include itself
 			if(includePath == path) {
-				Debug.WriteLine($"Recursive include for {includePath} found! Defusing...");
+				Log.Info($"Recursive include for {includePath} found! Defusing...");
 				data.Replace(matchstring, "");
 				continue;
 			}
@@ -46,7 +46,7 @@ public class Shader {
 	}
 
 	private static string HandleMaterial(string data, string path, Material material) {
-		Debug.WriteLine($"handling material for {path}");
+		Log.Info($"handling material for {path}");
 
 		// scan data for any #material macros
 		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|vec2|vec3|vec4|mat4)\W*[\s](.+)";
@@ -59,7 +59,7 @@ public class Shader {
 
 			var field = $"uniform {type} {name};";
 
-			Debug.WriteLine($"material found ({field})");
+			Log.Info($"material found ({field})");
 			material.AddParameter(type, name);
 
 			data = data.Replace(matchstring, field);

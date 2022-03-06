@@ -25,7 +25,7 @@ public class Model {
 			return mdl;
 		}
 
-		Debug.WriteLine($"loading model: {path}");
+		Log.Info($"loading model: {path}");
 		var fileName = Path.Combine($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}", path);
 
 		AssimpContext importer = new AssimpContext();
@@ -34,12 +34,12 @@ public class Model {
 		try {
 			scene = importer.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate);
 		} catch(FileNotFoundException ex) {
-			Debug.WriteLine($"ERROR IMPORTING MODEL {fileName} ({ex})");
+			Log.Info($"ERROR IMPORTING MODEL {fileName} ({ex})");
 			return Load(ErrorModel);
 		}
 
 		if(scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null) {
-			Debug.WriteLine("ASSIMP IMPORT ERROR");
+			Log.Info("ASSIMP IMPORT ERROR");
 			return Load(ErrorModel);
 		}
 
@@ -51,7 +51,7 @@ public class Model {
 		if(path == ErrorModel)
 			model.IsError = true;
 
-		Debug.WriteLine($"finished loading model: {path}");
+		Log.Info($"finished loading model: {path}");
 		return model;
 	}
 
@@ -117,7 +117,7 @@ public class Model {
 			vert.tangent.Normalize();
 		}
 
-		Debug.WriteLine($"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}");
+		Log.Info($"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}");
 		Mesh fmesh = new Mesh(vertices, indices, scene.Materials[mesh.MaterialIndex].Name);
 		fmesh.Model = this;
 		return fmesh;
