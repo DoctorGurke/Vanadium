@@ -29,7 +29,7 @@ public struct TimeSince : IEquatable<TimeSince> {
 		return !(left == right);
 	}
 
-	public override bool Equals(object obj) {
+	public override bool Equals(object? obj) {
 		if(obj is TimeSince) {
 			TimeSince o = (TimeSince)obj;
 			return Equals(o);
