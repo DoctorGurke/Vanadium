@@ -34,27 +34,18 @@ public class Window : GameWindow {
 
 		Model.Precache("models/error.fbx");
 
-		var origin = new SceneObject {
-			Scale = 0.1f
+		new SceneObject {
+			Model = Model.Load("models/brickwall.fbx"),
+			Position = Vector3.Down
 		};
-		origin.Model = Model.Load("models/icosphere.fbx");
 
-		var sceneObject1 = new SceneObject {
-			Position = Vector3.Right * 3,
-			Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
+		new SceneObject {
+			Model = Model.Load("models/axis.fbx")
 		};
-		sceneObject1.Model = Model.Load("models/suzanne.fbx");
-
-		var sceneObject2 = new SceneObject {
-			Position = Vector3.Up * 5 + Vector3.Right * 3,
-			Scale = 0.5f
-		};
-		sceneObject2.Parent = sceneObject1;
-		sceneObject2.Model = Model.Load("models/fancy.fbx");
 
 		// init camera
 		_ = new FirstPersonCamera {
-			Position = Vector3.Backward * 3
+			Position = Vector3.Backward * 3 + Vector3.Up * 1 + Vector3.Right
 		};
 
 		CursorGrabbed = true;
