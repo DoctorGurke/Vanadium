@@ -12,6 +12,6 @@ in vec3 fVertColor;
 
 out vec4 gl_Color;
 
-#material vec3 tintColor;
-#material float tintAmount;
-#material sampler2D tintMask;
+#material vec3 tintColor
+#material float tintAmount
+#material sampler2D tintMask
