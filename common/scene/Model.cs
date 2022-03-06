@@ -80,7 +80,7 @@ public class Model {
 			Vector3 pos = new();
 			Vector3 normal = new();
 			Vector2 uv = new(0, 0);
-			Vector3 color = new(1.0f, 1.0f, 1.0f);
+			Vector3 color = new();
 
 			pos.x = mesh.Vertices[v].X;
 			pos.y = mesh.Vertices[v].Y;
