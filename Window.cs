@@ -34,6 +34,8 @@ public class Window : GameWindow {
 
 		Model.Precache("models/error.fbx");
 
+		Skybox.Load("materials/skybox/skybox01.vanmat");
+
 		new SceneObject {
 			Model = Model.Load("models/brickwall.fbx"),
 			Position = Vector3.Down
@@ -55,11 +57,17 @@ public class Window : GameWindow {
 	protected override void OnRenderFrame(FrameEventArgs e) {
 		base.OnRenderFrame(e);
 
-		//var fps = (int)(1f / e.Time);
+		// reset depth state
+		GL.Enable(EnableCap.DepthTest);
+		GL.DepthFunc(DepthFunction.Less);
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+		// draw scene graph
 		SceneWorld.Draw();
+
+		// draw skybox last
+		Skybox.ActiveSkybox.Draw();
 
 		SwapBuffers();
 	}

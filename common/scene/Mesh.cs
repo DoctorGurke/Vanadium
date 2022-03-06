@@ -136,11 +136,6 @@ public class Mesh {
 	public void Draw(SceneObject sceneobject) {
 		_material.Use();
 
-		double time = _timer.Elapsed.TotalSeconds;
-		//float tintAmount = ((float)Math.Sin(time) + 1) / 2;
-
-		//_shader.Set("tintAmount", tintAmount);
-
 		var model = sceneobject.GlobalTransform;
 		_material.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;

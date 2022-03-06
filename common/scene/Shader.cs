@@ -49,7 +49,7 @@ public class Shader {
 		Log.Info($"handling material for {path}");
 
 		// scan data for any #material macros
-		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|vec2|vec3|vec4|mat4)\W*[\s](.+)";
+		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|samplerCube|vec2|vec3|vec4|mat4)\W*[\s](.+)";
 		var includeMatches = Regex.Matches(data, regex);
 
 		foreach(Match match in includeMatches) {
