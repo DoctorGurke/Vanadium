@@ -77,23 +77,16 @@ public class Model {
 
 		for(int v = 0; v < mesh.VertexCount; v++) {
 			Mesh.Vertex vertex;
-			Vector3 pos = new();
-			Vector3 normal = new();
 			Vector2 uv = new(0, 0);
 			Vector3 color = new();
 
-			pos.x = mesh.Vertices[v].X;
-			pos.y = mesh.Vertices[v].Y;
-			pos.z = mesh.Vertices[v].Z;
+			var pos = mesh.Vertices[v];
+			var normal = mesh.Normals[v];
+			var tangent = mesh.Tangents[v];
+			var bitangent = mesh.BiTangents[v];
 
-			normal.x = mesh.Normals[v].X;
-			normal.y = mesh.Normals[v].Y;
-			normal.z = mesh.Normals[v].Z;
-
-			if(mesh.TextureCoordinateChannelCount >= 1) {
-				uv.X = mesh.TextureCoordinateChannels[0][v].X;
-				uv.Y = mesh.TextureCoordinateChannels[0][v].Y;
-			}
+			uv.X = mesh.TextureCoordinateChannels[0][v].X;
+			uv.Y = mesh.TextureCoordinateChannels[0][v].Y;
 
 			if(mesh.VertexColorChannelCount >= 1) {
 				color.x = mesh.VertexColorChannels[0][v].R;
@@ -101,15 +94,19 @@ public class Model {
 				color.z = mesh.VertexColorChannels[0][v].B;
 			}
 
-			vertex = new Mesh.Vertex(pos, normal, uv, color);
+			vertex = new Mesh.Vertex(pos, normal, tangent, bitangent, uv, color);
 			vertices[v] = vertex;
 		}
 
-		for(int f = 0; f < mesh.FaceCount; f++) {
-			Face face = mesh.Faces[f];
-			for(int i = 0; i < face.IndexCount; i++) {
-				indices[f * 3 + i] = face.Indices[i];
+		for(int fa = 0; fa < mesh.FaceCount; fa++) {
+			Face face = mesh.Faces[fa];
+			for(int ind = 0; ind < face.IndexCount; ind++) {
+				indices[fa * 3 + ind] = face.Indices[ind];
 			}
+		}
+
+		foreach(var vert in vertices.Reverse()) {
+			vert.tangent.Normalize();
 		}
 
 		Debug.WriteLine($"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}");

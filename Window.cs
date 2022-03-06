@@ -42,7 +42,7 @@ public class Window : GameWindow {
 		var sceneObject1 = new SceneObject {
 			Position = Vector3.Right * 3
 		};
-		sceneObject1.Model = Model.Load("models/icosphere.fbx");
+		sceneObject1.Model = Model.Load("models/suzanne.fbx");
 
 		var sceneObject2 = new SceneObject {
 			Position = Vector3.Up * 5 + Vector3.Right * 3,
@@ -99,7 +99,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("models/tex_test.fbx");
+			ent.Model = Model.Load("models/generic_test.fbx");
 		}
 	}
 

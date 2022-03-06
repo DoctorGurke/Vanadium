@@ -54,6 +54,9 @@ public struct Vector3 : IEquatable<Vector3> {
 	public readonly float LengthSquared => _vec.LengthSquared;
 
 	public readonly Vector3 Normal => _vec.Normalized();
+	public void Normalize() {
+		_vec.Normalize();
+	}
 
 	public Vector3(float x, float y, float z) {
 		_vec = new OpenTK.Mathematics.Vector3(x, y, z);
@@ -70,6 +73,13 @@ public struct Vector3 : IEquatable<Vector3> {
 	}
 	public static implicit operator OpenTK.Mathematics.Vector3(Vector3 value) {
 		return new OpenTK.Mathematics.Vector3(value.x, value.y, value.z);
+	}
+
+	public static implicit operator Vector3(Assimp.Vector3D value) {
+		return new Vector3(value.X, value.Y, value.Z);
+	}
+	public static implicit operator Assimp.Vector3D(Vector3 value) {
+		return new Assimp.Vector3D(value.x, value.y, value.z);
 	}
 
 	public static Vector3 operator +(Vector3 c1, Vector3 c2) {

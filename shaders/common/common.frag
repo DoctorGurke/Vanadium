@@ -2,6 +2,8 @@
 
 in vec3 fPosition;
 in vec3 fNormal;
+in vec3 fTangent;
+in vec3 fBitangent;
 in vec2 fTexCoord0;
 in vec3 fVertColor;
 

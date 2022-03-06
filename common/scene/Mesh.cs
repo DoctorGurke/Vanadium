@@ -13,12 +13,16 @@ public class Mesh {
 	public struct Vertex {
 		public Vector3 position;
 		public Vector3 normal;
+		public Vector3 tangent;
+		public Vector3 bitangent;
 		public Vector2 uv;
 		public Vector3 color;
 
-		public Vertex(Vector3 position, Vector3 normal, Vector2 uv, Vector3 color) {
+		public Vertex(Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 uv, Vector3 color) {
 			this.position = position;
 			this.normal = normal;
+			this.tangent = tangent;
+			this.bitangent = bitangent;
 			this.uv = uv;
 			this.color = color;
 		}
@@ -59,6 +63,20 @@ public class Mesh {
 		if(vertexNormalLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexNormalLocation);
 			GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
+		}
+
+		// vertex tangent
+		var vertexTangentLocation = _material.Shader.GetAttribLocation("vTangent");
+		if(vertexTangentLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexTangentLocation);
+			GL.VertexAttribPointer(vertexTangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "tangent"));
+		}
+
+		// vertex bitangent
+		var vertexBitangentLocation = _material.Shader.GetAttribLocation("vBitangent");
+		if(vertexBitangentLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexBitangentLocation);
+			GL.VertexAttribPointer(vertexBitangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "bitangent"));
 		}
 
 		// uv0
