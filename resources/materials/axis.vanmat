@@ -1,0 +1,4 @@
+{
+	"shader": "shaders/generic",
+	"tex": "textures/axis.png"
+}
