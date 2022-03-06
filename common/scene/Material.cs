@@ -61,9 +61,15 @@ public class Material {
 		var mat = new Material();
 
 		// our material parameters get loaded into the material by the shader, according to #material macros
-		var shadername = parameters["shader"];
-		var shader = new Shader($"{shadername}.vert", $"{shadername}.frag", mat);
-		mat.Shader = shader;
+		try {
+			var shadername = parameters["shader"];
+			var shader = new Shader($"{shadername}.vert", $"{shadername}.frag", mat);
+			mat.Shader = shader;
+		} catch {
+			Log.Info($"ERROR LOADING MATERIAL {path}! ERROR BUILDING SHADER!");
+			return Load(ErrorMaterial);
+		}
+		
 
 		Log.Info("material json");
 		foreach(var param in parameters.Properties()) {
