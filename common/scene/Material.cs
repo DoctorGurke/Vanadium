@@ -74,6 +74,12 @@ public class Material {
 			return mat;
 		}
 
+		Log.Info("material json");
+		foreach(var param in parameters.Properties()) {
+			mat.AddData(param.Name, $"{param.Value}");
+			Log.Info($"{param.Name} = {param.Value}");
+		}
+
 		// the shader will have registered the parameter types and data at this point already, so we can parse the actual runtime types here
 		// which then get fed to the shader via Material.Use()
 		mat.SerializeMaterialParameters();

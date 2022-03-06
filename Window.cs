@@ -3,7 +3,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Vanadium;
@@ -110,7 +109,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("models/generic_test.fbx");
+			ent.Model = Model.Load("models/tex_test.fbx");
 		}
 	}
 
