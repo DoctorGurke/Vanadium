@@ -85,8 +85,14 @@ public struct Vector3 : IEquatable<Vector3> {
 	public static Vector3 operator +(Vector3 c1, Vector3 c2) {
 		return new Vector3(c1.x + c2.x, c1.y + c2.y, c1.z + c2.z);
 	}
+	public static Vector3 operator +(Vector3 c1, float c2) {
+		return new Vector3(c1.x + c2, c1.y + c2, c1.z + c2);
+	}
 	public static Vector3 operator -(Vector3 c1, Vector3 c2) {
 		return new Vector3(c1.x - c2.x, c1.y - c2.y, c1.z - c2.z);
+	}
+	public static Vector3 operator -(Vector3 c1, float c2) {
+		return new Vector3(c1.x - c2, c1.y - c2, c1.z - c2);
 	}
 	public static Vector3 operator *(Vector3 c1, float f) {
 		return new Vector3(c1.x * f, c1.y * f, c1.z * f);
@@ -145,6 +151,17 @@ public struct Vector3 : IEquatable<Vector3> {
 	public static Vector3 Reflect(Vector3 direction, Vector3 normal) {
 		return direction - 2f * Dot(direction, normal) * normal;
 	}
+
+	public readonly Vector3 WithX(float x) {
+		return new Vector3(x, y, z);
+	}
+	public readonly Vector3 WithY(float y) {
+		return new Vector3(x, y, z);
+	}
+	public readonly Vector3 WithZ(float z) {
+		return new Vector3(x, y, z);
+	}
+
 
 	public override int GetHashCode() {
 		return HashCode.Combine(_vec);
