@@ -21,7 +21,7 @@ public class FirstPersonCamera : Camera {
 		var fast = keyboard.IsKeyDown(Keys.LeftShift);
 		var slow = keyboard.IsKeyDown(Keys.LeftAlt);
 
-		float cameraSpeed = slow ? 0.5f : fast ? 10 : 1.5f;
+		float cameraSpeed = slow ? 0.5f : fast ? 10 : 2.5f;
 		float cameraSensitivity = 0.1f;
 
 		if(keyboard.IsKeyDown(Keys.W)) {
