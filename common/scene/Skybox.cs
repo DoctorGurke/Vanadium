@@ -27,13 +27,14 @@ public class Skybox {
 		GL.BindVertexArray(vao);
 
 		// vertex positions
-		GL.EnableVertexAttribArray(0);
-		GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+		var vertexPositionLocation = _material.GetAttribLocation("vPosition");
+		if(vertexPositionLocation >= 0) {
+			GL.EnableVertexAttribArray(vertexPositionLocation);
+			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+		}
 	}
 
 	public void Draw() {
-		_material.Use();
-
 		GL.DepthFunc(DepthFunction.Lequal);
 
 		var view = Camera.ActiveCamera.ViewMatrix;
@@ -42,7 +43,7 @@ public class Skybox {
 		_material.Set("projection", proj);
 
 		GL.BindVertexArray(vao);
-		GL.DrawArrays(PrimitiveType.Triangles, 0, skyboxVertices.Length);
+		GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
 	}
 
 	private float[] skyboxVertices = {

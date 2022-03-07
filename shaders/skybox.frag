@@ -1,12 +1,12 @@
-﻿#version 400 core
+﻿#version 410 core
 
-in vec3 TexCoords;
-
-out vec4 gl_Color;
+layout(location = 0) in vec3 CubeCoords;
 
 #material samplerCube skybox
 
+out vec4 gl_Color;
+
 void main()
 {    
-    gl_Color = texture(skybox, TexCoords);
+    gl_Color = texture(skybox, CubeCoords.xyz);
 }
