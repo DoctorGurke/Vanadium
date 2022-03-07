@@ -6,9 +6,9 @@ public struct Transform {
 	public Vector3 Position;
 	public Rotation Rotation;
 	public float Scale;
-	public Matrix4 ModelMatrix => GetModelMatrix();
+	public Matrix4 TransformMatrix => GetTransformMatrix();
 
-	private Matrix4 GetModelMatrix() {
+	private Matrix4 GetTransformMatrix() {
 		var model = Matrix4.Identity;
 		model *= Matrix4.CreateScale(Scale);
 		model *= Rotation.Matrix;

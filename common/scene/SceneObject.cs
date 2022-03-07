@@ -49,7 +49,7 @@ public class SceneObject {
 		}
 	}
 	public Transform LocalTransform;
-	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.ModelMatrix : Parent.GlobalTransform * LocalTransform.ModelMatrix;
+	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : Parent.GlobalTransform * LocalTransform.TransformMatrix;
 
 	private SceneObject _parent;
 	public SceneObject Parent {
@@ -88,10 +88,6 @@ public class SceneObject {
 		}
 	}
 	
-	private void GetTransparent() {
-
-	}
-
 	public virtual void OnSpawn() { }
 
 	public void Draw() {
