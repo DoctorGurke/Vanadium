@@ -7,8 +7,8 @@ namespace Vanadium;
 public class Mesh {
 
 	public Model Model;
-	private Vertex[] _vertices;
-	private int[] _indices;
+	public Vertex[] Vertices;
+	public int[] Indices;
 
 	public struct Vertex {
 		public Vector3 position;
@@ -35,8 +35,8 @@ public class Mesh {
 	}
 
 	public Mesh(Vertex[] vertices, int[] indices, string material) {
-		_vertices = vertices;
-		_indices = indices;
+		Vertices = vertices;
+		Indices = indices;
 		_material = Material.Load($"{material}.vanmat");
 		SetupMesh();
 	}
@@ -52,7 +52,7 @@ public class Mesh {
 		// create, bind and populate vbo
 		vbo = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-		GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * Marshal.SizeOf(typeof(Vertex)), _vertices, BufferUsageHint.StaticDraw);
+		GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(Vertex)), Vertices, BufferUsageHint.StaticDraw);
 
 		vao = GL.GenVertexArray();
 		GL.BindVertexArray(vao);
@@ -123,7 +123,7 @@ public class Mesh {
 		// create, bind and populate ebo
 		ebo = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
-		GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
+		GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 
 		GL.BindVertexArray(0);
 
@@ -144,6 +144,6 @@ public class Mesh {
 		_material.Set("projection", proj);
 
 		GL.BindVertexArray(vao);
-		GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+		GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}
 }

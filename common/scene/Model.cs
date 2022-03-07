@@ -14,6 +14,8 @@ public class Model {
 
 	private static Dictionary<string, Model> PrecachedModels = new();
 
+	public BBox RenderBounds { get; private set; }
+
 	public static void Precache(string path) {
 		Load(path);
 	}
@@ -46,6 +48,7 @@ public class Model {
 		var model = new Model();
 		model._meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode(scene.RootNode, scene);
+		model.RenderBounds = model.GetRenderBounds();
 		PrecachedModels.Add(path, model);
 
 		if(path == ErrorModel)
@@ -121,5 +124,32 @@ public class Model {
 		Mesh fmesh = new Mesh(vertices, indices, scene.Materials[mesh.MaterialIndex].Name);
 		fmesh.Model = this;
 		return fmesh;
+	}
+
+	private BBox GetRenderBounds() {
+		Vector3 mins = _meshes[0].Vertices[0].position;
+		Vector3 maxs = _meshes[0].Vertices[0].position;
+
+		foreach(var mesh in _meshes) {
+			foreach(var vertex in mesh.Vertices) {
+				var vert = vertex.position;
+				if(vert.x < mins.x)
+					mins.x = vert.x;
+				else if(vert.x > maxs.x)
+					maxs.x = vert.x;
+
+				if(vert.y < mins.y)
+					mins.y = vert.y;
+				else if(vert.y > maxs.y)
+					maxs.y = vert.y;
+
+				if(vert.z < mins.z)
+					mins.z = vert.z;
+				else if(vert.z > maxs.z)
+					maxs.z = vert.z;
+			}
+		}
+
+		return new BBox(mins, maxs);
 	}
 }
