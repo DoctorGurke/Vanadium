@@ -32,6 +32,10 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
+		GL.Enable(EnableCap.Blend);
+		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+		GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero);
+
 		GL.Enable(EnableCap.TextureCubeMapSeamless);
 
 		Model.Precache("models/error.fbx");
@@ -64,8 +68,8 @@ public class Window : GameWindow {
 		GL.DepthFunc(DepthFunction.Less);
 
 		// reset cull state
-		//GL.Enable(EnableCap.CullFace);
-		//GL.CullFace(CullFaceMode.Back);
+		GL.Enable(EnableCap.CullFace);
+		GL.CullFace(CullFaceMode.Back);
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
@@ -114,7 +118,7 @@ public class Window : GameWindow {
 			var ent = new SceneObject {
 				Position = Camera.ActiveCamera.Position
 			};
-			ent.Model = Model.Load("models/tex_test.fbx");
+			ent.Model = Model.Load("models/transparency_test.fbx");
 		}
 	}
 
