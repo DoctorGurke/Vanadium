@@ -16,12 +16,13 @@ public class SceneWorld {
 		TransparentObjects.Add(obj);
 	}
 
-
-	public static void Draw() {
+	public static void DrawOpaques() {
 		foreach(var opaque in OpaqueObjects) {
 			opaque.Draw();
 		}
+	}
 
+	public static void DrawTransparents() {
 		var campos = Camera.ActiveCamera is null ? Vector3.Zero : Camera.ActiveCamera.Position;
 
 		var SortedTransparents = TransparentObjects.OrderBy(x => -(x.Position - campos).Length).ToList();

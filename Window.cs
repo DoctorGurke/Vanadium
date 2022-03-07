@@ -44,10 +44,10 @@ public class Window : GameWindow {
 
 		Skybox.Load("materials/skybox/skybox01.vanmat");
 
-		new SceneObject {
-			Model = Model.Load("models/brickwall.fbx"),
-			Position = Vector3.Down
-		};
+		//new SceneObject {
+		//	Model = Model.Load("models/brickwall.fbx"),
+		//	Position = Vector3.Down
+		//};
 
 		new SceneObject {
 			Model = Model.Load("models/axis.fbx")
@@ -76,10 +76,12 @@ public class Window : GameWindow {
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 		// draw scene graph
-		SceneWorld.Draw();
+		SceneWorld.DrawOpaques();
 
 		// draw skybox last
-		//Skybox.ActiveSkybox.Draw();
+		Skybox.ActiveSkybox.Draw();
+
+		SceneWorld.DrawTransparents();
 
 		SwapBuffers();
 	}

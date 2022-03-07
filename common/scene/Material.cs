@@ -257,8 +257,8 @@ public class Material {
 
 		for(int cube = 0; cube < CubeTextureData.Count; cube++) {
 			var texture = CubeTextureData.ElementAtOrDefault(cube);
-			texture.Value.Use(TextureUnit.Texture0 + TextureData.Count + cube);
-			Shader.Set(texture.Key, TextureData.Count + cube);
+			texture.Value.Use(TextureUnit.Texture0 + cube);
+			Shader.Set(texture.Key, cube);
 		}
 	}
 
