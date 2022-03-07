@@ -37,17 +37,17 @@ public class Mesh {
 	public Mesh(Vertex[] vertices, int[] indices, string material) {
 		Vertices = vertices;
 		Indices = indices;
-		_material = Material.Load($"{material}.vanmat");
+		Material = Material.Load($"{material}.vanmat");
 		SetupMesh();
 	}
 
 	private int vao, vbo, ebo;
 
-	private Material _material;
+	public Material Material;
 
 	private void SetupMesh() {
 		// use shader first to get attributes
-		_material.Use();
+		Material.Use();
 
 		// create, bind and populate vbo
 		vbo = GL.GenBuffer();
@@ -58,63 +58,63 @@ public class Mesh {
 		GL.BindVertexArray(vao);
 
 		// vertex positions
-		var vertexPositionLocation = _material.GetAttribLocation("vPosition");
+		var vertexPositionLocation = Material.GetAttribLocation("vPosition");
 		if(vertexPositionLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexPositionLocation);
 			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), 0);
 		}
 
 		// vertex normal
-		var vertexNormalLocation = _material.GetAttribLocation("vNormal");
+		var vertexNormalLocation = Material.GetAttribLocation("vNormal");
 		if(vertexNormalLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexNormalLocation);
 			GL.VertexAttribPointer(vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "normal"));
 		}
 
 		// vertex tangent
-		var vertexTangentLocation = _material.GetAttribLocation("vTangent");
+		var vertexTangentLocation = Material.GetAttribLocation("vTangent");
 		if(vertexTangentLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexTangentLocation);
 			GL.VertexAttribPointer(vertexTangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "tangent"));
 		}
 
 		// vertex bitangent
-		var vertexBitangentLocation = _material.GetAttribLocation("vBitangent");
+		var vertexBitangentLocation = Material.GetAttribLocation("vBitangent");
 		if(vertexBitangentLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexBitangentLocation);
 			GL.VertexAttribPointer(vertexBitangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "bitangent"));
 		}
 
 		// uv0
-		var uv0Location = _material.GetAttribLocation("vTexCoord0");
+		var uv0Location = Material.GetAttribLocation("vTexCoord0");
 		if(uv0Location >= 0) {
 			GL.EnableVertexAttribArray(uv0Location);
 			GL.VertexAttribPointer(uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv0"));
 		}
 
 		// uv1
-		var uv1Location = _material.GetAttribLocation("vTexCoord1");
+		var uv1Location = Material.GetAttribLocation("vTexCoord1");
 		if(uv1Location >= 0) {
 			GL.EnableVertexAttribArray(uv1Location);
 			GL.VertexAttribPointer(uv1Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv1"));
 		}
 
 		// uv2
-		var uv2Location = _material.GetAttribLocation("vTexCoord2");
+		var uv2Location = Material.GetAttribLocation("vTexCoord2");
 		if(uv2Location >= 0) {
 			GL.EnableVertexAttribArray(uv2Location);
 			GL.VertexAttribPointer(uv2Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv2"));
 		}
 
 		// uv3
-		var uv3Location = _material.GetAttribLocation("vTexCoord3");
+		var uv3Location = Material.GetAttribLocation("vTexCoord3");
 		if(uv3Location >= 0) {
 			GL.EnableVertexAttribArray(uv3Location);
 			GL.VertexAttribPointer(uv3Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "uv3"));
 		}
 
 		// vertex color
-		var vertexColorLocation = _material.GetAttribLocation("vColor");
+		var vertexColorLocation = Material.GetAttribLocation("vColor");
 		if(vertexColorLocation >= 0) {
 			GL.EnableVertexAttribArray(vertexColorLocation);
 			GL.VertexAttribPointer(vertexColorLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(typeof(Vertex)), Marshal.OffsetOf(typeof(Vertex), "color"));
@@ -134,14 +134,14 @@ public class Mesh {
 	private Stopwatch _timer;
 
 	public void Draw(SceneObject sceneobject) {
-		_material.Use();
+		Material.Use();
 
 		var model = sceneobject.GlobalTransform;
-		_material.Set("model", model);
+		Material.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
-		_material.Set("view", view);
+		Material.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;
-		_material.Set("projection", proj);
+		Material.Set("projection", proj);
 
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
