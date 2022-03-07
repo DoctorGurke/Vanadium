@@ -36,6 +36,8 @@ public class Window : GameWindow {
 		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 		GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero);
 
+		GL.Enable(EnableCap.Multisample);
+
 		GL.Enable(EnableCap.TextureCubeMapSeamless);
 
 		Model.Precache("models/error.fbx");

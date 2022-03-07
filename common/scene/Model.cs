@@ -110,7 +110,6 @@ public class Model {
 				bitangent = mesh.BiTangents[v];
 			}
 
-
 			Vector3 color = new();
 			if(mesh.VertexColorChannelCount > 0) {
 				color.x = mesh.VertexColorChannels[0][v].R;

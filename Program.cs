@@ -16,7 +16,8 @@ public class Program {
 			Size = new Vector2i(1280, 800),
 			Title = "Vanadium",
 			WindowState = WindowState.Normal,
-			StartFocused = true
+			StartFocused = true,
+			NumberOfSamples = 4
 		};
 
 		// init and run our window type
