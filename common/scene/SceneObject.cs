@@ -14,6 +14,14 @@ public class SceneObject {
 		}
 	}
 
+	public void SetModel(Model model) {
+		Model = model;
+	}
+
+	public void SetModel(string path) {
+		Model = Model.Load(path);
+	}
+
 	public bool Transparent { get; private set; }
 
 	public Vector3 Position { 
