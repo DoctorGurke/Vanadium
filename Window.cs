@@ -61,6 +61,10 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
+		// reset cull state
+		GL.Enable(EnableCap.CullFace);
+		GL.CullFace(CullFaceMode.Back);
+
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 		// draw scene graph

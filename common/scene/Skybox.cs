@@ -31,12 +31,10 @@ public class Skybox {
 	}
 
 	public void Draw() {
-		GL.DepthFunc(DepthFunction.Greater);
+		GL.DepthFunc(DepthFunction.Lequal);
 
 		_material.Use();
 
-		//var model = sceneobject.GlobalTransform;
-		//_material.Set("model", model);
 		var view = Camera.ActiveCamera.ViewMatrix;
 		_material.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;

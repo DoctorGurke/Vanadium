@@ -254,10 +254,9 @@ public class Material {
 		}
 
 		for(int cube = 0; cube < CubeTextureData.Count; cube++) {
-			var data = CubeTextureData.ElementAtOrDefault(cube);
-			var texture = Texture.LoadCube(data.Value);
-			texture.Use(TextureUnit.Texture0 + TextureData.Count + cube, TextureTarget.TextureCubeMap);
-			Shader.Set(data.Key, TextureData.Count + cube);
+			var texture = CubeTextureData.ElementAtOrDefault(cube);
+			texture.Value.Use(TextureUnit.Texture0 + TextureData.Count + cube);
+			Shader.Set(texture.Key, TextureData.Count + cube);
 		}
 	}
 
@@ -382,13 +381,32 @@ public class Material {
 						break;
 					case MaterialParamType.SamplerCube:
 						Log.Info($"parsing material data {param.Key} {param.Value} texcube");
-						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						CubeTextureData.Add(param.Key, param.Value);
+						var sides = new List<string>();
+						var path = param.Value;
+						var ext = Path.GetExtension(path);
+						path = path.Replace(ext, "");
+						foreach(var side in skyboxSides) {
+							var full = $"{path}_{side}{ext}";
+							Log.Info($"adding cubemap side {full}");
+							sides.Add(full);
+						}
+						var cube = TextureCube.Load(sides);
+						// keep the reference to the texture
+						CubeTextureData.Add(param.Key, cube);
 						break;
 				}
 			}
 		}
 	}
+
+	private static string[] skyboxSides = {
+		"right",
+		"left",
+		"top",
+		"bottom",
+		"front",
+		"back"
+	};
 
 	// this is dumb
 	private Dictionary<string, bool> BooleanData = new();
@@ -401,5 +419,5 @@ public class Material {
 	private Dictionary<string, Vector4> Vector4Data = new();
 	private Dictionary<string, Matrix4> Matrix4Data = new();
 	private Dictionary<string, string> TextureData = new(); // just keep the path, we load it from the Texture class
-	private Dictionary<string, string> CubeTextureData = new(); // just keep the path, we load it from the Texture class
+	private Dictionary<string, TextureCube> CubeTextureData = new(); // keep reference since we don't cache cubemap textures
 }
