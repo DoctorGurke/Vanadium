@@ -1,4 +1,4 @@
-﻿#version 330 core
+﻿#version 400 core
 
 in vec3 TexCoords;
 
@@ -8,5 +8,5 @@ out vec4 gl_Color;
 
 void main()
 {    
-    gl_Color = vec4(1.0, 0.0, 0.0, 1.0);//texture(skybox, TexCoords);
+    gl_Color = texture(skybox, TexCoords);
 }

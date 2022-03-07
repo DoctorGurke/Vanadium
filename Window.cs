@@ -32,6 +32,8 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
 
+		GL.Enable(EnableCap.TextureCubeMapSeamless);
+
 		Model.Precache("models/error.fbx");
 
 		Skybox.Load("materials/skybox/skybox01.vanmat");
@@ -62,8 +64,8 @@ public class Window : GameWindow {
 		GL.DepthFunc(DepthFunction.Less);
 
 		// reset cull state
-		GL.Enable(EnableCap.CullFace);
-		GL.CullFace(CullFaceMode.Back);
+		//GL.Enable(EnableCap.CullFace);
+		//GL.CullFace(CullFaceMode.Back);
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 

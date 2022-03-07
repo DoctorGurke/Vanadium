@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace Vanadium;
 
@@ -31,9 +32,9 @@ public class Skybox {
 	}
 
 	public void Draw() {
-		GL.DepthFunc(DepthFunction.Lequal);
-
 		_material.Use();
+
+		GL.DepthFunc(DepthFunction.Lequal);
 
 		var view = Camera.ActiveCamera.ViewMatrix;
 		_material.Set("view", view);

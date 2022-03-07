@@ -208,6 +208,7 @@ public class Material {
 
 		Shader.Use();
 
+		Shader.Set("cameraPos", Camera.ActiveCamera is null ? Vector3.Zero : Camera.ActiveCamera.Position);
 		Shader.Set("curTime", Time.Now);
 
 		foreach(var data in BooleanData) {
