@@ -89,7 +89,7 @@ public class Window : GameWindow {
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
 
-		FramesPerSecond = (int)(1f / e.Time);
+		FramesPerSecond = (int)(1.0 / e.Time);
 		FrameTime = e.Time;
 
 		if(TimeSinceSecondTick >= 1) {
@@ -116,7 +116,8 @@ public class Window : GameWindow {
 
 		if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
 			var ent = new SceneObject {
-				Position = Camera.ActiveCamera.Position
+				Position = Camera.ActiveCamera.Position,
+				Rotation = Camera.ActiveCamera.Rotation
 			};
 			ent.Model = Model.Load("models/transparency_test.fbx");
 		}

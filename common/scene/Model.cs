@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Vanadium;
 
 public class Model {
-	private Mesh[] _meshes;
+	public Mesh[] Meshes;
 
 	public bool IsError = false;
 
@@ -46,7 +46,7 @@ public class Model {
 		}
 
 		var model = new Model();
-		model._meshes = new Mesh[scene.MeshCount];
+		model.Meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode(scene.RootNode, scene);
 		model.RenderBounds = model.GetRenderBounds();
 		PrecachedModels.Add(path, model);
@@ -59,7 +59,7 @@ public class Model {
 	}
 
 	public void Draw(SceneObject sceneobject) {
-		foreach(var mesh in _meshes) {
+		foreach(var mesh in Meshes) {
 			mesh.Draw(sceneobject);
 		}
 	}
@@ -67,7 +67,7 @@ public class Model {
 	private void ProcessNode(Node node, Scene scene) {
 		foreach(int index in node.MeshIndices) {
 			Assimp.Mesh mesh = scene.Meshes[index];
-			_meshes[index] = processMesh(mesh, scene);
+			Meshes[index] = processMesh(mesh, scene);
 		}
 		for(int i = 0; i < node.ChildCount; i++) {
 			ProcessNode(node.Children[i], scene);
@@ -127,10 +127,10 @@ public class Model {
 	}
 
 	private BBox GetRenderBounds() {
-		Vector3 mins = _meshes[0].Vertices[0].position;
-		Vector3 maxs = _meshes[0].Vertices[0].position;
+		Vector3 mins = Meshes[0].Vertices[0].position;
+		Vector3 maxs = Meshes[0].Vertices[0].position;
 
-		foreach(var mesh in _meshes) {
+		foreach(var mesh in Meshes) {
 			foreach(var vertex in mesh.Vertices) {
 				var vert = vertex.position;
 				if(vert.x < mins.x)

@@ -40,7 +40,8 @@ public class Material {
 	private static Dictionary<string, Material> PrecachedMaterials = new();
 
 	public static Material ErrorMaterial => Load("materials/error.vanmat");
-	public bool IsError = false;
+	public bool IsError { get; private set; } = false;
+	public bool Transparent { get; private set; } = false;
 
 	public static Material Load(string path) {
 		path = $"resources/{path}";
@@ -306,6 +307,12 @@ public class Material {
 	public void AddData(string name, string data) {
 		Log.Info($"adding material data {name} {data}");
 		MaterialData.Add(name, data);
+
+		if(bool.TryParse(data, out var bdata)) {
+			if(name == "transparent" && bdata) {
+				Transparent = true;
+			}
+		}
 	}
 
 	// this is a bit dumb

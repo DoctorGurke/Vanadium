@@ -3,7 +3,18 @@
 namespace Vanadium;
 
 public class SceneObject {
-	public Model Model;
+	private Model _model;
+	public Model Model { 
+		get {
+			return _model;
+		} 
+		set {
+			_model = value;
+			PostModelSet();
+		}
+	}
+
+	public bool Transparent { get; private set; }
 
 	public Vector3 Position { 
 		get {
@@ -50,8 +61,27 @@ public class SceneObject {
 		Rotation = Rotation.Identity;
 		Scale = 1.0f;
 
-		SceneWorld.SceneObjects.Add(this);
 		OnSpawn();
+	}
+
+	private void PostModelSet() {
+		var transparent = false;
+		foreach(var mesh in Model.Meshes) {
+			if(mesh.Material.Transparent) {
+				transparent = true;
+				break;
+			}
+		}
+
+		if(transparent) {
+			SceneWorld.AddTransparent(this);
+		} else {
+			SceneWorld.AddOpaque(this);
+		}
+	}
+	
+	private void GetTransparent() {
+
 	}
 
 	public virtual void OnSpawn() { }
