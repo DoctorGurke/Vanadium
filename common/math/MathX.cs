@@ -50,4 +50,20 @@ public static class MathX {
 		Order(ref min, ref max);
 		return (f < min) ? min : ((f < max) ? f : max);
 	}
+
+	/// <summary>
+	/// Lerp to a value on a range.
+	/// </summary>
+	/// <param name="from">From value</param>
+	/// <param name="to">To value</param>
+	/// <param name="delta">The amount between the values, 0-1</param>
+	/// <param name="clamp">Whether to clamp the result</param>
+	/// <returns>The lerped float</returns>
+	public static float LerpTo(this float from, float to, float delta, bool clamp = true) {
+		if(clamp) {
+			delta = delta.Clamp(0f, 1f);
+		}
+
+		return from + delta * (to - from);
+	}
 }

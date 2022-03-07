@@ -11,6 +11,12 @@ public class FirstPersonCamera : Camera {
 	private float targetPitch = 0;
 	private float targetYaw = 0;
 
+	private float TargetFOV = 90;
+
+	public override void Update() {
+		FieldOfView = TargetFOV;
+	}
+
 	public override void BuildInput(KeyboardState keyboard, MouseState mouse) {
 		var fast = keyboard.IsKeyDown(Keys.LeftShift);
 		var slow = keyboard.IsKeyDown(Keys.LeftAlt);
@@ -35,6 +41,12 @@ public class FirstPersonCamera : Camera {
 		}
 		if(keyboard.IsKeyDown(Keys.LeftControl)) {
 			Position -= Vector3.Up * cameraSpeed * Time.Delta; // Down
+		}
+
+		if(mouse.IsButtonDown(MouseButton.Middle)) {
+			TargetFOV = TargetFOV.LerpTo(20, Time.Delta * 7f);
+		} else {
+			TargetFOV = TargetFOV.LerpTo(90, Time.Delta * 7f);
 		}
 
 		if(_firstMove) {

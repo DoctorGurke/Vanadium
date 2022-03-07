@@ -39,7 +39,10 @@ public abstract class Camera {
 
 	public virtual void Activate() { }
 
+	public virtual void Update() { }
+
 	public static void BuildActiveCamera() {
+		ActiveCamera.Update();
 		ActiveCamera.BuildView(ref ActiveCamera.setup);
 	}
 
