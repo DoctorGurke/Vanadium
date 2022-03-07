@@ -73,7 +73,7 @@ public class Window : GameWindow {
 		SceneWorld.Draw();
 
 		// draw skybox last
-		Skybox.ActiveSkybox.Draw();
+		//Skybox.ActiveSkybox.Draw();
 
 		SwapBuffers();
 	}
