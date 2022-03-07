@@ -98,6 +98,19 @@ public class Model {
 				uv3 = new(mesh.TextureCoordinateChannels[3][v].X, mesh.TextureCoordinateChannels[3][v].Y);
 			}
 
+			Vector3 normal = new();
+			if(mesh.HasNormals) {
+				normal = mesh.Normals[v];
+			}
+
+			Vector3 tangent = new();
+			Vector3 bitangent = new();
+			if(mesh.HasTangentBasis) {
+				tangent = mesh.Tangents[v];
+				bitangent = mesh.BiTangents[v];
+			}
+
+
 			Vector3 color = new();
 			if(mesh.VertexColorChannelCount > 0) {
 				color.x = mesh.VertexColorChannels[0][v].R;
@@ -105,7 +118,7 @@ public class Model {
 				color.z = mesh.VertexColorChannels[0][v].B;
 			}
 
-			vertex = new Mesh.Vertex(mesh.Vertices[v], mesh.Normals[v], mesh.Tangents[v], mesh.BiTangents[v], uv0, uv1, uv2, uv3, color);
+			vertex = new Mesh.Vertex(mesh.Vertices[v], normal, tangent, bitangent, uv0, uv1, uv2, uv3, color);
 			vertices[v] = vertex;
 		}
 

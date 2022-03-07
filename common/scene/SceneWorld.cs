@@ -25,7 +25,6 @@ public class SceneWorld {
 		var campos = Camera.ActiveCamera is null ? Vector3.Zero : Camera.ActiveCamera.Position;
 
 		var SortedTransparents = TransparentObjects.OrderBy(x => -(x.Position - campos).Length).ToList();
-
 		foreach(var transparent in SortedTransparents) {
 			transparent.Draw();
 		}
