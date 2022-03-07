@@ -12,14 +12,13 @@ public class Window : GameWindow {
 
 	// debugging
 	private static DebugProc _debugProcCallback = DebugCallback;
-	private static GCHandle _debugProcCallbackHandle;
 
 	private Stopwatch Timer = new();
 	protected override void OnLoad() {
 		base.OnLoad();
 
 		// enable debugging
-		_debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
+		_ = GCHandle.Alloc(_debugProcCallback);
 		GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
 		GL.Enable(EnableCap.DebugOutput);
 		GL.Enable(EnableCap.DebugOutputSynchronous);
@@ -44,14 +43,19 @@ public class Window : GameWindow {
 
 		Skybox.Load("materials/skybox/skybox01.vanmat");
 
-		//new SceneObject {
-		//	Model = Model.Load("models/brickwall.fbx"),
-		//	Position = Vector3.Down
-		//};
+		new SceneObject {
+			Model = Model.Load("models/brickwall.fbx"),
+			Position = Vector3.Down
+		};
 
 		new SceneObject {
 			Model = Model.Load("models/axis.fbx")
 		};
+
+		//new SceneObject {
+		//	Model = Model.Load("models/tex_test.fbx"),
+		//	Position = Vector3.Right * 3
+		//};
 
 		// init camera
 		_ = new FirstPersonCamera {
@@ -79,7 +83,7 @@ public class Window : GameWindow {
 		SceneWorld.DrawOpaques();
 
 		// draw skybox after opaques
-		//Skybox.ActiveSkybox.Draw();
+		Skybox.ActiveSkybox.Draw();
 
 		// draw transparents last
 		SceneWorld.DrawTransparents();
