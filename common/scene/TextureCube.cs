@@ -38,7 +38,7 @@ public class TextureCube {
 				image.RotateFlip(RotateFlipType.RotateNoneFlipY);
 				var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				
-				GL.TexImage2D(targets[i], 0, PixelInternalFormat.Rgb, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data.Scan0);
+				GL.TexImage2D(targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 			}
 
 			// texture filtering
