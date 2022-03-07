@@ -75,12 +75,13 @@ public class Window : GameWindow {
 
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-		// draw scene graph
+		// draw opaques first
 		SceneWorld.DrawOpaques();
 
-		// draw skybox last
-		Skybox.ActiveSkybox.Draw();
+		// draw skybox after opaques
+		//Skybox.ActiveSkybox.Draw();
 
+		// draw transparents last
 		SceneWorld.DrawTransparents();
 
 		SwapBuffers();

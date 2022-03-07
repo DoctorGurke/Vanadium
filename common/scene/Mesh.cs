@@ -133,11 +133,14 @@ public class Mesh {
 
 	private Stopwatch _timer;
 
-	public void Draw(SceneObject sceneobject) {
+	public void Draw(SceneObject? sceneobject) {
 		Material.Use();
 
-		var model = sceneobject.GlobalTransform;
-		Material.Set("model", model);
+		if(sceneobject is not null) {
+			var model = sceneobject.GlobalTransform;
+			Material.Set("model", model);
+		}
+
 		var view = Camera.ActiveCamera.ViewMatrix;
 		Material.Set("view", view);
 		var proj = Camera.ActiveCamera.ProjectionMatrix;

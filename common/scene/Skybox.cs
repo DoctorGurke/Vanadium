@@ -12,38 +12,17 @@ public class Skybox {
 		ActiveSkybox = skybox;
 	}
 
-	private int vao, vbo;
-	private Material _material;
+	private Model Model;
 
 	public void Setup(string path) {
-		_material = Material.Load(path);
-		_material.Use();
-
-		vbo = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-		GL.BufferData(BufferTarget.ArrayBuffer, skyboxVertices.Length * sizeof(float), skyboxVertices, BufferUsageHint.StaticDraw);
-
-		vao = GL.GenVertexArray();
-		GL.BindVertexArray(vao);
-
-		// vertex positions
-		var vertexPositionLocation = _material.GetAttribLocation("vPosition");
-		if(vertexPositionLocation >= 0) {
-			GL.EnableVertexAttribArray(vertexPositionLocation);
-			GL.VertexAttribPointer(vertexPositionLocation, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-		}
+		Model = Model.Load("models/cube_inv.fbx");
+		Model.SetMaterialOverride(path);
 	}
 
 	public void Draw() {
 		GL.DepthFunc(DepthFunction.Lequal);
 
-		var view = Camera.ActiveCamera.ViewMatrix;
-		_material.Set("view", view);
-		var proj = Camera.ActiveCamera.ProjectionMatrix;
-		_material.Set("projection", proj);
-
-		GL.BindVertexArray(vao);
-		GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+		Model.Draw();
 	}
 
 	private float[] skyboxVertices = {

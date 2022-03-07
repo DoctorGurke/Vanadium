@@ -7,6 +7,7 @@ layout(location = 0) in vec3 CubeCoords;
 out vec4 gl_Color;
 
 void main()
-{    
-    gl_Color = texture(skybox, CubeCoords.xyz);
+{   
+    vec3 col = texture(skybox, CubeCoords.xyz).rgb;
+    gl_Color = vec4(col, 1.0);
 }

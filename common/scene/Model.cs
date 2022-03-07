@@ -16,6 +16,12 @@ public class Model {
 
 	public BBox RenderBounds { get; private set; }
 
+	public void SetMaterialOverride(string path) {
+		foreach(var mesh in Meshes) {
+			mesh.Material = Material.Load(path);
+		}
+	}
+
 	public static void Precache(string path) {
 		Load(path);
 	}
@@ -58,7 +64,11 @@ public class Model {
 		return model;
 	}
 
-	public void Draw(SceneObject sceneobject) {
+	public void Draw() {
+		Draw(null);
+	}
+
+	public void Draw(SceneObject? sceneobject) {
 		foreach(var mesh in Meshes) {
 			mesh.Draw(sceneobject);
 		}
