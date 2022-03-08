@@ -10,7 +10,7 @@ public class Model {
 
 	public bool IsError = false;
 
-	public static string ErrorModel = "models/error.fbx";
+	public static string ErrorModel = "models/primitives/error.fbx";
 
 	private static Dictionary<string, Model> PrecachedModels = new();
 
@@ -176,7 +176,9 @@ public class Model {
 	}
 
 	public static class Primitives {
-		public static Model Cube => Load("models/cube.fbx");
-		public static Model InvertedCube => Load("models/cube_inv.fbx");
+		public static Model Axis => Load("models/primitives/axis.fbx");
+		public static Model Error => Load("models/primitives/error.fbx");
+		public static Model Cube => Load("models/primitives/cube.fbx");
+		public static Model InvertedCube => Load("models/primitives/cube_inv.fbx");
 	}
 }
