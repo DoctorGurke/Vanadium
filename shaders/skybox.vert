@@ -1,11 +1,8 @@
-﻿#version 330 core
+﻿#version 400 core
 
 out vec3 CubeCoords;
 
-in vec3 vPosition;
-
-uniform mat4 projection;
-uniform mat4 view;
+#include shaders/common/common.vert
 
 void main()
 {

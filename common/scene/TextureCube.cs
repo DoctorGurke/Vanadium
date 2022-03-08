@@ -10,9 +10,12 @@ public class TextureCube {
 	public readonly int Handle;
 
 	private static TextureTarget[] targets = {
-		TextureTarget.TextureCubeMapNegativeY, TextureTarget.TextureCubeMapPositiveY,
-		TextureTarget.TextureCubeMapPositiveZ, TextureTarget.TextureCubeMapNegativeZ,
-		TextureTarget.TextureCubeMapPositiveX, TextureTarget.TextureCubeMapNegativeX
+		// right								// left
+		TextureTarget.TextureCubeMapPositiveX, TextureTarget.TextureCubeMapNegativeX,
+		// up									// down
+		TextureTarget.TextureCubeMapPositiveY, TextureTarget.TextureCubeMapNegativeY,
+		// back									// front
+		TextureTarget.TextureCubeMapPositiveZ, TextureTarget.TextureCubeMapNegativeZ
 	};
 
 	public static TextureCube Load(List<string> SkyboxFaces) {
@@ -35,7 +38,7 @@ public class TextureCube {
 			}
 
 			using(image) {
-				image.RotateFlip(RotateFlipType.RotateNoneFlipY);
+				image.RotateFlip(RotateFlipType.Rotate180FlipX);
 				var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				
 				GL.TexImage2D(targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);

@@ -41,7 +41,7 @@ public class Window : GameWindow {
 
 		Model.Precache("models/error.fbx");
 
-		Skybox.Load("materials/skybox/skybox01.vanmat");
+		Skybox.Load("materials/skybox/skybox_debug.vanmat");
 
 		new SceneObject {
 			Model = Model.Load("models/brickwall.fbx"),

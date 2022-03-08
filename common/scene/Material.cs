@@ -22,6 +22,15 @@ public class Material {
 		SamplerCube
 	}
 
+	private static string[] skyboxSides = {
+		"right",
+		"left",
+		"up",
+		"down",
+		"back",
+		"front"
+	};
+
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
 	public Shader Shader { get; set; }
 
@@ -406,15 +415,6 @@ public class Material {
 			}
 		}
 	}
-
-	private static string[] skyboxSides = {
-		"right",
-		"left",
-		"top",
-		"bottom",
-		"front",
-		"back"
-	};
 
 	// this is dumb
 	private Dictionary<string, bool> BooleanData = new();

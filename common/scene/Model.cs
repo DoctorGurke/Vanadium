@@ -64,6 +64,12 @@ public class Model {
 		return model;
 	}
 
+	public void Draw(Matrix4 transform, Matrix4 view, Matrix4 projection) {
+		foreach(var mesh in Meshes) {
+			mesh.Draw(transform, view, projection);
+		}
+	}
+
 	public void Draw() {
 		Draw(null);
 	}
