@@ -52,14 +52,9 @@ public class Window : GameWindow {
 			Model = Model.Load("models/axis.fbx")
 		};
 
-		//new SceneObject {
-		//	Model = Model.Load("models/tex_test.fbx"),
-		//	Position = Vector3.Right * 3
-		//};
-
 		// init camera
 		_ = new FirstPersonCamera {
-			Position = Vector3.Backward * 3 + Vector3.Up * 1 + Vector3.Right
+			Position = Vector3.Backward * 3 + Vector3.Up + Vector3.Right
 		};
 
 		CursorGrabbed = true;
@@ -83,7 +78,7 @@ public class Window : GameWindow {
 		SceneWorld.DrawOpaques();
 
 		// draw skybox after opaques
-		//Skybox.ActiveSkybox.Draw();
+		Skybox.ActiveSkybox.Draw();
 
 		// draw transparents last
 		SceneWorld.DrawTransparents();
