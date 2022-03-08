@@ -83,7 +83,7 @@ public class Window : GameWindow {
 		SceneWorld.DrawOpaques();
 
 		// draw skybox after opaques
-		Skybox.ActiveSkybox.Draw();
+		//Skybox.ActiveSkybox.Draw();
 
 		// draw transparents last
 		SceneWorld.DrawTransparents();
