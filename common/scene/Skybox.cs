@@ -15,7 +15,7 @@ public class Skybox {
 	private Model Model;
 
 	public void Setup(string path) {
-		Model = Model.Load("models/cube_inv.fbx");
+		Model = Model.Primitives.InvertedCube;
 		Model.SetMaterialOverride(path);
 	}
 
