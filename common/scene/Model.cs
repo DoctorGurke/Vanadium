@@ -174,4 +174,9 @@ public class Model {
 
 		return new BBox(mins, maxs);
 	}
+
+	public static class Primitives {
+		public static Model Cube => Load("models/cube.fbx");
+		public static Model InvertedCube => Load("models/cube_inv.fbx");
+	}
 }
