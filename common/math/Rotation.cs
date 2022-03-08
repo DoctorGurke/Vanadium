@@ -53,7 +53,7 @@ public struct Rotation : IEquatable<Rotation> {
 	public Rotation Inverse => Quaternion.Invert(_quat);
 
 	public static Rotation From(float pitch, float yaw, float roll) {
-		return Quaternion.FromEulerAngles(pitch.DegreeToRadian(), roll.DegreeToRadian(), yaw.DegreeToRadian());
+		return Quaternion.FromEulerAngles(pitch.DegreeToRadian(), yaw.DegreeToRadian(), roll.DegreeToRadian());
 	}
 	public static Rotation FromAxis(Vector3 axis, float degrees) {
 		return Quaternion.FromAxisAngle(axis, degrees.DegreeToRadian());
