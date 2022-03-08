@@ -41,7 +41,6 @@ public class TextureCube {
 				if(targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY) {
 					image.RotateFlip(RotateFlipType.Rotate180FlipNone);
 				}
-				//image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
 				var data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				
 				GL.TexImage2D(targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);

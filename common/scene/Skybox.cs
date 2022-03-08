@@ -23,7 +23,7 @@ public class Skybox {
 		GL.DepthFunc(DepthFunction.Lequal);
 
 		var cam = Camera.ActiveCamera;
-		var view = cam.Rotation.Matrix;
+		var view = cam.ViewMatrix;//cam.Rotation.Matrix;
 		Model.Draw(Matrix4.Identity, view, cam.ProjectionMatrix);
 	}
 }

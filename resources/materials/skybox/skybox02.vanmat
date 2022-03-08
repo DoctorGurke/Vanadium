@@ -1,0 +1,4 @@
+﻿{
+	"shader": "shaders/skybox",
+	"skybox": "textures/skybox/skybox02/skybox02.png"
+}
