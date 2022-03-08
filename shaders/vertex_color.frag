@@ -4,5 +4,5 @@
 
 void main()
 {
-    gl_Color = vec4(fVertColor, 1.0);
+    gl_Color = vec4(fs_in.vVertexColor, 1.0);
 }

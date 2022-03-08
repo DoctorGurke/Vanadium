@@ -6,9 +6,7 @@
 
 void main()
 {
-    vec4 col = tex2D(tex, fTexCoord0).rgba;
-    //float mask = tex2D(tintMask, fTexCoord0).r;
-    //col *= tintColor * (1 - mask);
+    vec4 col = tex2D(tex, fs_in.vTexCoord0).rgba;
     if(col.a <= 0.0)
         discard;
     gl_Color = col;

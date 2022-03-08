@@ -4,5 +4,5 @@
 
 void main()
 {
-    gl_Color = vec4(fNormal, 1.0);
+    gl_Color = vec4(fs_in.vNormalWs, 1.0);
 }
