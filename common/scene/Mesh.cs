@@ -142,7 +142,7 @@ public class Mesh {
 		Draw(model, Camera.ActiveCamera.ViewMatrix, Camera.ActiveCamera.ProjectionMatrix);
 	}
 
-	public void Draw(Matrix4 transform, Matrix4 view, Matrix4 projection) {
+	private void Draw(Matrix4 transform, Matrix4 view, Matrix4 projection) {
 		Material.Use();
 
 		var model = transform;

@@ -22,8 +22,6 @@ public class Skybox {
 	public void Draw() {
 		GL.DepthFunc(DepthFunction.Lequal);
 
-		var cam = Camera.ActiveCamera;
-		var view = cam.ViewMatrix;//cam.Rotation.Matrix;
-		Model.Draw(Matrix4.Identity, view, cam.ProjectionMatrix);
+		Model.Draw();
 	}
 }
