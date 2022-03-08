@@ -400,6 +400,7 @@ public class Material {
 						Log.Info($"parsing material data {param.Key} {param.Value} texcube");
 						var sides = new List<string>();
 						var path = param.Value;
+						var oldpath = path;
 						var ext = Path.GetExtension(path);
 						path = path.Replace(ext, "");
 						foreach(var side in skyboxSides) {
@@ -407,7 +408,7 @@ public class Material {
 							Log.Info($"adding cubemap side {full}");
 							sides.Add(full);
 						}
-						var cube = TextureCube.Load(sides);
+						var cube = TextureCube.Load(sides, oldpath);
 						// keep the reference to the texture
 						CubeTextureData.Add(param.Key, cube);
 						break;

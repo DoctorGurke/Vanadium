@@ -9,6 +9,8 @@ public class TextureCube {
 
 	public readonly int Handle;
 
+	private static Dictionary<string, TextureCube> PrecachedTextures = new();
+
 	private static TextureTarget[] targets = {
 		// right								// left
 		TextureTarget.TextureCubeMapPositiveX, TextureTarget.TextureCubeMapNegativeX,
@@ -18,7 +20,12 @@ public class TextureCube {
 		TextureTarget.TextureCubeMapPositiveZ, TextureTarget.TextureCubeMapNegativeZ
 	};
 
-	public static TextureCube Load(List<string> SkyboxFaces) {
+	public static TextureCube Load(List<string> SkyboxFaces, string path) {
+
+		if(PrecachedTextures.TryGetValue(path, out var texture)) {
+			return texture;
+		}
+
 		// Generate handle
 		int handle = GL.GenTexture();
 
@@ -57,6 +64,7 @@ public class TextureCube {
 		}
 
 		var tex = new TextureCube(handle);
+		PrecachedTextures.Add(path, tex);
 		return tex;
 	}
 
