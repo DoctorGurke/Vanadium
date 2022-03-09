@@ -185,12 +185,11 @@ public class Window : GameWindow {
 			UiMode = !UiMode;
 		}
 
+
 		if(UiMode) {
 			CursorGrabbed = false;
-			//CursorVisible = true;
 		} else {
 			CursorGrabbed = true;
-			CursorVisible = false;
 			var cam = Camera.ActiveCamera;
 			cam.BuildInput(KeyboardState, MouseState);
 
@@ -205,11 +204,6 @@ public class Window : GameWindow {
 				//};
 			}
 		}
-
-		// close the window when ESC is pressed down
-		//if(input.IsKeyDown(Keys.Escape) ) {
-		//	Close();
-		//}
 	}
 
 	protected override void OnTextInput(TextInputEventArgs e) {
