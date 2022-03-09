@@ -103,8 +103,8 @@ public class Shader {
 		// First, we have to get the number of active uniforms in the shader.
 		GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
 
-		// bind uniform matrices buffer
-		var matricesblockindex = GL.GetUniformBlockIndex(Handle, "Matrices");
+		// bind per view uniform buffer
+		var matricesblockindex = GL.GetUniformBlockIndex(Handle, "PerViewUniformBuffer");
 		if(matricesblockindex >= 0) {
 			GL.UniformBlockBinding(Handle, matricesblockindex, 0);
 		}

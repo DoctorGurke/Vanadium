@@ -15,7 +15,16 @@ public class Window : GameWindow {
 
 	private Stopwatch Timer = new();
 
-	public static int MatricesUniformBuffer;
+	public static int PerViewUniformBufferHandle;
+
+	private struct PerViewUniformBuffer {
+		public Matrix4 g_matWorldToProjection;
+		public Matrix4 g_matWorldToView;
+		public Vector3 g_vCameraPositionWs;
+		public Vector3 g_vCameraDirWs;
+		public float g_flTime;
+	}
+
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -42,12 +51,13 @@ public class Window : GameWindow {
 
 		GL.Enable(EnableCap.TextureCubeMapSeamless);
 
-		// setup matrices uniform buffer
-		MatricesUniformBuffer = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.UniformBuffer, MatricesUniformBuffer);
-		GL.BufferData(BufferTarget.UniformBuffer, 2 * Marshal.SizeOf(typeof(Matrix4)), IntPtr.Zero, BufferUsageHint.StaticDraw);
+		// setup per view uniform buffer
+		PerViewUniformBufferHandle = GL.GenBuffer();
+		GL.BindBuffer(BufferTarget.UniformBuffer, PerViewUniformBufferHandle);
+		var perviewbuffersize = Marshal.SizeOf(typeof(PerViewUniformBuffer));//2 * Marshal.SizeOf(typeof(Matrix4));// + 2 * Marshal.SizeOf(typeof(Vector4)) + 1 * sizeof(float);
+		GL.BufferData(BufferTarget.UniformBuffer, perviewbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw);
 		GL.BindBuffer(BufferTarget.UniformBuffer, 0);
-		GL.BindBufferRange(BufferRangeTarget.UniformBuffer, 0, MatricesUniformBuffer, IntPtr.Zero, 2 * Marshal.SizeOf(typeof(Matrix4)));
+		GL.BindBufferRange(BufferRangeTarget.UniformBuffer, 0, PerViewUniformBufferHandle, IntPtr.Zero, perviewbuffersize);
 
 		// precache error model
 		Model.Precache(Model.ErrorModel);
@@ -100,15 +110,30 @@ public class Window : GameWindow {
 		// clear buffer
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-		// update Matrices uniform buffer
-		GL.BindBuffer(BufferTarget.UniformBuffer, MatricesUniformBuffer);
-		// projection matrix
-		var projection = Camera.ActiveCamera.ProjectionMatrix;
-		GL.BufferSubData(BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf(typeof(Matrix4)), ref projection.Row0.X );
-		// view matrix
-		var view = Camera.ActiveCamera.ViewMatrix;
-		GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr) Marshal.SizeOf(typeof(Matrix4)), Marshal.SizeOf(typeof(Matrix4)), ref view.Row0.X);
+		// update per view uniform buffer
+		GL.BindBuffer(BufferTarget.UniformBuffer, PerViewUniformBufferHandle);
 
+		// prepare data
+		var projection = Camera.ActiveCamera.ProjectionMatrix;
+		var view = Camera.ActiveCamera.ViewMatrix;
+
+		var cam = Camera.ActiveCamera;
+		var pos = cam.Position;
+		var dir = cam.Rotation.Forward;
+		var time = Time.Now;
+
+		// put it in our struct
+		var perviewuniformbuffer = new PerViewUniformBuffer {
+			g_matWorldToProjection = projection,
+			g_matWorldToView = view,
+			g_vCameraPositionWs = pos,
+			g_vCameraDirWs = dir,
+			g_flTime = time
+		};
+
+		// put data in buffer
+		GL.BufferData(BufferTarget.UniformBuffer, Marshal.SizeOf(typeof(PerViewUniformBuffer)), ref perviewuniformbuffer, BufferUsageHint.StaticDraw);
+		
 		// draw opaques first
 		SceneWorld.DrawOpaques();
 

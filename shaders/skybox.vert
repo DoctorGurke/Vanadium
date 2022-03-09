@@ -7,6 +7,6 @@ out vec3 CubeCoords;
 void main()
 {
     CubeCoords = vPosition.xyz;
-    vec4 pos = projection * mat4(mat3(view)) * vec4(vPosition.xyz, 1.0);
+    vec4 pos =  vec4(vPosition.xyz, 1.0) * mat4(mat3(g_matWorldToView)) * g_matWorldToProjection;
     gl_Position = pos.xyww;
 }  

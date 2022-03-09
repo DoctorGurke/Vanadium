@@ -35,5 +35,5 @@ vec4 CommonVertexProcessing(void) {
 	vs_out.vTexCoord3 = vTexCoord3;
 	vs_out.vVertexColor = vColor;
 
-    return projection * view * model * vec4(vPosition, 1.0);//vec4(vPosition, 1.0) * model * view * projection;
+    return vec4(vPosition, 1.0) * model * g_matWorldToView * g_matWorldToProjection;
 }
