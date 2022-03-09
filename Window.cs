@@ -54,7 +54,7 @@ public class Window : GameWindow {
 		// setup per view uniform buffer
 		PerViewUniformBufferHandle = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.UniformBuffer, PerViewUniformBufferHandle);
-		var perviewbuffersize = Marshal.SizeOf(typeof(PerViewUniformBuffer));//2 * Marshal.SizeOf(typeof(Matrix4));// + 2 * Marshal.SizeOf(typeof(Vector4)) + 1 * sizeof(float);
+		var perviewbuffersize = Marshal.SizeOf(typeof(PerViewUniformBuffer));
 		GL.BufferData(BufferTarget.UniformBuffer, perviewbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw);
 		GL.BindBuffer(BufferTarget.UniformBuffer, 0);
 		GL.BindBufferRange(BufferRangeTarget.UniformBuffer, 0, PerViewUniformBufferHandle, IntPtr.Zero, perviewbuffersize);
@@ -177,8 +177,7 @@ public class Window : GameWindow {
 			//};
 			//ent.Model = Model.Load("models/transparency_test.fbx");
 			new TestObject {
-				Position = cam.Position + cam.Rotation.Forward,
-				Rotation = cam.Rotation
+				Position = cam.Position + cam.Rotation.Forward
 			};
 		}
 	}
