@@ -147,8 +147,8 @@ public class Mesh {
 
 		var model = transform;
 		Material.Set("model", model);
-		Material.Set("view", view);
-		Material.Set("projection", projection);
+		//Material.Set("view", view);
+		//Material.Set("projection", projection);
 
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);

@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace Vanadium;
 
@@ -101,6 +102,12 @@ public class Shader {
 
 		// First, we have to get the number of active uniforms in the shader.
 		GL.GetProgram(Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+
+		// bind uniform matrices buffer
+		var matricesblockindex = GL.GetUniformBlockIndex(Handle, "Matrices");
+		if(matricesblockindex >= 0) {
+			GL.UniformBlockBinding(Handle, matricesblockindex, 0);
+		}
 
 		// Loop over all the uniforms,
 

@@ -14,6 +14,8 @@ public class Window : GameWindow {
 	private static DebugProc _debugProcCallback = DebugCallback;
 
 	private Stopwatch Timer = new();
+
+	public static int MatricesUniformBuffer;
 	protected override void OnLoad() {
 		base.OnLoad();
 
@@ -23,6 +25,7 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.DebugOutput);
 		GL.Enable(EnableCap.DebugOutputSynchronous);
 
+		// setup defaults
 		GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		GL.Enable(EnableCap.CullFace);
@@ -39,8 +42,17 @@ public class Window : GameWindow {
 
 		GL.Enable(EnableCap.TextureCubeMapSeamless);
 
-		Model.Precache("models/error.fbx");
+		// setup matrices uniform buffer
+		MatricesUniformBuffer = GL.GenBuffer();
+		GL.BindBuffer(BufferTarget.UniformBuffer, MatricesUniformBuffer);
+		GL.BufferData(BufferTarget.UniformBuffer, 2 * Marshal.SizeOf(typeof(Matrix4)), IntPtr.Zero, BufferUsageHint.StaticDraw);
+		GL.BindBuffer(BufferTarget.UniformBuffer, 0);
+		GL.BindBufferRange(BufferRangeTarget.UniformBuffer, 0, MatricesUniformBuffer, IntPtr.Zero, 2 * Marshal.SizeOf(typeof(Matrix4)));
 
+		// precache error model
+		Model.Precache(Model.ErrorModel);
+
+		// set skybox
 		Skybox.Load("materials/skybox/skybox02.vanmat");
 
 		new SceneObject {
@@ -49,8 +61,21 @@ public class Window : GameWindow {
 		};
 
 		new SceneObject {
-			Model = Model.Load("models/axis.fbx")
+			Model = Model.Primitives.Axis
 		};
+
+		//var sceneObject1 = new SceneObject {
+		//	Position = Vector3.Right * 3,
+		//	Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
+		//};
+		//sceneObject1.Model = Model.Load("models/suzanne.fbx");
+
+		//var sceneObject2 = new SceneObject {
+		//	Position = Vector3.Up * 5 + Vector3.Right * 3,
+		//	Scale = 0.5f
+		//};
+		//sceneObject2.Parent = sceneObject1;
+		//sceneObject2.Model = Model.Load("models/fancy.fbx");
 
 		// init camera
 		_ = new FirstPersonCamera {
@@ -61,7 +86,7 @@ public class Window : GameWindow {
 		Timer.Start();
 	}
 
-	protected override void OnRenderFrame(FrameEventArgs e) {
+	protected unsafe override void OnRenderFrame(FrameEventArgs e) {
 		base.OnRenderFrame(e);
 
 		// reset depth state
@@ -72,7 +97,17 @@ public class Window : GameWindow {
 		GL.Enable(EnableCap.CullFace);
 		GL.CullFace(CullFaceMode.Back);
 
+		// clear buffer
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+		// update Matrices uniform buffer
+		GL.BindBuffer(BufferTarget.UniformBuffer, MatricesUniformBuffer);
+		// projection matrix
+		var projection = Camera.ActiveCamera.ProjectionMatrix;
+		GL.BufferSubData(BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf(typeof(Matrix4)), ref projection.Row0.X );
+		// view matrix
+		var view = Camera.ActiveCamera.ViewMatrix;
+		GL.BufferSubData(BufferTarget.UniformBuffer, (IntPtr) Marshal.SizeOf(typeof(Matrix4)), Marshal.SizeOf(typeof(Matrix4)), ref view.Row0.X);
 
 		// draw opaques first
 		SceneWorld.DrawOpaques();
@@ -118,12 +153,17 @@ public class Window : GameWindow {
 			Close();
 		}
 
+		var cam = Camera.ActiveCamera;
 		if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
-			var ent = new SceneObject {
-				Position = Camera.ActiveCamera.Position,
-				Rotation = Camera.ActiveCamera.Rotation
+			//var ent = new SceneObject {
+			//	Position = cam.Position + cam.Rotation.Forward,
+			//	Rotation = cam.Rotation
+			//};
+			//ent.Model = Model.Load("models/transparency_test.fbx");
+			new TestObject {
+				Position = cam.Position + cam.Rotation.Forward,
+				Rotation = cam.Rotation
 			};
-			ent.Model = Model.Load("models/transparency_test.fbx");
 		}
 	}
 

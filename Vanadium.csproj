@@ -9,6 +9,7 @@
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <IsPublishable>False</IsPublishable>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 	
   <ItemGroup>

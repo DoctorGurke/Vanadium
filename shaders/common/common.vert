@@ -23,8 +23,6 @@ out VS_OUT {
 } vs_out;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 
 vec4 CommonVertexProcessing(void) {
 	vs_out.vPositionWs = vec3(vec4(vPosition, 1.0) * model);
@@ -37,5 +35,5 @@ vec4 CommonVertexProcessing(void) {
 	vs_out.vTexCoord3 = vTexCoord3;
 	vs_out.vVertexColor = vColor;
 
-    return vec4(vPosition, 1.0) * model * view * projection;
+    return projection * view * model * vec4(vPosition, 1.0);//vec4(vPosition, 1.0) * model * view * projection;
 }
