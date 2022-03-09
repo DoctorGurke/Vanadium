@@ -112,28 +112,19 @@ public class Window : GameWindow {
 
 		// update per view uniform buffer
 		GL.BindBuffer(BufferTarget.UniformBuffer, PerViewUniformBufferHandle);
-
 		// prepare data
-		var projection = Camera.ActiveCamera.ProjectionMatrix;
-		var view = Camera.ActiveCamera.ViewMatrix;
-
-		var cam = Camera.ActiveCamera;
-		var pos = cam.Position;
-		var dir = cam.Rotation.Forward;
-		var time = Time.Now;
-
-		// put it in our struct
 		var perviewuniformbuffer = new PerViewUniformBuffer {
-			g_matWorldToProjection = projection,
-			g_matWorldToView = view,
-			g_vCameraPositionWs = pos,
-			g_vCameraDirWs = dir,
-			g_flTime = time
+			g_matWorldToProjection = Camera.ActiveCamera.ProjectionMatrix,
+			g_matWorldToView = Camera.ActiveCamera.ViewMatrix,
+			g_vCameraPositionWs = Camera.ActiveCamera.Position,
+			g_vCameraDirWs = Camera.ActiveCamera.Rotation.Forward,
+			g_flTime = Time.Now
 		};
-
 		// put data in buffer
 		GL.BufferData(BufferTarget.UniformBuffer, Marshal.SizeOf(typeof(PerViewUniformBuffer)), ref perviewuniformbuffer, BufferUsageHint.StaticDraw);
 		
+		// drawing the scene
+
 		// draw opaques first
 		SceneWorld.DrawOpaques();
 
@@ -199,7 +190,7 @@ public class Window : GameWindow {
 	protected override void OnResize(ResizeEventArgs e) {
 		base.OnResize(e);
 
-		Screen.UpdateSize(Size.X, Size.Y);
+		Screen.UpdateSize(Size);
 		GL.Viewport(0, 0, Size.X, Size.Y);
 	}
 
