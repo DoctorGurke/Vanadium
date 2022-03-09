@@ -123,6 +123,10 @@ public class Shader {
 		}
 	}
 
+	public int GetUniformLocation(string name) {
+		return GL.GetUniformLocation(Handle, name);
+	} 
+
 	private static void CompileShader(int shader) {
 		// Try to compile the shader
 		GL.CompileShader(shader);

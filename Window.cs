@@ -4,6 +4,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Runtime.InteropServices;
+using ImGuiNET;
 
 namespace Vanadium;
 
@@ -16,6 +17,8 @@ public class Window : GameWindow {
 	private Stopwatch Timer = new();
 
 	public static int PerViewUniformBufferHandle;
+
+	private ImGuiController _guicontroller;
 
 	private struct PerViewUniformBuffer {
 		public Matrix4 g_matWorldToProjection;
@@ -59,6 +62,9 @@ public class Window : GameWindow {
 		GL.BindBuffer(BufferTarget.UniformBuffer, 0);
 		GL.BindBufferRange(BufferRangeTarget.UniformBuffer, 0, PerViewUniformBufferHandle, IntPtr.Zero, perviewbuffersize);
 
+		// init ui
+		_guicontroller = new ImGuiController(ClientSize);
+
 		// precache error model
 		Model.Precache(Model.ErrorModel);
 
@@ -93,11 +99,14 @@ public class Window : GameWindow {
 		};
 
 		CursorGrabbed = true;
+
 		Timer.Start();
 	}
 
 	protected override void OnRenderFrame(FrameEventArgs e) {
 		base.OnRenderFrame(e);
+
+		_guicontroller.Update(this, (float) e.Time);
 
 		// reset depth state
 		GL.Enable(EnableCap.DepthTest);
@@ -134,12 +143,21 @@ public class Window : GameWindow {
 		// draw transparents last
 		SceneWorld.DrawTransparents();
 
+		ImGui.ShowDemoWindow();
+
+		if(UiMode) {
+			// draw ui in ui mode
+			_guicontroller.Draw();
+		}
+
 		SwapBuffers();
 	}
 
 	private TimeSince TimeSinceSecondTick;
 	private int FramesPerSecond;
 	private double FrameTime;
+
+	public bool UiMode = false;
 
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
@@ -160,26 +178,48 @@ public class Window : GameWindow {
 			return;
 		}
 
-		Camera.ActiveCamera.BuildInput(KeyboardState, MouseState);
-
 		var mouse = MouseState;
 		var input = KeyboardState;
-		// close the window when ESC is pressed down
-		if(input.IsKeyDown(Keys.Escape)) {
-			Close();
+
+		if(input.IsKeyPressed(Keys.F1)) {
+			UiMode = !UiMode;
 		}
 
-		var cam = Camera.ActiveCamera;
-		if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
-			//var ent = new SceneObject {
-			//	Position = cam.Position + cam.Rotation.Forward,
-			//	Rotation = cam.Rotation
-			//};
-			//ent.Model = Model.Load("models/transparency_test.fbx");
-			new TestObject {
-				Position = cam.Position + cam.Rotation.Forward
-			};
+		if(UiMode) {
+			CursorGrabbed = false;
+			//CursorVisible = true;
+		} else {
+			CursorGrabbed = true;
+			CursorVisible = false;
+			var cam = Camera.ActiveCamera;
+			cam.BuildInput(KeyboardState, MouseState);
+
+			if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
+				var ent = new SceneObject {
+					Position = cam.Position + cam.Rotation.Forward,
+					Rotation = cam.Rotation
+				};
+				ent.Model = Model.Load("models/transparency_test.fbx");
+				//new TestObject {
+				//	Position = cam.Position + cam.Rotation.Forward
+				//};
+			}
 		}
+
+		// close the window when ESC is pressed down
+		//if(input.IsKeyDown(Keys.Escape) ) {
+		//	Close();
+		//}
+	}
+
+	protected override void OnTextInput(TextInputEventArgs e) {
+		base.OnTextInput(e);
+		_guicontroller.OnTextInput(e);
+	}
+
+	protected override void OnMouseWheel(MouseWheelEventArgs e) {
+		base.OnMouseWheel(e);
+		_guicontroller.OnMouseWheel(e);
 	}
 
 	public void OnSecondTick() {
@@ -191,6 +231,7 @@ public class Window : GameWindow {
 
 		Screen.UpdateSize(Size);
 		GL.Viewport(0, 0, Size.X, Size.Y);
+		_guicontroller.WindowResized(Size);
 	}
 
 	[DebuggerStepThrough]
