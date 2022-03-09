@@ -17,6 +17,10 @@ public class FirstPersonCamera : Camera {
 		FieldOfView = TargetFOV;
 	}
 
+	public void ResetLastPosition(Vector2 lastpos) {
+		_lastPos = lastpos;
+	}
+
 	public override void BuildInput(KeyboardState keyboard, MouseState mouse) {
 		var fast = keyboard.IsKeyDown(Keys.LeftShift);
 		var slow = keyboard.IsKeyDown(Keys.LeftAlt);

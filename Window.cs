@@ -106,8 +106,6 @@ public class Window : GameWindow {
 	protected override void OnRenderFrame(FrameEventArgs e) {
 		base.OnRenderFrame(e);
 
-		_guicontroller.Update(this, (float) e.Time);
-
 		// reset depth state
 		GL.Enable(EnableCap.DepthTest);
 		GL.DepthFunc(DepthFunction.Less);
@@ -115,6 +113,11 @@ public class Window : GameWindow {
 		// reset cull state
 		GL.Enable(EnableCap.CullFace);
 		GL.CullFace(CullFaceMode.Back);
+
+		// reset blending
+		GL.Enable(EnableCap.Blend);
+		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+		GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero);
 
 		// clear buffer
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -145,8 +148,8 @@ public class Window : GameWindow {
 
 		ImGui.ShowDemoWindow();
 
+		// draw ui in ui mode
 		if(UiMode) {
-			// draw ui in ui mode
 			_guicontroller.Draw();
 		}
 
@@ -158,6 +161,8 @@ public class Window : GameWindow {
 	private double FrameTime;
 
 	public bool UiMode = false;
+
+	public bool WasUiMode = false;
 
 	protected override void OnUpdateFrame(FrameEventArgs e) {
 		base.OnUpdateFrame(e);
@@ -185,12 +190,25 @@ public class Window : GameWindow {
 			UiMode = !UiMode;
 		}
 
-
 		if(UiMode) {
+			// ui was just opened, reset mouse
+			if(!WasUiMode) {
+
+			}
+
+			WasUiMode = true;
 			CursorGrabbed = false;
+
+			// update ui in ui mode
+			_guicontroller.Update(this, (float)e.Time);
 		} else {
 			CursorGrabbed = true;
+
 			var cam = Camera.ActiveCamera;
+			// reset lastpos so the camera doesn't snap to cursor after closing ui
+			if(cam is FirstPersonCamera fcam && WasUiMode)
+				fcam.ResetLastPosition(MouseState.Position);
+
 			cam.BuildInput(KeyboardState, MouseState);
 
 			if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
@@ -203,6 +221,8 @@ public class Window : GameWindow {
 				//	Position = cam.Position + cam.Rotation.Forward
 				//};
 			}
+
+			WasUiMode = false;
 		}
 	}
 
