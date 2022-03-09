@@ -86,7 +86,7 @@ public class Window : GameWindow {
 		Timer.Start();
 	}
 
-	protected unsafe override void OnRenderFrame(FrameEventArgs e) {
+	protected override void OnRenderFrame(FrameEventArgs e) {
 		base.OnRenderFrame(e);
 
 		// reset depth state
