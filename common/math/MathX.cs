@@ -66,4 +66,18 @@ public static class MathX {
 
 		return from + delta * (to - from);
 	}
+
+	public static int RoundUpToMultipleOf(this int from, int multiple) {
+		if(multiple == 0)
+			return from;
+
+		int remainder = Math.Abs(from) % multiple;
+		if(remainder == 0)
+			return from;
+
+		if(from < 0)
+			return -(Math.Abs(from) - remainder);
+		else
+			return from + multiple - remainder;
+	}
 }
