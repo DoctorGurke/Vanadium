@@ -43,30 +43,30 @@ class FontTexture : IDisposable {
 			MipmapLevels = 1;
 		}
 
-		GLUtil.CheckGLError("Clear");
+		GLUtil.CheckGLError("Font Clear");
 
 		GLUtil.CreateTexture(TextureTarget.Texture2D, Name, out GLTexture);
 		GL.TextureStorage2D(GLTexture, MipmapLevels, InternalFormat, Width, Height);
-		GLUtil.CheckGLError("Storage2d");
+		GLUtil.CheckGLError("Font Storage2d");
 
 		BitmapData data = image.LockBits(new Rectangle(0, 0, Width, Height),
 			ImageLockMode.ReadOnly, global::System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 		GL.TextureSubImage2D(GLTexture, 0, 0, 0, Width, Height, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-		GLUtil.CheckGLError("SubImage");
+		GLUtil.CheckGLError("Font SubImage");
 
 		image.UnlockBits(data);
 
 		if(generateMipmaps) GL.GenerateTextureMipmap(GLTexture);
 
 		GL.TextureParameter(GLTexture, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-		GLUtil.CheckGLError("WrapS");
+		GLUtil.CheckGLError("Font WrapS");
 		GL.TextureParameter(GLTexture, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-		GLUtil.CheckGLError("WrapT");
+		GLUtil.CheckGLError("Font WrapT");
 
 		GL.TextureParameter(GLTexture, TextureParameterName.TextureMinFilter, (int)(generateMipmaps ? TextureMinFilter.Linear : TextureMinFilter.LinearMipmapLinear));
 		GL.TextureParameter(GLTexture, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-		GLUtil.CheckGLError("Filtering");
+		GLUtil.CheckGLError("Font Filtering");
 
 		GL.TextureParameter(GLTexture, TextureParameterName.TextureMaxLevel, MipmapLevels - 1);
 

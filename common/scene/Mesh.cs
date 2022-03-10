@@ -50,11 +50,11 @@ public class Mesh {
 		Material.Use();
 
 		// create, bind and populate vbo
-		vbo = GL.GenBuffer();
+		GLUtil.CreateBuffer("Mesh VBO", out vbo);
 		GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
 		GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * Marshal.SizeOf(typeof(Vertex)), Vertices, BufferUsageHint.StaticDraw);
 
-		vao = GL.GenVertexArray();
+		GLUtil.CreateVertexArray("Mesh VAO", out vao);
 		GL.BindVertexArray(vao);
 
 		// vertex positions
@@ -121,7 +121,7 @@ public class Mesh {
 		}
 
 		// create, bind and populate ebo
-		ebo = GL.GenBuffer();
+		GLUtil.CreateBuffer("Mesh EBO", out ebo);
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo);
 		GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 

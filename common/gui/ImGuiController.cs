@@ -222,8 +222,6 @@ public class ImGuiController : IDisposable {
 			return;
 		}
 
-		
-
 		for(int i = 0; i < draw_data.CmdListsCount; i++) {
 			ImDrawListPtr cmd_list = draw_data.CmdListsRange[i];
 
@@ -253,10 +251,10 @@ public class ImGuiController : IDisposable {
 		_material.Use();
 		GL.UniformMatrix4(_material.Shader.GetUniformLocation("projection_matrix"), false, ref mvp);
 		GL.Uniform1(_material.Shader.GetUniformLocation("in_fontTexture"), 0);
-		GLUtil.CheckGLError("Projection");
+		GLUtil.CheckGLError("ImGui Projection");
 
 		GL.BindVertexArray(_vertexArray);
-		GLUtil.CheckGLError("VAO");
+		GLUtil.CheckGLError("ImGui VAO");
 
 		draw_data.ScaleClipRects(io.DisplayFramebufferScale);
 
@@ -272,10 +270,10 @@ public class ImGuiController : IDisposable {
 			ImDrawListPtr cmd_list = draw_data.CmdListsRange[n];
 
 			GL.NamedBufferSubData(_vertexBuffer, IntPtr.Zero, cmd_list.VtxBuffer.Size * Unsafe.SizeOf<ImDrawVert>(), cmd_list.VtxBuffer.Data);
-			GLUtil.CheckGLError($"Data Vert {n}");
+			GLUtil.CheckGLError($"ImGui Data Vert {n}");
 
 			GL.NamedBufferSubData(_indexBuffer, IntPtr.Zero, cmd_list.IdxBuffer.Size * sizeof(ushort), cmd_list.IdxBuffer.Data);
-			GLUtil.CheckGLError($"Data Idx {n}");
+			GLUtil.CheckGLError($"ImGui Data Idx {n}");
 
 			for(int cmd_i = 0; cmd_i < cmd_list.CmdBuffer.Size; cmd_i++) {
 				ImDrawCmdPtr pcmd = cmd_list.CmdBuffer[cmd_i];
@@ -284,19 +282,19 @@ public class ImGuiController : IDisposable {
 				} else {
 					GL.ActiveTexture(TextureUnit.Texture0);
 					GL.BindTexture(TextureTarget.Texture2D, (int)pcmd.TextureId);
-					GLUtil.CheckGLError("Texture");
+					GLUtil.CheckGLError("ImGui Texture");
 
 					// We do _windowHeight - (int)clip.W instead of (int)clip.Y because gl has flipped Y when it comes to these coordinates
 					var clip = pcmd.ClipRect;
 					GL.Scissor((int)clip.X, _windowHeight - (int)clip.W, (int)(clip.Z - clip.X), (int)(clip.W - clip.Y));
-					GLUtil.CheckGLError("Scissor");
+					GLUtil.CheckGLError("ImGui Scissor");
 
 					if((io.BackendFlags & ImGuiBackendFlags.RendererHasVtxOffset) != 0) {
 						GL.DrawElementsBaseVertex(PrimitiveType.Triangles, (int)pcmd.ElemCount, DrawElementsType.UnsignedShort, (IntPtr)(pcmd.IdxOffset * sizeof(ushort)), (int) pcmd.VtxOffset);
 					} else {
 						GL.DrawElements(BeginMode.Triangles, (int)pcmd.ElemCount, DrawElementsType.UnsignedShort, (int)pcmd.IdxOffset * sizeof(ushort));
 					}
-					GLUtil.CheckGLError("Draw");
+					GLUtil.CheckGLError("ImGui Draw");
 				}
 			}
 		}

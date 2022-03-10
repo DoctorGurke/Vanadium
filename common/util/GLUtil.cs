@@ -21,7 +21,13 @@ static class GLUtil {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void CreateTexture(TextureTarget target, string Name, out int Texture) {
 		GL.CreateTextures(target, 1, out Texture);
-		LabelObject(ObjectLabelIdentifier.Texture, Texture, $"Texture: {Name}");
+		LabelObject(ObjectLabelIdentifier.Texture, Texture, $"Texture2D: {Name}");
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void CreateTextureCube(TextureTarget target, string Name, out int Texture) {
+		GL.CreateTextures(target, 1, out Texture);
+		LabelObject(ObjectLabelIdentifier.Texture, Texture, $"TextureCube: {Name}");
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31,9 +37,9 @@ static class GLUtil {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void CreateShader(ShaderType type, string Name, out int Shader) {
+	public static void CreateShader(ShaderType type, string typename, string Name, out int Shader) {
 		Shader = GL.CreateShader(type);
-		LabelObject(ObjectLabelIdentifier.Shader, Shader, $"Shader: {type}: {Name}");
+		LabelObject(ObjectLabelIdentifier.Shader, Shader, $"Shader: {typename}: {Name}");
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

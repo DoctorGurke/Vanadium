@@ -71,18 +71,18 @@ public class Shader {
 	public Shader(string vertPath, string fragPath, Material material) {
 		// load vertex shader and compile
 		var shaderSource = Load(vertPath, material);
-		var vertexShader = GL.CreateShader(ShaderType.VertexShader);
+		GLUtil.CreateShader(ShaderType.VertexShader, "Vert", Path.GetFileName(vertPath), out int vertexShader);
 		GL.ShaderSource(vertexShader, shaderSource);
 		CompileShader(vertexShader);
 
 		// load fragment shader and compile
 		shaderSource = Load(fragPath, material);
-		var fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+		GLUtil.CreateShader(ShaderType.FragmentShader, "Frag", Path.GetFileName(fragPath), out int fragmentShader);
 		GL.ShaderSource(fragmentShader, shaderSource);
 		CompileShader(fragmentShader);
 
 		// create opengl shader program
-		Handle = GL.CreateProgram();
+		GLUtil.CreateProgram($"{Path.GetFileName(vertPath)}-{Path.GetFileName(fragPath)}", out Handle);
 
 		// attach vert + fragment shaders and link
 		GL.AttachShader(Handle, vertexShader);

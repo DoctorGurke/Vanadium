@@ -18,7 +18,7 @@ public class Texture {
 		}
 
 		// Generate handle
-		int handle = GL.GenTexture();
+		GLUtil.CreateTexture(TextureTarget.Texture2D, Path.GetFileName(path), out int handle);
 
 		// Bind the handle
 		GL.ActiveTexture(TextureUnit.Texture0);

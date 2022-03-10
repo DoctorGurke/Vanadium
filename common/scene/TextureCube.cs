@@ -27,7 +27,7 @@ public class TextureCube {
 		}
 
 		// Generate handle
-		int handle = GL.GenTexture();
+		GLUtil.CreateTextureCube(TextureTarget.TextureCubeMap, $"{Path.GetFileName(path)}", out int handle);
 
 		// Bind the handle
 		GL.ActiveTexture(TextureUnit.Texture0);
