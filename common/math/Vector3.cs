@@ -67,9 +67,7 @@ public struct Vector3 : IEquatable<Vector3> {
 	internal Vector3(OpenTK.Mathematics.Vector3 other) : this(other.X, other.Y, other.Z) { }
 
 	public static implicit operator Vector3(OpenTK.Mathematics.Vector3 value) {
-		Vector3 result = default(Vector3);
-		result._vec = value;
-		return result;
+		return new Vector3(value.X, value.Y, value.Z);
 	}
 	public static implicit operator OpenTK.Mathematics.Vector3(Vector3 value) {
 		return new OpenTK.Mathematics.Vector3(value.x, value.y, value.z);
