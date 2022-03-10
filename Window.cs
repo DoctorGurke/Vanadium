@@ -146,19 +146,20 @@ public class Window : GameWindow {
 		// draw transparents last
 		SceneWorld.DrawTransparents();
 
-		ImGui.ShowDemoWindow();
+		//ImGui.ShowDemoWindow();
+		DebugOverlay.Draw(this);
 
 		// draw ui in ui mode
-		if(UiMode) {
+		//if(UiMode) {
 			_guicontroller.Draw();
-		}
+		//}
 
 		SwapBuffers();
 	}
 
 	private TimeSince TimeSinceSecondTick;
-	private int FramesPerSecond;
-	private double FrameTime;
+	public int FramesPerSecond;
+	public double FrameTime;
 
 	public bool UiMode = false;
 
@@ -178,6 +179,9 @@ public class Window : GameWindow {
 		Time.Update((float) e.Time, Timer.ElapsedMilliseconds * 0.001f);
 		Camera.BuildActiveCamera();
 
+		// update ui
+		_guicontroller.Update(this, (float)e.Time);
+
 		// do not process any input if we're not focused
 		if(!IsFocused) {
 			return;
@@ -193,14 +197,13 @@ public class Window : GameWindow {
 		if(UiMode) {
 			// ui was just opened, reset mouse
 			if(!WasUiMode) {
-
+				// TODO: find a way to actually (re)set the mouse, lol
 			}
 
 			WasUiMode = true;
 			CursorGrabbed = false;
 
-			// update ui in ui mode
-			_guicontroller.Update(this, (float)e.Time);
+			
 		} else {
 			CursorGrabbed = true;
 
@@ -237,7 +240,8 @@ public class Window : GameWindow {
 	}
 
 	public void OnSecondTick() {
-		Title = $"Vanadium FPS:{FramesPerSecond} FT: {FrameTime:0.####}s";
+		DebugOverlay.FPS = FramesPerSecond;
+		DebugOverlay.FT = (float) FrameTime;
 	}
 
 	protected override void OnResize(ResizeEventArgs e) {
