@@ -174,12 +174,12 @@ public class Window : GameWindow
 		SceneWorld.DrawTransparents();
 
 		//ImGui.ShowDemoWindow();
+
+		// show debugoverlay in top left (fps, frametime and ui mode indicators)
 		DebugOverlay.Draw( this );
 
-		// draw ui in ui mode
-		//if(UiMode) {
+		// draw ui
 		_guicontroller.Draw();
-		//}
 
 		SwapBuffers();
 	}
