@@ -6,6 +6,9 @@ public struct BBox : IEquatable<BBox>
 
 	public Vector3 Maxs;
 
+	/// <summary>
+	/// Returns all Corners of the BBox
+	/// </summary>
 	public IEnumerable<Vector3> Corners
 	{
 		get
@@ -21,10 +24,16 @@ public struct BBox : IEquatable<BBox>
 		}
 	}
 
+	/// <summary>
+	/// The Center point of the BBox
+	/// </summary>
 	public Vector3 Center => Mins + Size * 0.5f;
 
 	public Vector3 Size => Maxs - Mins;
 
+	/// <summary>
+	/// Get a random point inside of this BBox
+	/// </summary>
 	public Vector3 RandomPointInside
 	{
 		get
@@ -51,7 +60,7 @@ public struct BBox : IEquatable<BBox>
 	}
 
 	/// <summary>
-	/// Returns true if this bbox completely contains bbox
+	/// Returns true if this BBox completely contains bbox
 	/// </summary>
 	public readonly bool Contains( BBox b )
 	{
@@ -59,7 +68,7 @@ public struct BBox : IEquatable<BBox>
 	}
 
 	/// <summary>
-	/// Returns true if this bbox somewat overlaps bbox
+	/// Returns true if this BBox somewat overlaps bbox
 	/// </summary>
 	public readonly bool Overlaps( BBox b )
 	{
@@ -67,7 +76,7 @@ public struct BBox : IEquatable<BBox>
 	}
 
 	/// <summary>
-	/// Returns this bbox but stretched to include this point
+	/// Returns this BBox but stretched to include this point
 	/// </summary>
 	public BBox AddPoint( Vector3 point )
 	{
@@ -117,7 +126,7 @@ public struct BBox : IEquatable<BBox>
 	}
 
 	/// <summary>
-	/// Formats the bbox into a string "mins, maxs"
+	/// Formats the BBox into a string "mins, maxs"
 	/// </summary>
 	public override string ToString()
 	{
@@ -133,26 +142,15 @@ public struct BBox : IEquatable<BBox>
 	}
 	public override bool Equals( object? obj )
 	{
-		int result;
-		if ( obj is BBox )
+		if ( obj is BBox bbox)
 		{
-			BBox o = (BBox)obj;
-			result = (Equals( o ) ? 1 : 0);
+			return bbox.Equals( this );
 		}
-		else
-		{
-			result = 0;
-		}
-
-		return (byte)result != 0;
+		return false;
 	}
 	public bool Equals( BBox o )
 	{
-		Vector3 mins = Mins;
-		Vector3 maxs = Maxs;
-		Vector3 mins2 = o.Mins;
-		Vector3 maxs2 = o.Maxs;
-		return mins == mins2 && maxs == maxs2;
+		return Mins == o.Mins && Maxs == o.Maxs;
 	}
 	public override int GetHashCode()
 	{
