@@ -24,6 +24,9 @@ public class SceneObject {
 
 	public bool Transparent { get; private set; }
 
+	public Color RenderColor = Color.White;
+	public float TintAmount = 1.0f;
+
 	public Vector3 Position { 
 		get {
 			return LocalTransform.Position;

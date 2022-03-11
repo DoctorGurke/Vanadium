@@ -9,11 +9,11 @@ public struct Transform {
 	public Matrix4 TransformMatrix => GetTransformMatrix();
 
 	private Matrix4 GetTransformMatrix() {
-		var model = Matrix4.Identity;
-		model *= Matrix4.CreateScale(Scale);
-		model *= Rotation.Matrix;
-		model *= Matrix4.CreateTranslation(Position);
+		var transform = Matrix4.Identity;
+		transform *= Matrix4.CreateScale(Scale);
+		transform *= Rotation.Matrix;
+		transform *= Matrix4.CreateTranslation(Position);
 
-		return model;
+		return transform;
 	}
 }

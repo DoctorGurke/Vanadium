@@ -134,22 +134,20 @@ public class Mesh {
 	private Stopwatch _timer;
 
 	public void Draw(SceneObject? sceneobject) {
+		Material.Use();
 		Matrix4 transform = Matrix4.Identity;
 		if(sceneobject is not null) {
 			transform = sceneobject.GlobalTransform;
+			Material.Set("renderColor", sceneobject.RenderColor);
+			Material.Set("tintAmount", sceneobject.TintAmount);
 		}
 
 		Draw(transform);
 	}
 
 	private void Draw(Matrix4 transform) {
-		Material.Use();
-
-		var model = transform;
-		Material.Set("model", model);
-		Material.Set("renderColor", Model.RenderColor);
-		Material.Set("tintAmount", Model.TintAmount);
-
+		Material.Set("transform", transform);
+		
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}

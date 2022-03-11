@@ -22,11 +22,11 @@ out VS_OUT {
 	vec3 vVertexColor;
 } vs_out;
 
-uniform mat4 model;
+uniform mat4 transform;
 
 vec4 CommonVertexProcessing(void) {
-	vs_out.vPositionWs = vec3(vec4(vPosition, 1.0) * model);
-	vs_out.vNormalWs = vNormal * mat3(transpose(inverse(model)));
+	vs_out.vPositionWs = vec3(vec4(vPosition, 1.0) * transform);
+	vs_out.vNormalWs = vNormal * mat3(transpose(inverse(transform)));
 	vs_out.vBitangentWs = vBitangent;
 	vs_out.vTangentWs = vTangent;
 	vs_out.vTexCoord0 = vTexCoord0;
@@ -35,5 +35,5 @@ vec4 CommonVertexProcessing(void) {
 	vs_out.vTexCoord3 = vTexCoord3;
 	vs_out.vVertexColor = vColor;
 
-    return vec4(vPosition, 1.0) * model * g_matWorldToView * g_matWorldToProjection;
+    return vec4(vPosition, 1.0) * transform * g_matWorldToView * g_matWorldToProjection;
 }

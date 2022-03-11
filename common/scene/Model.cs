@@ -8,9 +8,6 @@ namespace Vanadium;
 public class Model {
 	public Mesh[] Meshes;
 
-	public Color RenderColor = Color.White;
-	public float TintAmount = 1.0f;
-
 	public bool IsError = false;
 
 	public static string ErrorModel = "models/primitives/error.fbx";

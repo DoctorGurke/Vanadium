@@ -88,8 +88,8 @@ public class Window : GameWindow {
 			Model = Model.Load("models/brickwall.fbx"),
 			Position = Vector3.Down
 		};
-		floor.Model.RenderColor = Color.Blue;
-		floor.Model.TintAmount = 0.5f;
+		floor.RenderColor = Color.Blue;
+		floor.TintAmount = 0.5f;
 
 		new SceneObject {
 			Model = Model.Primitives.Axis
@@ -221,8 +221,6 @@ public class Window : GameWindow {
 
 			WasUiMode = true;
 			CursorGrabbed = false;
-
-			
 		} else {
 			CursorGrabbed = true;
 
@@ -235,13 +233,11 @@ public class Window : GameWindow {
 
 			if(mouse.IsButtonDown(MouseButton.Button1) && !mouse.WasButtonDown(MouseButton.Button1)) {
 				var ent = new SceneObject {
+					Model = Model.Load("models/transparency_test.fbx"),
 					Position = cam.Position + cam.Rotation.Forward,
 					Rotation = cam.Rotation
 				};
-				ent.Model = Model.Load("models/transparency_test.fbx");
-				//new TestObject {
-				//	Position = cam.Position + cam.Rotation.Forward
-				//};
+				ent.RenderColor = Color.Random;
 			}
 
 			WasUiMode = false;
