@@ -147,6 +147,8 @@ public class Mesh {
 
 		var model = transform;
 		Material.Set("model", model);
+		Material.Set("renderColor", Model.RenderColor);
+		Material.Set("tintAmount", Model.TintAmount);
 
 		GL.BindVertexArray(vao);
 		GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);

@@ -84,10 +84,12 @@ public class Window : GameWindow {
 		// set skybox
 		Skybox.Load("materials/skybox/skybox02.vanmat");
 
-		new SceneObject {
+		var floor = new SceneObject {
 			Model = Model.Load("models/brickwall.fbx"),
 			Position = Vector3.Down
 		};
+		floor.Model.RenderColor = Color.Blue;
+		floor.Model.TintAmount = 0.5f;
 
 		new SceneObject {
 			Model = Model.Primitives.Axis

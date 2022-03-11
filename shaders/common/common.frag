@@ -12,4 +12,7 @@ in VS_OUT {
 	vec3 vVertexColor;
 } fs_in;
 
+uniform vec4 renderColor;
+uniform float tintAmount;
+
 out vec4 gl_Color;

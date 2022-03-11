@@ -6,7 +6,10 @@
 
 void main()
 {
-    vec4 col = tex2D(tex, fs_in.vTexCoord0).rgba;
+    vec4 base = tex2D(tex, fs_in.vTexCoord0).rgba;
+    vec4 tint = base * renderColor;
+
+    vec4 col = mix(base, tint, tintAmount);
     if(col.a <= 0.0)
         discard;
     gl_Color = col;
