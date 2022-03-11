@@ -12,7 +12,7 @@ public class FirstPersonCamera : Camera
 	private float targetPitch = 0;
 	private float targetYaw = 0;
 
-	private float TargetFOV = 90;
+	private float TargetFOV = 75;
 
 	public override void Update()
 	{
@@ -63,7 +63,7 @@ public class FirstPersonCamera : Camera
 		}
 		else
 		{
-			TargetFOV = TargetFOV.LerpTo( 90, Time.Delta * 7f );
+			TargetFOV = TargetFOV.LerpTo( 75, Time.Delta * 7f );
 		}
 
 		if ( _firstMove )

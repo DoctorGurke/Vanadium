@@ -56,9 +56,9 @@ public abstract class Camera
 
 	public virtual void BuildView( ref CameraSetup setup )
 	{
-		if ( setup.FieldOfView == 0 ) setup.FieldOfView = 90;
+		if ( setup.FieldOfView == 0 ) setup.FieldOfView = 75;
 
-		if ( setup.ZNear == 0 ) setup.ZNear = 0.5f;
+		if ( setup.ZNear == 0 ) setup.ZNear = 0.3f;
 		if ( setup.ZFar == 0 ) setup.ZFar = 1000.0f;
 	}
 
