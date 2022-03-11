@@ -41,7 +41,7 @@ public class TextureCube {
 				image = new Bitmap(cubepath);
 			} catch {
 				Log.Info("Error loading cube texture: " + cubepath + " File is missing or invalid");
-				image = new Bitmap("resources/textures/error.png");
+				image = new Bitmap("resources/textures/core/error.png");
 			}
 
 			using(image) {

@@ -48,7 +48,7 @@ public class Material {
 
 	private static Dictionary<string, Material> PrecachedMaterials = new();
 
-	public static Material ErrorMaterial => Load("materials/error.vanmat");
+	public static Material ErrorMaterial => Load("materials/core/error.vanmat");
 	public bool IsError { get; private set; } = false;
 	public bool Transparent { get; private set; } = false;
 

@@ -68,7 +68,7 @@ public class ImGuiController : IDisposable {
 
 		RecreateFontDeviceTexture();
 
-		_material = Material.Load("materials/ui.vanmat");
+		_material = Material.Load("materials/core/ui.vanmat");
 
 		GL.VertexArrayVertexBuffer(_vertexArray, 0, _vertexBuffer, IntPtr.Zero, Unsafe.SizeOf<ImDrawVert>());
 		GL.VertexArrayElementBuffer(_vertexArray, _indexBuffer);

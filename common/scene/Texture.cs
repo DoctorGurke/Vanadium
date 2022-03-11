@@ -30,7 +30,7 @@ public class Texture {
 			image = new Bitmap($"resources/{path}");
 		} catch {
 			Log.Info("Error loading texture: " + path + " File is missing or invalid");
-			image = new Bitmap("resources/textures/error.png");
+			image = new Bitmap("resources/textures/core/error.png");
 		}
 
 		// Load the image
