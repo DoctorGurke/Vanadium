@@ -16,3 +16,7 @@ uniform vec4 renderColor;
 uniform float tintAmount;
 
 out vec4 gl_Color;
+
+vec4 GammaCorrect(vec4 col, float gamma) {
+	return vec4(pow(col.rgb, vec3(1.0 / gamma)), col.a);
+}
