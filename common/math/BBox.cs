@@ -1,20 +1,23 @@
 ﻿namespace Vanadium;
 
-public struct BBox : IEquatable<BBox> {
+public struct BBox : IEquatable<BBox>
+{
 	public Vector3 Mins;
 
 	public Vector3 Maxs;
 
-	public IEnumerable<Vector3> Corners {
-		get {
-			yield return new Vector3(Mins.x, Mins.y, Mins.z);
-			yield return new Vector3(Maxs.x, Mins.y, Mins.z);
-			yield return new Vector3(Maxs.x, Maxs.y, Mins.z);
-			yield return new Vector3(Mins.x, Maxs.y, Mins.z);
-			yield return new Vector3(Mins.x, Mins.y, Maxs.z);
-			yield return new Vector3(Maxs.x, Mins.y, Maxs.z);
-			yield return new Vector3(Maxs.x, Maxs.y, Maxs.z);
-			yield return new Vector3(Mins.x, Maxs.y, Maxs.z);
+	public IEnumerable<Vector3> Corners
+	{
+		get
+		{
+			yield return new Vector3( Mins.x, Mins.y, Mins.z );
+			yield return new Vector3( Maxs.x, Mins.y, Mins.z );
+			yield return new Vector3( Maxs.x, Maxs.y, Mins.z );
+			yield return new Vector3( Mins.x, Maxs.y, Mins.z );
+			yield return new Vector3( Mins.x, Mins.y, Maxs.z );
+			yield return new Vector3( Maxs.x, Mins.y, Maxs.z );
+			yield return new Vector3( Maxs.x, Maxs.y, Maxs.z );
+			yield return new Vector3( Mins.x, Maxs.y, Maxs.z );
 		}
 	}
 
@@ -22,23 +25,27 @@ public struct BBox : IEquatable<BBox> {
 
 	public Vector3 Size => Maxs - Mins;
 
-	public Vector3 RandomPointInside {
-		get {
+	public Vector3 RandomPointInside
+	{
+		get
+		{
 			Vector3 size = Size;
-			size.x *= Rand.Float(0f, 1f);
-			size.y *= Rand.Float(0f, 1f);
-			size.z *= Rand.Float(0f, 1f);
+			size.x *= Rand.Float( 0f, 1f );
+			size.y *= Rand.Float( 0f, 1f );
+			size.z *= Rand.Float( 0f, 1f );
 			return Mins + size;
 		}
 	}
 
-	public float Volume => MathF.Abs(Mins.x - Maxs.x) * MathF.Abs(Mins.y - Maxs.y) * MathF.Abs(Mins.z - Maxs.z);
+	public float Volume => MathF.Abs( Mins.x - Maxs.x ) * MathF.Abs( Mins.y - Maxs.y ) * MathF.Abs( Mins.z - Maxs.z );
 
-	public BBox(Vector3 mins, Vector3 maxs) {
+	public BBox( Vector3 mins, Vector3 maxs )
+	{
 		Mins = mins;
 		Maxs = maxs;
 	}
-	public BBox(Vector3 center) {
+	public BBox( Vector3 center )
+	{
 		Mins = center;
 		Maxs = center;
 	}
@@ -46,56 +53,64 @@ public struct BBox : IEquatable<BBox> {
 	/// <summary>
 	/// Returns true if this bbox completely contains bbox
 	/// </summary>
-	public readonly bool Contains(BBox b) {
+	public readonly bool Contains( BBox b )
+	{
 		return b.Mins.x >= Mins.x && b.Maxs.x < Maxs.x && b.Mins.y >= Mins.y && b.Maxs.y < Maxs.y && b.Mins.z >= Mins.z && b.Maxs.z < Maxs.z;
 	}
 
 	/// <summary>
 	/// Returns true if this bbox somewat overlaps bbox
 	/// </summary>
-	public readonly bool Overlaps(BBox b) {
+	public readonly bool Overlaps( BBox b )
+	{
 		return Mins.x < b.Maxs.x && b.Mins.x < Maxs.x && Mins.y < b.Maxs.y && b.Mins.y < Maxs.y && Mins.z < b.Maxs.z && b.Mins.z < Maxs.z;
 	}
 
 	/// <summary>
 	/// Returns this bbox but stretched to include this point
 	/// </summary>
-	public BBox AddPoint(Vector3 point) {
+	public BBox AddPoint( Vector3 point )
+	{
 		BBox result = this;
-		result.Mins.x = MathF.Min(result.Mins.x, point.x);
-		result.Mins.y = MathF.Min(result.Mins.y, point.y);
-		result.Mins.z = MathF.Min(result.Mins.z, point.z);
-		result.Maxs.x = MathF.Max(result.Maxs.x, point.x);
-		result.Maxs.y = MathF.Max(result.Maxs.y, point.y);
-		result.Maxs.z = MathF.Max(result.Maxs.z, point.z);
+		result.Mins.x = MathF.Min( result.Mins.x, point.x );
+		result.Mins.y = MathF.Min( result.Mins.y, point.y );
+		result.Mins.z = MathF.Min( result.Mins.z, point.z );
+		result.Maxs.x = MathF.Max( result.Maxs.x, point.x );
+		result.Maxs.y = MathF.Max( result.Maxs.y, point.y );
+		result.Maxs.z = MathF.Max( result.Maxs.z, point.z );
 		return result;
 	}
 
 	/// <summary>
 	/// Returns the closest point on this bbox to another point
 	/// </summary>
-	public Vector3 ClosestPoint(Vector3 point) {
-		return new Vector3(Math.Clamp(point.x, Mins.x, Maxs.x), Math.Clamp(point.y, Mins.y, Maxs.y), Math.Clamp(point.z, Mins.z, Maxs.z));
+	public Vector3 ClosestPoint( Vector3 point )
+	{
+		return new Vector3( Math.Clamp( point.x, Mins.x, Maxs.x ), Math.Clamp( point.y, Mins.y, Maxs.y ), Math.Clamp( point.z, Mins.z, Maxs.z ) );
 	}
 
 	/// <summary>
 	/// Creates a bbox of radius length and depth, and height height
 	/// </summary>
-	public static BBox FromHeightAndRadius(float height, float radius) {
-		return new BBox((Vector3.One * (0f - radius)).WithZ(0f), (Vector3.One * radius).WithZ(height));
+	public static BBox FromHeightAndRadius( float height, float radius )
+	{
+		return new BBox( (Vector3.One * (0f - radius)).WithZ( 0f ), (Vector3.One * radius).WithZ( height ) );
 	}
-	public static BBox FromPositionAndSize(Vector3 center, float size) {
-		BBox result = default(BBox);
+	public static BBox FromPositionAndSize( Vector3 center, float size )
+	{
+		BBox result = default( BBox );
 		result.Mins = center - size * 0.5f;
 		result.Maxs = center + size * 0.5f;
 		return result;
 	}
-	public static BBox operator *(BBox c1, float c2) {
+	public static BBox operator *( BBox c1, float c2 )
+	{
 		c1.Mins *= c2;
 		c1.Maxs *= c2;
 		return c1;
 	}
-	public static BBox operator +(BBox c1, Vector3 c2) {
+	public static BBox operator +( BBox c1, Vector3 c2 )
+	{
 		c1.Mins += c2;
 		c1.Maxs += c2;
 		return c1;
@@ -104,34 +119,43 @@ public struct BBox : IEquatable<BBox> {
 	/// <summary>
 	/// Formats the bbox into a string "mins, maxs"
 	/// </summary>
-	public override string ToString() {
+	public override string ToString()
+	{
 		return $"mins {Mins:0.###}, maxs {Maxs:0.###}";
 	}
-	public static bool operator ==(BBox left, BBox right) {
-		return left.Equals(right);
+	public static bool operator ==( BBox left, BBox right )
+	{
+		return left.Equals( right );
 	}
-	public static bool operator !=(BBox left, BBox right) {
+	public static bool operator !=( BBox left, BBox right )
+	{
 		return !(left == right);
 	}
-	public override bool Equals(object? obj) {
+	public override bool Equals( object? obj )
+	{
 		int result;
-		if(obj is BBox) {
+		if ( obj is BBox )
+		{
 			BBox o = (BBox)obj;
-			result = (Equals(o) ? 1 : 0);
-		} else {
+			result = (Equals( o ) ? 1 : 0);
+		}
+		else
+		{
 			result = 0;
 		}
 
 		return (byte)result != 0;
 	}
-	public bool Equals(BBox o) {
+	public bool Equals( BBox o )
+	{
 		Vector3 mins = Mins;
 		Vector3 maxs = Maxs;
 		Vector3 mins2 = o.Mins;
 		Vector3 maxs2 = o.Maxs;
 		return mins == mins2 && maxs == maxs2;
 	}
-	public override int GetHashCode() {
-		return HashCode.Combine(Mins, Maxs);
+	public override int GetHashCode()
+	{
+		return HashCode.Combine( Mins, Maxs );
 	}
 }

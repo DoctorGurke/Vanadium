@@ -2,24 +2,30 @@
 
 namespace Vanadium;
 
-public class SceneObject {
+public class SceneObject
+{
 	private Model _model;
-	public Model Model { 
-		get {
+	public Model Model
+	{
+		get
+		{
 			return _model;
-		} 
-		set {
+		}
+		set
+		{
 			_model = value;
 			PostModelSet();
 		}
 	}
 
-	public void SetModel(Model model) {
+	public void SetModel( Model model )
+	{
 		Model = model;
 	}
 
-	public void SetModel(string path) {
-		Model = Model.Load(path);
+	public void SetModel( string path )
+	{
+		Model = Model.Load( path );
 	}
 
 	public bool Transparent { get; private set; }
@@ -27,27 +33,36 @@ public class SceneObject {
 	public Color RenderColor = Color.White;
 	public float TintAmount = 1.0f;
 
-	public Vector3 Position { 
-		get {
+	public Vector3 Position
+	{
+		get
+		{
 			return LocalTransform.Position;
 		}
-		set {
+		set
+		{
 			LocalTransform.Position = value;
 		}
 	}
-	public Rotation Rotation { 
-		get {
+	public Rotation Rotation
+	{
+		get
+		{
 			return LocalTransform.Rotation;
 		}
-		set {
+		set
+		{
 			LocalTransform.Rotation = value;
 		}
 	}
-	public float Scale {
-		get {
+	public float Scale
+	{
+		get
+		{
 			return LocalTransform.Scale;
 		}
-		set {
+		set
+		{
 			LocalTransform.Scale = value;
 		}
 	}
@@ -55,19 +70,23 @@ public class SceneObject {
 	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : Parent.GlobalTransform * LocalTransform.TransformMatrix;
 
 	private SceneObject _parent;
-	public SceneObject Parent {
-		get {
+	public SceneObject Parent
+	{
+		get
+		{
 			return _parent;
 		}
-		set {
-			if(value == this) return;
+		set
+		{
+			if ( value == this ) return;
 			_parent = value;
-			value.Children.Add(this);
+			value.Children.Add( this );
 		}
 	}
 	public List<SceneObject> Children = new();
 
-	public SceneObject() {
+	public SceneObject()
+	{
 		Position = Vector3.Zero;
 		Rotation = Rotation.Identity;
 		Scale = 1.0f;
@@ -75,30 +94,38 @@ public class SceneObject {
 		OnSpawn();
 	}
 
-	private void PostModelSet() {
+	private void PostModelSet()
+	{
 		var transparent = false;
-		foreach(var mesh in Model.Meshes) {
-			if(mesh.Material.Transparent) {
+		foreach ( var mesh in Model.Meshes )
+		{
+			if ( mesh.Material.Transparent )
+			{
 				transparent = true;
 				break;
 			}
 		}
 
-		if(transparent) {
-			SceneWorld.AddTransparent(this);
-		} else {
-			SceneWorld.AddOpaque(this);
+		if ( transparent )
+		{
+			SceneWorld.AddTransparent( this );
+		}
+		else
+		{
+			SceneWorld.AddOpaque( this );
 		}
 	}
-	
+
 	public virtual void OnSpawn() { }
 
-	public void Draw() {
-		Model?.Draw(this);
+	public void Draw()
+	{
+		Model?.Draw( this );
 		OnRender();
 	}
 
-	protected virtual void OnRender() {
+	protected virtual void OnRender()
+	{
 		//Rotation = Rotation.RotateAroundAxis(Vector3.Up, Time.Delta * 35);
 	}
 }

@@ -3,36 +3,43 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
-public abstract class Camera {
+public abstract class Camera
+{
 	public static Camera ActiveCamera { get; private set; }
 	internal CameraSetup setup;
 
-	public Vector3 Position {
+	public Vector3 Position
+	{
 		get => setup.Position;
 		set => setup.Position = value;
 	}
 
-	public Rotation Rotation {
+	public Rotation Rotation
+	{
 		get => setup.Rotation;
 		set => setup.Rotation = value;
 	}
 
-	public float FieldOfView {
+	public float FieldOfView
+	{
 		get => setup.FieldOfView;
 		set => setup.FieldOfView = value;
 	}
 
-	public float ZNear {
+	public float ZNear
+	{
 		get => setup.ZNear;
 		set => setup.ZNear = value;
 	}
 
-	public float ZFar {
+	public float ZFar
+	{
 		get => setup.ZFar;
 		set => setup.ZFar = value;
 	}
 
-	public Camera() {
+	public Camera()
+	{
 		ActiveCamera = this;
 		Activate();
 	}
@@ -41,20 +48,22 @@ public abstract class Camera {
 
 	public virtual void Update() { }
 
-	public static void BuildActiveCamera() {
+	public static void BuildActiveCamera()
+	{
 		ActiveCamera.Update();
-		ActiveCamera.BuildView(ref ActiveCamera.setup);
+		ActiveCamera.BuildView( ref ActiveCamera.setup );
 	}
 
-	public virtual void BuildView(ref CameraSetup setup) {
-		if(setup.FieldOfView == 0) setup.FieldOfView = 90;
+	public virtual void BuildView( ref CameraSetup setup )
+	{
+		if ( setup.FieldOfView == 0 ) setup.FieldOfView = 90;
 
-		if(setup.ZNear == 0) setup.ZNear = 0.5f;
-		if(setup.ZFar == 0) setup.ZFar = 1000.0f;
+		if ( setup.ZNear == 0 ) setup.ZNear = 0.5f;
+		if ( setup.ZFar == 0 ) setup.ZFar = 1000.0f;
 	}
 
-	public virtual void BuildInput(KeyboardState keyboard, MouseState mouse) { }
+	public virtual void BuildInput( KeyboardState keyboard, MouseState mouse ) { }
 
-	public Matrix4 ViewMatrix => Matrix4.LookAt(Position, Position + Rotation.Forward, Rotation.Up);
-	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar);
+	public Matrix4 ViewMatrix => Matrix4.LookAt( Position, Position + Rotation.Forward, Rotation.Up );
+	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView( FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar );
 }
