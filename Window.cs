@@ -249,13 +249,17 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				var ent = new SceneObject
+				//var ent = new SceneObject
+				//{
+				//	Model = Model.Load( "models/transparency_test.fbx" ),
+				//	Position = cam.Position + cam.Rotation.Forward,
+				//	Rotation = cam.Rotation
+				//};
+				//ent.RenderColor = Color.Random;
+				new TestObject
 				{
-					Model = Model.Load( "models/transparency_test.fbx" ),
-					Position = cam.Position + cam.Rotation.Forward,
-					Rotation = cam.Rotation
+					Position = cam.Position + cam.Rotation.Forward
 				};
-				ent.RenderColor = Color.Random;
 			}
 
 			WasUiMode = false;

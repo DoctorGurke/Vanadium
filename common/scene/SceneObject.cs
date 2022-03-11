@@ -67,7 +67,7 @@ public class SceneObject
 		}
 	}
 	public Transform LocalTransform;
-	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : Parent.GlobalTransform * LocalTransform.TransformMatrix;
+	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 
 	private SceneObject _parent;
 	public SceneObject Parent
