@@ -284,9 +284,9 @@ public class Window : GameWindow
 	{
 		base.OnResize( e );
 
-		Screen.UpdateSize( Size );
-		GL.Viewport( 0, 0, Size.X, Size.Y );
-		_guicontroller.WindowResized( Size );
+		Screen.UpdateSize( ClientSize );
+		GL.Viewport( 0, 0, ClientSize.X, ClientSize.Y );
+		_guicontroller.WindowResized( ClientSize );
 	}
 
 	[DebuggerStepThrough]
