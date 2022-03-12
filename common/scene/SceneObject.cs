@@ -126,6 +126,6 @@ public class SceneObject
 
 	protected virtual void OnRender()
 	{
-		//Rotation = Rotation.RotateAroundAxis(Vector3.Up, Time.Delta * 35);
+		DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
 	}
 }
