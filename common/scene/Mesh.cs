@@ -140,12 +140,7 @@ public class Mesh
 		GL.BufferData( BufferTarget.ElementArrayBuffer, Indices.Length * sizeof( uint ), Indices, BufferUsageHint.StaticDraw );
 
 		GL.BindVertexArray( 0 );
-
-		_timer = new Stopwatch();
-		_timer.Start();
 	}
-
-	private Stopwatch _timer;
 
 	public void Draw( SceneObject? sceneobject )
 	{
