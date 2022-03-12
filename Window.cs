@@ -100,19 +100,6 @@ public class Window : GameWindow
 			Model = Model.Primitives.Axis
 		};
 
-		//var sceneObject1 = new SceneObject {
-		//	Position = Vector3.Right * 3,
-		//	Rotation = Rotation.Identity.RotateAroundAxis(Vector3.Right, 45)
-		//};
-		//sceneObject1.Model = Model.Load("models/suzanne.fbx");
-
-		//var sceneObject2 = new SceneObject {
-		//	Position = Vector3.Up * 5 + Vector3.Right * 3,
-		//	Scale = 0.5f
-		//};
-		//sceneObject2.Parent = sceneObject1;
-		//sceneObject2.Model = Model.Load("models/fancy.fbx");
-
 		// init camera
 		_ = new FirstPersonCamera
 		{
@@ -254,17 +241,10 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				//var ent = new SceneObject
-				//{
-				//	Model = Model.Load( "models/transparency_test.fbx" ),
-				//	Position = cam.Position + cam.Rotation.Forward,
-				//	Rotation = cam.Rotation
-				//};
-				//ent.RenderColor = Color.Random;
-				//new TestObject
-				//{
-				//	Position = cam.Position + cam.Rotation.Forward
-				//};
+				new TestObject
+				{
+					Position = cam.Position + cam.Rotation.Forward
+				};
 				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, true );
 			}
 
