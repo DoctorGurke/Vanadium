@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Vanadium;
 
-public class Material
+public struct Material : IDisposable
 {
 	public enum MaterialParamType
 	{
@@ -35,6 +35,12 @@ public class Material
 
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
 	public Shader Shader { get; set; }
+
+
+	public void Dispose()
+	{
+		GL.DeleteShader( Shader.Handle );
+	}
 
 	/// <summary>
 	/// What types the shader has.
