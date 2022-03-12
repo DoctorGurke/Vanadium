@@ -1,4 +1,6 @@
-﻿namespace Vanadium;
+﻿using OpenTK.Mathematics;
+
+namespace Vanadium;
 
 public struct Vector3 : IEquatable<Vector3>
 {
@@ -127,6 +129,10 @@ public struct Vector3 : IEquatable<Vector3>
 	public static Vector3 operator *( float f, Vector3 c1 )
 	{
 		return new Vector3( c1.x * f, c1.y * f, c1.z * f );
+	}
+	public static Vector3 operator *( Vector3 c1, Matrix4 transform )
+	{
+		return OpenTK.Mathematics.Vector3.TransformPosition( c1, transform );
 	}
 	public static Vector3 operator /( Vector3 c1, float f )
 	{
