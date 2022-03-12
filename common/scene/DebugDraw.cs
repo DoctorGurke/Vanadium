@@ -5,7 +5,7 @@ namespace Vanadium;
 
 public static class DebugDraw
 {
-	private class DebugLine: IDisposable
+	private class DebugLine : IDisposable
 	{
 		public Vector3 start;
 		public Vector3 end;
@@ -30,11 +30,10 @@ public static class DebugDraw
 		public void Dispose()
 		{
 			GL.DeleteBuffer( vbo );
-			GL.DeleteBuffer( ebo );
 			GL.DeleteVertexArray( vao );
 		}
 
-		private int vao, vbo, ebo;
+		private int vao, vbo;
 
 		public Material Material;
 
@@ -58,10 +57,6 @@ public static class DebugDraw
 				GL.VertexAttribPointer( vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vector3 ) ), 0 );
 			}
 
-			GLUtil.CreateBuffer( "Debugline EBO", out ebo );
-			GL.BindBuffer( BufferTarget.ElementArrayBuffer, ebo );
-			GL.BufferData( BufferTarget.ElementArrayBuffer, 2 * sizeof( uint ), new uint[] { 0, 1 }, BufferUsageHint.StaticDraw );
-
 			GL.BindVertexArray( 0 );
 		}
 
@@ -74,7 +69,7 @@ public static class DebugDraw
 				GL.Disable( EnableCap.DepthTest );
 
 			GL.BindVertexArray( vao );
-			GL.DrawElements( PrimitiveType.Lines, 2, DrawElementsType.UnsignedInt, 0 );
+			GL.DrawArrays( PrimitiveType.Lines, 0, 2 );
 
 			// re-enable depth test
 			GL.Enable( EnableCap.DepthTest );
@@ -93,10 +88,10 @@ public static class DebugDraw
 		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ) );
 	}
 
-	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true)
+	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true )
 	{
 		var bbox = new BBox( mins, maxs );
-		Box(position, bbox, color, duration, depthtest );
+		Box( position, bbox, color, duration, depthtest );
 	}
 
 	public static void Box( Vector3 position, BBox box, Color color, float duration = 0, bool depthtest = true )
