@@ -5,7 +5,7 @@ namespace Vanadium;
 
 public static class DebugDraw
 {
-	private class DebugLine
+	private class DebugLine: IDisposable
 	{
 		public Vector3 start;
 		public Vector3 end;
@@ -14,7 +14,7 @@ public static class DebugDraw
 		public bool depthtest;
 		public TimeSince TimeSinceSpawned;
 
-		public DebugLine(Vector3 start, Vector3 end, Color color, float duration, bool depthtest)
+		public DebugLine( Vector3 start, Vector3 end, Color color, float duration, bool depthtest )
 		{
 			this.start = start;
 			this.end = end;
@@ -27,6 +27,13 @@ public static class DebugDraw
 			SetupMesh();
 		}
 
+		public void Dispose()
+		{
+			GL.DeleteBuffer( vbo );
+			GL.DeleteBuffer( ebo );
+			GL.DeleteVertexArray( vao );
+		}
+
 		private int vao, vbo, ebo;
 
 		public Material Material;
@@ -37,7 +44,7 @@ public static class DebugDraw
 			Material.Use();
 
 			GLUtil.CreateBuffer( "Debugline VBO", out vbo );
-			GL.BindBuffer(BufferTarget.ArrayBuffer, vbo );
+			GL.BindBuffer( BufferTarget.ArrayBuffer, vbo );
 			GL.BufferData( BufferTarget.ArrayBuffer, 2 * Marshal.SizeOf( typeof( Vector3 ) ), new Vector3[] { start, end }, BufferUsageHint.StaticDraw );
 
 			GLUtil.CreateVertexArray( "Debugline VAO", out vao );
@@ -52,7 +59,7 @@ public static class DebugDraw
 			}
 
 			GLUtil.CreateBuffer( "Debugline EBO", out ebo );
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, ebo );
+			GL.BindBuffer( BufferTarget.ElementArrayBuffer, ebo );
 			GL.BufferData( BufferTarget.ElementArrayBuffer, 2 * sizeof( uint ), new uint[] { 0, 1 }, BufferUsageHint.StaticDraw );
 
 			GL.BindVertexArray( 0 );
@@ -63,7 +70,7 @@ public static class DebugDraw
 			Material.Use();
 			Material.Set( "color", color );
 
-			if(!depthtest)
+			if ( !depthtest )
 				GL.Disable( EnableCap.DepthTest );
 
 			GL.BindVertexArray( vao );
@@ -81,21 +88,51 @@ public static class DebugDraw
 
 	private static IList<DebugLine> DebugLines = new List<DebugLine>();
 
-	public static void Line(Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true)
+	public static void Line( Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true )
 	{
-		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ));
+		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ) );
+	}
+
+	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true)
+	{
+		var bbox = new BBox( mins, maxs );
+		Box(position, bbox, color, duration, depthtest );
+	}
+
+	public static void Box( Vector3 position, BBox box, Color color, float duration = 0, bool depthtest = true )
+	{
+		var corners = box.Corners.ToArray();
+
+		// bottom
+		Line( position + corners[0], position + corners[1], color, duration, depthtest );
+		Line( position + corners[1], position + corners[5], color, duration, depthtest );
+		Line( position + corners[5], position + corners[4], color, duration, depthtest );
+		Line( position + corners[4], position + corners[0], color, duration, depthtest );
+
+		// top
+		Line( position + corners[3], position + corners[2], color, duration, depthtest );
+		Line( position + corners[2], position + corners[6], color, duration, depthtest );
+		Line( position + corners[6], position + corners[7], color, duration, depthtest );
+		Line( position + corners[7], position + corners[3], color, duration, depthtest );
+
+		// sides
+		Line( position + corners[0], position + corners[3], color, duration, depthtest );
+		Line( position + corners[1], position + corners[2], color, duration, depthtest );
+		Line( position + corners[5], position + corners[6], color, duration, depthtest );
+		Line( position + corners[4], position + corners[7], color, duration, depthtest );
 	}
 
 	public static void Draw()
 	{
-		foreach( var line in DebugLines.Reverse() )
+		foreach ( var line in DebugLines.Reverse() )
 		{
 			line.Draw();
 
 			// check lifetime of debugline
-			if(line.TimeSinceSpawned >= line.duration)
+			if ( line.TimeSinceSpawned >= line.duration )
 			{
 				DebugLines.Remove( line );
+				line.Dispose();
 			}
 		}
 	}

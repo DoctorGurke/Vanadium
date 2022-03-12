@@ -22,6 +22,7 @@ public class TestObject : SceneObject
 
 	protected override void OnRender()
 	{
+		base.OnRender();
 		Rotation = Rotation.RotateAroundAxis( Vector3.Up, Time.Delta * 35 );
 	}
 }
