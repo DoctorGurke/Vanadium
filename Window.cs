@@ -170,6 +170,11 @@ public class Window : GameWindow
 		// draw skybox after opaques
 		Skybox.ActiveSkybox.Draw();
 
+		DebugDraw.Line( Vector3.Zero, Vector3.Up * 10, Color.Red );
+
+		// draw any debug lines we have. Treat them as opaques by default, they could be disabling depth themselves anyways
+		DebugDraw.Draw();
+
 		// draw transparents last
 		SceneWorld.DrawTransparents();
 
@@ -256,10 +261,11 @@ public class Window : GameWindow
 				//	Rotation = cam.Rotation
 				//};
 				//ent.RenderColor = Color.Random;
-				new TestObject
-				{
-					Position = cam.Position + cam.Rotation.Forward
-				};
+				//new TestObject
+				//{
+				//	Position = cam.Position + cam.Rotation.Forward
+				//};
+				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, true );
 			}
 
 			WasUiMode = false;
