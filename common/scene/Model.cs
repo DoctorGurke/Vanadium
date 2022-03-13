@@ -11,9 +11,9 @@ public class Model : IDisposable
 
 	public bool IsError = false;
 
-	public static string ErrorModel = "models/primitives/error.fbx";
+	public static string ErrorModel { get; } = "models/primitives/error.fbx";
 
-	private static Dictionary<string, Model> PrecachedModels = new();
+	private static readonly Dictionary<string, Model> PrecachedModels = new();
 
 	public BBox RenderBounds { get; private set; }
 
@@ -36,6 +36,7 @@ public class Model : IDisposable
 		{
 			mesh.Dispose();
 		}
+		GC.SuppressFinalize( this );
 	}
 
 	public static Model Load( string path )
@@ -50,7 +51,7 @@ public class Model : IDisposable
 		Log.Info( $"loading model: {path}" );
 		var fileName = Path.Combine( $"{Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )}", path );
 
-		AssimpContext importer = new AssimpContext();
+		AssimpContext importer = new();
 
 		Scene? scene;
 		try
@@ -69,7 +70,7 @@ public class Model : IDisposable
 			return Load( ErrorModel );
 		}
 
-		var model = new Model();
+		var model = new();
 		model.Meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode( scene.RootNode, scene );
 		model.RenderBounds = model.GetRenderBounds();
@@ -100,7 +101,7 @@ public class Model : IDisposable
 		foreach ( int index in node.MeshIndices )
 		{
 			Assimp.Mesh mesh = scene.Meshes[index];
-			Meshes[index] = processMesh( mesh, scene );
+			Meshes[index] = ProcessMesh( mesh, scene );
 		}
 		for ( int i = 0; i < node.ChildCount; i++ )
 		{
@@ -108,7 +109,7 @@ public class Model : IDisposable
 		}
 	}
 
-	private Mesh processMesh( Assimp.Mesh mesh, Scene scene )
+	private Mesh ProcessMesh( Assimp.Mesh mesh, Scene scene )
 	{
 		Mesh.Vertex[] vertices = new Mesh.Vertex[mesh.VertexCount];
 		int[] indices = new int[mesh.FaceCount * 3];
@@ -179,7 +180,7 @@ public class Model : IDisposable
 		}
 
 		Log.Info( $"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}" );
-		Mesh fmesh = new Mesh( vertices, indices, scene.Materials[mesh.MaterialIndex].Name );
+		Mesh fmesh = new( vertices, indices, scene.Materials[mesh.MaterialIndex].Name );
 		fmesh.Model = this;
 		return fmesh;
 	}

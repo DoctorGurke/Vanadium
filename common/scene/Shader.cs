@@ -98,7 +98,7 @@ public class Shader : IDisposable
 			if ( includePath == path )
 			{
 				Log.Info( $"Recursive include for {includePath} found! Defusing..." );
-				data.Replace( matchstring, "" );
+				data = data.Replace( matchstring, "" );
 				continue;
 			}
 
@@ -311,5 +311,6 @@ public class Shader : IDisposable
 	public void Dispose()
 	{
 		GL.DeleteShader( Handle );
+		GC.SuppressFinalize( this );
 	}
 }

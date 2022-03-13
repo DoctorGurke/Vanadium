@@ -40,27 +40,27 @@ public struct Vector3 : IEquatable<Vector3>
 		}
 	}
 
-	public static readonly Vector3 One = new Vector3( 1f );
+	public static readonly Vector3 One = new( 1f );
 
-	public static readonly Vector3 Zero = new Vector3( 0f );
+	public static readonly Vector3 Zero = new( 0f );
 
-	public static readonly Vector3 Forward = new Vector3( 0f, 0f, -1f );
+	public static readonly Vector3 Forward = new( 0f, 0f, -1f );
 
 	public static readonly Vector3 Backward = -Forward;
 
-	public static readonly Vector3 Up = new Vector3( 0f, 1f, 0f );
+	public static readonly Vector3 Up = new( 0f, 1f, 0f );
 
 	public static readonly Vector3 Down = -Up;
 
-	public static readonly Vector3 Right = new Vector3( 1f, 0f, 0f );
+	public static readonly Vector3 Right = new( 1f, 0f, 0f );
 
 	public static readonly Vector3 Left = -Right;
 
-	public static readonly Vector3 OneX = new Vector3( 1f, 0f, 0f );
+	public static readonly Vector3 OneX = new( 1f, 0f, 0f );
 
-	public static readonly Vector3 OneY = new Vector3( 0f, 1f, 0f );
+	public static readonly Vector3 OneY = new( 0f, 1f, 0f );
 
-	public static readonly Vector3 OneZ = new Vector3( 0f, 0f, 1f );
+	public static readonly Vector3 OneZ = new( 0f, 0f, 1f );
 
 	public readonly float Length => MathF.Sqrt( LengthSquared );
 	public readonly float LengthSquared => _vec.LengthSquared;

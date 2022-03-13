@@ -76,7 +76,7 @@ public static class Rand
 	/// <summary>
 	/// Returns a random value in an array
 	/// </summary>
-	public static T? FromArray<T>( T[] array, T? defVal = default( T ) )
+	public static T? FromArray<T>( T[] array, T? defVal = default )
 	{
 		return CurrentRandom.FromArray( array, defVal );
 	}
@@ -84,7 +84,7 @@ public static class Rand
 	/// <summary>
 	/// Returns a random value in a list
 	/// </summary>
-	public static T? FromList<T>( List<T> array, T? defVal = default( T ) )
+	public static T? FromList<T>( List<T> array, T? defVal = default )
 	{
 		return CurrentRandom.FromList( array, defVal );
 	}
@@ -143,7 +143,7 @@ public static class RandomExtension
 	/// <summary>
 	/// Returns a random value in an array
 	/// </summary>
-	public static T? FromArray<T>( this Random self, T[] array, T? defVal = default( T ) )
+	public static T? FromArray<T>( this Random self, T[] array, T? defVal = default )
 	{
 		if ( array == null || array.Length == 0 )
 		{
@@ -156,7 +156,7 @@ public static class RandomExtension
 	/// <summary>
 	/// Returns a random value in a list
 	/// </summary>
-	public static T? FromList<T>( this Random self, List<T> array, T? defVal = default( T ) )
+	public static T? FromList<T>( this Random self, List<T> array, T? defVal = default )
 	{
 		if ( array == null || array.Count == 0 )
 		{

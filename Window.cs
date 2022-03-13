@@ -13,11 +13,11 @@ public class Window : GameWindow
 	public Window( GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings ) : base( gameWindowSettings, nativeWindowSettings ) { }
 
 	// debugging
-	private static DebugProc _debugProcCallback = DebugCallback;
+	private static readonly DebugProc _debugProcCallback = DebugCallback;
 
-	private Stopwatch Timer = new();
+	private readonly Stopwatch Timer = new();
 
-	public static int PerViewUniformBufferHandle;
+	public static int PerViewUniformBufferHandle { get; }
 
 	private ImGuiController _guicontroller;
 
@@ -98,7 +98,7 @@ public class Window : GameWindow
 		floor.RenderColor = Color.Blue;
 		floor.TintAmount = 0.5f;
 
-		new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Primitives.Axis
 		};
@@ -250,7 +250,7 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				new TestObject
+				_ = new TestObject
 				{
 					Position = cam.Position + cam.Rotation.Forward
 				};

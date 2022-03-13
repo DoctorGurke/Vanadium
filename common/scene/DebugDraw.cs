@@ -164,8 +164,8 @@ public static class DebugDraw
 		GL.Enable( EnableCap.DepthTest );
 	}
 
-	private static IList<DebugLine.DebugVertex> DepthLineVertices = new List<DebugLine.DebugVertex>();
-	private static IList<DebugLine.DebugVertex> NoDepthLineVertices = new List<DebugLine.DebugVertex>();
+	private static readonly IList<DebugLine.DebugVertex> DepthLineVertices = new List<DebugLine.DebugVertex>();
+	private static readonly IList<DebugLine.DebugVertex> NoDepthLineVertices = new List<DebugLine.DebugVertex>();
 
 	public static void PrepareDraw()
 	{

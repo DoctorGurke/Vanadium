@@ -96,7 +96,7 @@ public class ImGuiController : IDisposable
 	public void RecreateFontDeviceTexture()
 	{
 		ImGuiIOPtr io = ImGui.GetIO();
-		io.Fonts.GetTexDataAsRGBA32( out IntPtr pixels, out int width, out int height, out int bytesPerPixel );
+		io.Fonts.GetTexDataAsRGBA32( out IntPtr pixels, out int width, out int height, out int _ );
 
 		_fontTexture = new FontTexture( "ImGui Text Atlas", width, height, pixels );
 
@@ -139,7 +139,7 @@ public class ImGuiController : IDisposable
 		io.DeltaTime = deltaSeconds; // DeltaTime is in seconds.
 	}
 
-	readonly List<char> PressedChars = new List<char>();
+	readonly List<char> PressedChars = new();
 
 	private void UpdateImGuiInput( GameWindow wnd )
 	{
@@ -198,7 +198,7 @@ public class ImGuiController : IDisposable
 		PressedChars.Add( keyChar );
 	}
 
-	internal void MouseScroll( Vector2 offset )
+	internal static void MouseScroll( Vector2 offset )
 	{
 		ImGuiIOPtr io = ImGui.GetIO();
 
@@ -343,7 +343,7 @@ public class ImGuiController : IDisposable
 		PressChar( (char)e.Unicode );
 	}
 
-	public void OnMouseWheel( MouseWheelEventArgs e )
+	public static void OnMouseWheel( MouseWheelEventArgs e )
 	{
 		MouseScroll( e.Offset );
 	}
@@ -351,5 +351,6 @@ public class ImGuiController : IDisposable
 	public void Dispose()
 	{
 		_fontTexture.Dispose();
+		GC.SuppressFinalize( this );
 	}
 }

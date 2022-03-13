@@ -55,6 +55,7 @@ public class Mesh : IDisposable
 		GL.DeleteVertexArray( vao );
 		GL.DeleteBuffer( vbo );
 		GL.DeleteBuffer( ebo );
+		GC.SuppressFinalize( this );
 	}
 
 	private void SetupMesh()

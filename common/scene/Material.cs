@@ -24,7 +24,7 @@ public struct Material : IDisposable
 		SamplerCube
 	}
 
-	private static string[] skyboxSides = {
+	private static readonly string[] skyboxSides = {
 		"right",
 		"left",
 		"up",
@@ -54,7 +54,7 @@ public struct Material : IDisposable
 	/// </summary>
 	public Dictionary<string, string> MaterialData { get; private set; } = new();
 
-	private static Dictionary<string, Material> PrecachedMaterials = new();
+	private static readonly Dictionary<string, Material> PrecachedMaterials = new();
 
 	public static Material ErrorMaterial => Load( "materials/core/error.vanmat" );
 	public bool IsError { get; private set; } = false;
@@ -473,15 +473,15 @@ public struct Material : IDisposable
 	}
 
 	// this is dumb
-	private Dictionary<string, bool> BooleanData = new();
-	private Dictionary<string, int> IntegerData = new();
-	private Dictionary<string, uint> UnsignedIntegerData = new();
-	private Dictionary<string, float> FloatData = new();
-	private Dictionary<string, double> DoubleData = new();
-	private Dictionary<string, Vector2> Vector2Data = new();
-	private Dictionary<string, Vector3> Vector3Data = new();
-	private Dictionary<string, Vector4> Vector4Data = new();
-	private Dictionary<string, Matrix4> Matrix4Data = new();
-	private Dictionary<string, string> TextureData = new(); // just keep the path, we load it from the Texture class
-	private Dictionary<string, TextureCube> CubeTextureData = new(); // keep reference since we don't cache cubemap textures
+	private readonly Dictionary<string, bool> BooleanData = new();
+	private readonly Dictionary<string, int> IntegerData = new();
+	private readonly Dictionary<string, uint> UnsignedIntegerData = new();
+	private readonly Dictionary<string, float> FloatData = new();
+	private readonly Dictionary<string, double> DoubleData = new();
+	private readonly Dictionary<string, Vector2> Vector2Data = new();
+	private readonly Dictionary<string, Vector3> Vector3Data = new();
+	private readonly Dictionary<string, Vector4> Vector4Data = new();
+	private readonly Dictionary<string, Matrix4> Matrix4Data = new();
+	private readonly Dictionary<string, string> TextureData = new(); // just keep the path, we load it from the Texture class
+	private readonly Dictionary<string, TextureCube> CubeTextureData = new(); // keep reference since we don't cache cubemap textures
 }

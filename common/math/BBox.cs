@@ -107,7 +107,7 @@ public struct BBox : IEquatable<BBox>
 	}
 	public static BBox FromPositionAndSize( Vector3 center, float size )
 	{
-		BBox result = default( BBox );
+		BBox result = default;
 		result.Mins = center - size * 0.5f;
 		result.Maxs = center + size * 0.5f;
 		return result;

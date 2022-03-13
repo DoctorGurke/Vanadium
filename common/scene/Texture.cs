@@ -10,7 +10,7 @@ public class Texture : IDisposable
 {
 	public readonly int Handle;
 
-	private static Dictionary<string, Texture> PrecachedTextures = new();
+	private static readonly Dictionary<string, Texture> PrecachedTextures = new();
 
 	public static Texture Load( string path )
 	{
