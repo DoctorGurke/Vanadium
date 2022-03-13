@@ -62,6 +62,8 @@ public struct Vector3 : IEquatable<Vector3>
 
 	public static readonly Vector3 OneZ = new( 0f, 0f, 1f );
 
+	public static Vector3 Random => new Vector3( Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ), Rand.Float( -1f, 1f ) ).Normal * Rand.Float( 0f, 1f );
+
 	public readonly float Length => MathF.Sqrt( LengthSquared );
 	public readonly float LengthSquared => _vec.LengthSquared;
 

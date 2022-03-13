@@ -267,7 +267,7 @@ public class Window : GameWindow
 			{
 				for ( int i = 0; i < 50_000; i++ )
 				{
-					DebugDraw.Box( cam.Position, Vector3.One * 3, Vector3.One * -3, Color.Random, 100, true );
+					DebugDraw.Box( cam.Position + Vector3.Random, Vector3.One * 3, Vector3.One * -3, Color.Random, Rand.Float(1, 50), true );
 				}
 			}
 
