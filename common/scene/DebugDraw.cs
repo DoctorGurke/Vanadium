@@ -47,17 +47,26 @@ public static class DebugDraw
 
 	private static Material Material = Material.Load( "materials/core/debugline.vanmat" );
 
-	private static int vao, vbo, ebo;
+	// depth
+	private static int dvao, dvbo, debo;
+	// no depth
+	private static int nvao, nvbo, nebo;
 
 	public static void Init()
 	{
+		InitDepth();
+		InitNoDepth();
+	}
+
+	private static void InitDepth()
+	{
 		Material.Use();
 
-		GLUtil.CreateBuffer( "Debugline VBO", out vbo );
-		GL.BindBuffer( BufferTarget.ArrayBuffer, vbo );
+		GLUtil.CreateBuffer( "Debuglin depth VBO", out dvbo );
+		GL.BindBuffer( BufferTarget.ArrayBuffer, dvbo );
 
-		GLUtil.CreateVertexArray( "Debugline VAO", out vao );
-		GL.BindVertexArray( vao );
+		GLUtil.CreateVertexArray( "Debugline depth VAO", out dvao );
+		GL.BindVertexArray( dvao );
 
 		// vertex positions
 		var vertexPositionLocation = Material.GetAttribLocation( "vPosition" );
@@ -75,52 +84,109 @@ public static class DebugDraw
 			GL.VertexAttribPointer( vertexColorLocation, 4, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), Marshal.OffsetOf( typeof( DebugLine.DebugVertex ), "color" ) );
 		}
 
-		GLUtil.CreateBuffer( "Debugline EBO", out ebo );
-		GL.BindBuffer( BufferTarget.ElementArrayBuffer, ebo );
+		GLUtil.CreateBuffer( "Debugline depth EBO", out debo );
+		GL.BindBuffer( BufferTarget.ElementArrayBuffer, debo );
 	}
 
-	private static IList<DebugLine.DebugVertex> LineVertices = new List<DebugLine.DebugVertex>();
-
-	private static void DrawLines()
+	private static void InitNoDepth()
 	{
 		Material.Use();
 
-		GL.BindVertexArray( vao );
+		GLUtil.CreateBuffer( "Debuglin depth VBO", out nvbo );
+		GL.BindBuffer( BufferTarget.ArrayBuffer, nvbo );
+
+		GLUtil.CreateVertexArray( "Debugline depth VAO", out nvao );
+		GL.BindVertexArray( nvao );
+
+		// vertex positions
+		var vertexPositionLocation = Material.GetAttribLocation( "vPosition" );
+		if ( vertexPositionLocation >= 0 )
+		{
+			GL.EnableVertexAttribArray( vertexPositionLocation );
+			GL.VertexAttribPointer( vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), 0 );
+		}
+
+		// vertex color
+		var vertexColorLocation = Material.GetAttribLocation( "vColor" );
+		if ( vertexColorLocation >= 0 )
+		{
+			GL.EnableVertexAttribArray( vertexColorLocation );
+			GL.VertexAttribPointer( vertexColorLocation, 4, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), Marshal.OffsetOf( typeof( DebugLine.DebugVertex ), "color" ) );
+		}
+
+		GLUtil.CreateBuffer( "Debugline depth EBO", out nebo );
+		GL.BindBuffer( BufferTarget.ElementArrayBuffer, nebo );
+	}
+
+	public static void DrawDepthLines()
+	{
+		Material.Use();
+
+		GL.BindVertexArray( dvao );
 
 		// update vertex positions
-		GL.BindBuffer( BufferTarget.ArrayBuffer, vbo );
-		GL.BufferData( BufferTarget.ArrayBuffer, LineVertices.Count * Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), LineVertices.ToArray(), BufferUsageHint.StaticDraw );
+		GL.BindBuffer( BufferTarget.ArrayBuffer, dvbo );
+		GL.BufferData( BufferTarget.ArrayBuffer, DepthLineVertices.Count * Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), DepthLineVertices.ToArray(), BufferUsageHint.StaticDraw );
 
-		var indices = new uint[LineVertices.Count * 2];
-		for ( uint i = 0; i < LineVertices.Count * 2; i++ )
+		var indices = new uint[DepthLineVertices.Count * 2];
+		for ( uint i = 0; i < DepthLineVertices.Count * 2; i++ )
 		{
 			indices[i] = i;
 		}
 
-		GL.BindBuffer( BufferTarget.ElementArrayBuffer, ebo );
+		GL.BindBuffer( BufferTarget.ElementArrayBuffer, debo );
 		GL.BufferData( BufferTarget.ElementArrayBuffer, indices.Length * sizeof( uint ), indices, BufferUsageHint.StaticDraw );
 
 		GL.DrawElements( PrimitiveType.Lines, indices.Length, DrawElementsType.UnsignedInt, 0 );
 	}
 
-	public static void Draw()
+	public static void DrawNoDepthLines()
+	{
+		Material.Use();
+
+		GL.BindVertexArray( nvao );
+
+		// update vertex positions
+		GL.BindBuffer( BufferTarget.ArrayBuffer, nvbo );
+		GL.BufferData( BufferTarget.ArrayBuffer, NoDepthLineVertices.Count * Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), NoDepthLineVertices.ToArray(), BufferUsageHint.StaticDraw );
+
+		var indices = new uint[NoDepthLineVertices.Count * 2];
+		for ( uint i = 0; i < NoDepthLineVertices.Count * 2; i++ )
+		{
+			indices[i] = i;
+		}
+
+		GL.BindBuffer( BufferTarget.ElementArrayBuffer, nebo );
+		GL.BufferData( BufferTarget.ElementArrayBuffer, indices.Length * sizeof( uint ), indices, BufferUsageHint.StaticDraw );
+
+		GL.DrawElements( PrimitiveType.Lines, indices.Length, DrawElementsType.UnsignedInt, 0 );
+	}
+
+	private static IList<DebugLine.DebugVertex> DepthLineVertices = new List<DebugLine.DebugVertex>();
+	private static IList<DebugLine.DebugVertex> NoDepthLineVertices = new List<DebugLine.DebugVertex>();
+
+	public static void PrepareDraw()
 	{
 		// clear prev line vertices
-		LineVertices.Clear();
+		DepthLineVertices.Clear();
+		NoDepthLineVertices.Clear();
 
 		foreach ( var line in DebugLines.Reverse() )
 		{
-			LineVertices.Add( line.start );
-			LineVertices.Add( line.end );
-
-			// check lifetime of debugline
-			if ( line.TimeSinceSpawned >= line.duration )
+			if(line.depthtest)
 			{
-				DebugLines.Remove( line );
+				DepthLineVertices.Add( line.start );
+				DepthLineVertices.Add( line.end );
+			} 
+			else
+			{
+				NoDepthLineVertices.Add( line.start );
+				NoDepthLineVertices.Add( line.end );
 			}
 		}
 
-		DrawLines();
+		// remove expired lines
+		DebugLines = DebugLines.Except( DebugLines.Where(x => x.TimeSinceSpawned >= x.duration) ).ToList();
 	}
 
 	public static void Line( Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true )

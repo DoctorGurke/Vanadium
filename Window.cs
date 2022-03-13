@@ -162,11 +162,17 @@ public class Window : GameWindow
 
 		DebugDraw.Line( Vector3.Zero, Vector3.Up * 10, Color.Red );
 
-		// draw any debug lines we have. Treat them as opaques by default, they could be disabling depth themselves anyways
-		DebugDraw.Draw();
+		// process debug lines and sort them into their buffers
+		DebugDraw.PrepareDraw();
+
+		// draw lines with depth first
+		DebugDraw.DrawDepthLines();
 
 		// draw transparents last
 		SceneWorld.DrawTransparents();
+
+		// draw lines without depth after everything
+		DebugDraw.DrawNoDepthLines();
 
 		//ImGui.ShowDemoWindow();
 
@@ -244,17 +250,17 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				//new TestObject
-				//{
-				//	Position = cam.Position + cam.Rotation.Forward
-				//};
-				new SceneObject
+				new TestObject
 				{
-					Model = Model.Load( "models/transparency_test.fbx" ),
-					Position = cam.Position + cam.Rotation.Forward,
-					Rotation = cam.Rotation
+					Position = cam.Position + cam.Rotation.Forward
 				};
-				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, true );
+				//new SceneObject
+				//{
+				//	Model = Model.Load( "models/transparency_test.fbx" ),
+				//	Position = cam.Position + cam.Rotation.Forward,
+				//	Rotation = cam.Rotation
+				//};
+				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
 			}
 
 			WasUiMode = false;
