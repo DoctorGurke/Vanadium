@@ -4,12 +4,12 @@ namespace Vanadium;
 
 public class SceneObject
 {
-	private Model _model;
-	public Model Model
+	private Model? _model;
+	public Model? Model
 	{
 		get
 		{
-			return _model;
+			return _model ?? Model.Primitives.Error;
 		}
 		set
 		{
@@ -69,8 +69,8 @@ public class SceneObject
 	public Transform LocalTransform;
 	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 
-	private SceneObject _parent;
-	public SceneObject Parent
+	private SceneObject? _parent;
+	public SceneObject? Parent
 	{
 		get
 		{
@@ -80,7 +80,7 @@ public class SceneObject
 		{
 			if ( value == this ) return;
 			_parent = value;
-			value.Children.Add( this );
+			value?.Children.Add( this );
 		}
 	}
 	public List<SceneObject> Children = new();
@@ -96,6 +96,7 @@ public class SceneObject
 
 	private void PostModelSet()
 	{
+		if ( Model is null ) return;
 		var transparent = false;
 		foreach ( var mesh in Model.Meshes )
 		{
@@ -126,6 +127,7 @@ public class SceneObject
 
 	protected virtual void OnRender()
 	{
-		DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
+		if ( Model is not null )
+			DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
 	}
 }

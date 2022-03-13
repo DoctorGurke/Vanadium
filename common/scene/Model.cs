@@ -70,7 +70,7 @@ public class Model : IDisposable
 			return Load( ErrorModel );
 		}
 
-		var model = new();
+		Model model = new();
 		model.Meshes = new Mesh[scene.MeshCount];
 		model.ProcessNode( scene.RootNode, scene );
 		model.RenderBounds = model.GetRenderBounds();

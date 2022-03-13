@@ -36,7 +36,6 @@ public struct Material : IDisposable
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
 	public Shader Shader { get; set; }
 
-
 	public void Dispose()
 	{
 		Shader.Dispose();

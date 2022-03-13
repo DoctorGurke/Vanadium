@@ -2,27 +2,14 @@
 
 public static class Rand
 {
-	private static Random _random;
-
-	private static Random CurrentRandom
-	{
-		get
-		{
-			if ( _random == null )
-			{
-				_random = new Random();
-			}
-
-			return _random;
-		}
-	}
+	private static Random CurrentRandom = new Random();
 
 	/// <summary>
 	/// Sets the seed for these static classes
 	/// </summary>
 	public static void SetSeed( int seed )
 	{
-		_random = new Random( seed );
+		CurrentRandom = new Random( seed );
 	}
 
 	/// <summary>

@@ -198,7 +198,7 @@ public class ImGuiController : IDisposable
 		PressedChars.Add( keyChar );
 	}
 
-	internal static void MouseScroll( Vector2 offset )
+	internal void MouseScroll( Vector2 offset )
 	{
 		ImGuiIOPtr io = ImGui.GetIO();
 
@@ -343,7 +343,7 @@ public class ImGuiController : IDisposable
 		PressChar( (char)e.Unicode );
 	}
 
-	public static void OnMouseWheel( MouseWheelEventArgs e )
+	public void OnMouseWheel( MouseWheelEventArgs e )
 	{
 		MouseScroll( e.Offset );
 	}

@@ -17,7 +17,7 @@ public class Window : GameWindow
 
 	private readonly Stopwatch Timer = new();
 
-	public static int PerViewUniformBufferHandle { get; }
+	public static int PerViewUniformBufferHandle;
 
 	private ImGuiController _guicontroller;
 
