@@ -263,12 +263,9 @@ public class Window : GameWindow
 				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
 			}
 
-			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
+			if ( mouse.IsButtonDown( MouseButton.Button2 ) )
 			{
-				for ( int i = 0; i < 50_000; i++ )
-				{
-					DebugDraw.Box( cam.Position + Vector3.Random, Vector3.One * 3, Vector3.One * -3, Color.Random, Rand.Float(1, 50), true );
-				}
+				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
 			}
 
 			WasUiMode = false;
