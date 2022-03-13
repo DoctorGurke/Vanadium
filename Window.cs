@@ -78,6 +78,9 @@ public class Window : GameWindow
 		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, PerViewUniformBufferHandle, IntPtr.Zero, perviewbuffersize );
 
+		// init debug line buffers
+		DebugDraw.Init();
+
 		// init ui
 		_guicontroller = new ImGuiController( ClientSize );
 
@@ -241,9 +244,15 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				new TestObject
+				//new TestObject
+				//{
+				//	Position = cam.Position + cam.Rotation.Forward
+				//};
+				new SceneObject
 				{
-					Position = cam.Position + cam.Rotation.Forward
+					Model = Model.Load( "models/transparency_test.fbx" ),
+					Position = cam.Position + cam.Rotation.Forward,
+					Rotation = cam.Rotation
 				};
 				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, true );
 			}
