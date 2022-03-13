@@ -32,29 +32,31 @@ public class FirstPersonCamera : Camera
 		float cameraSpeed = slow ? 0.5f : fast ? 10 : 2.5f;
 		float cameraSensitivity = 0.1f;
 
+		Vector3 targetpos = Position;
+
 		if ( keyboard.IsKeyDown( Keys.W ) )
 		{
-			Position += Rotation.Forward * cameraSpeed * Time.Delta; // Forward
+			targetpos += Rotation.Forward * cameraSpeed * Time.Delta; // Forward
 		}
 		if ( keyboard.IsKeyDown( Keys.S ) )
 		{
-			Position -= Rotation.Forward * cameraSpeed * Time.Delta; // Backwards
+			targetpos -= Rotation.Forward * cameraSpeed * Time.Delta; // Backwards
 		}
 		if ( keyboard.IsKeyDown( Keys.A ) )
 		{
-			Position -= Rotation.Right * cameraSpeed * Time.Delta; // Left
+			targetpos -= Rotation.Right * cameraSpeed * Time.Delta; // Left
 		}
 		if ( keyboard.IsKeyDown( Keys.D ) )
 		{
-			Position += Rotation.Right * cameraSpeed * Time.Delta; // Right
+			targetpos += Rotation.Right * cameraSpeed * Time.Delta; // Right
 		}
 		if ( keyboard.IsKeyDown( Keys.Space ) )
 		{
-			Position += Vector3.Up * cameraSpeed * Time.Delta; // Up
+			targetpos += Vector3.Up * cameraSpeed * Time.Delta; // Up
 		}
 		if ( keyboard.IsKeyDown( Keys.LeftControl ) )
 		{
-			Position -= Vector3.Up * cameraSpeed * Time.Delta; // Down
+			targetpos -= Vector3.Up * cameraSpeed * Time.Delta; // Down
 		}
 
 		if ( mouse.IsButtonDown( MouseButton.Middle ) )
@@ -65,6 +67,13 @@ public class FirstPersonCamera : Camera
 		{
 			TargetFOV = TargetFOV.LerpTo( 75, Time.Delta * 7f );
 		}
+
+		if(keyboard.IsKeyDown( Keys.R) )
+		{
+			targetpos = Vector3.Zero;
+		}
+
+		Position = targetpos;
 
 		if ( _firstMove )
 		{
