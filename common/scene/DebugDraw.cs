@@ -7,17 +7,29 @@ public static class DebugDraw
 {
 	private class DebugLine
 	{
-		public Vector3 start;
-		public Vector3 end;
+		public DebugVertex start;
+		public DebugVertex end;
 		public Color color;
 		public float duration;
 		public bool depthtest;
 		public TimeSince TimeSinceSpawned;
 
+		public struct DebugVertex
+		{
+			public Vector3 position;
+			public Color color;
+
+			public DebugVertex(Vector3 position, Color color)
+			{
+				this.position = position;
+				this.color = color;
+			}
+		}
+
 		public DebugLine( Vector3 start, Vector3 end, Color color, float duration, bool depthtest )
 		{
-			this.start = start;
-			this.end = end;
+			this.start = new DebugVertex(start, color);
+			this.end = new DebugVertex(end, color);
 			this.color = color;
 			this.duration = duration;
 			this.depthtest = depthtest;
@@ -52,26 +64,32 @@ public static class DebugDraw
 		if ( vertexPositionLocation >= 0 )
 		{
 			GL.EnableVertexAttribArray( vertexPositionLocation );
-			GL.VertexAttribPointer( vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vector3 ) ), 0 );
+			GL.VertexAttribPointer( vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), 0 );
+		}
+
+		// vertex color
+		var vertexColorLocation = Material.GetAttribLocation( "vColor" );
+		if ( vertexColorLocation >= 0 )
+		{
+			GL.EnableVertexAttribArray( vertexColorLocation );
+			GL.VertexAttribPointer( vertexColorLocation, 4, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), Marshal.OffsetOf( typeof( DebugLine.DebugVertex ), "color" ) );
 		}
 
 		GLUtil.CreateBuffer( "Debugline EBO", out ebo );
 		GL.BindBuffer( BufferTarget.ElementArrayBuffer, ebo );
 	}
 
-	private static IList<Vector3> LineVertices = new List<Vector3>();
+	private static IList<DebugLine.DebugVertex> LineVertices = new List<DebugLine.DebugVertex>();
 
 	private static void DrawLines()
 	{
-		GL.Enable( EnableCap.DepthTest );
 		Material.Use();
-		Material.Set( "color", Color.Red );
 
 		GL.BindVertexArray( vao );
 
 		// update vertex positions
 		GL.BindBuffer( BufferTarget.ArrayBuffer, vbo );
-		GL.BufferData( BufferTarget.ArrayBuffer, LineVertices.Count * Marshal.SizeOf( typeof( Vector3 ) ), LineVertices.ToArray(), BufferUsageHint.StaticDraw );
+		GL.BufferData( BufferTarget.ArrayBuffer, LineVertices.Count * Marshal.SizeOf( typeof( DebugLine.DebugVertex ) ), LineVertices.ToArray(), BufferUsageHint.StaticDraw );
 
 		var indices = new uint[LineVertices.Count * 2];
 		for ( uint i = 0; i < LineVertices.Count * 2; i++ )

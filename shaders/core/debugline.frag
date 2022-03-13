@@ -1,10 +1,13 @@
 ﻿#version 400 core
 
-#include shaders/common/common.frag
+in VS_OUT {
+	vec3 vPositionWs;
+	vec4 vVertexColor;
+} fs_in;
 
-#material vec4 color
+out vec4 gl_Color;
 
 void main()
 {
-    gl_Color = vec4(color);
+    gl_Color = fs_in.vVertexColor;
 }
