@@ -27,5 +27,7 @@ public class Skybox
 		GL.DepthFunc( DepthFunction.Lequal );
 
 		Model.Draw();
+
+		GL.DepthFunc( DepthFunction.Less );
 	}
 }
