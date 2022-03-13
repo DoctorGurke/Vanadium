@@ -207,7 +207,7 @@ public static class DebugDraw
 		}
 
 		// remove expired lines
-		DebugLines = DebugLines.Except( DebugLines.Where(x => x.TimeSinceSpawned >= x.duration) ).ToList();
+		(DebugLines as List<DebugLine>)?.RemoveAll( x => x.TimeSinceSpawned >= x.duration );
 	}
 
 	/// <summary>
