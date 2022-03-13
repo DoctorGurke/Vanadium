@@ -142,6 +142,7 @@ public static class DebugDraw
 
 	public static void DrawNoDepthLines()
 	{
+		GL.Disable( EnableCap.DepthTest );
 		Material.Use();
 
 		GL.BindVertexArray( nvao );
@@ -160,6 +161,7 @@ public static class DebugDraw
 		GL.BufferData( BufferTarget.ElementArrayBuffer, indices.Length * sizeof( uint ), indices, BufferUsageHint.StaticDraw );
 
 		GL.DrawElements( PrimitiveType.Lines, indices.Length, DrawElementsType.UnsignedInt, 0 );
+		GL.Enable( EnableCap.DepthTest );
 	}
 
 	private static IList<DebugLine.DebugVertex> DepthLineVertices = new List<DebugLine.DebugVertex>();
