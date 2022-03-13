@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Vanadium;
 
-public class Mesh
+public class Mesh : IDisposable
 {
 
 	public Model Model;
@@ -48,6 +48,14 @@ public class Mesh
 	private int vao, vbo, ebo;
 
 	public Material Material;
+
+	public void Dispose()
+	{
+		Material.Dispose();
+		GL.DeleteVertexArray( vao );
+		GL.DeleteBuffer( vbo );
+		GL.DeleteBuffer( ebo );
+	}
 
 	private void SetupMesh()
 	{

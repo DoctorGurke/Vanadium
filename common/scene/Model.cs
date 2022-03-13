@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Vanadium;
 
-public class Model
+public class Model : IDisposable
 {
 	public Mesh[] Meshes;
 
@@ -28,6 +28,14 @@ public class Model
 	public static void Precache( string path )
 	{
 		Load( path );
+	}
+
+	public void Dispose()
+	{
+		foreach(var mesh in Meshes)
+		{
+			mesh.Dispose();
+		}
 	}
 
 	public static Model Load( string path )

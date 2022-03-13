@@ -39,7 +39,7 @@ public struct Material : IDisposable
 
 	public void Dispose()
 	{
-		GL.DeleteShader( Shader.Handle );
+		Shader.Dispose();
 	}
 
 	/// <summary>

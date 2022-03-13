@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace Vanadium;
 
 // A simple class meant to help create shaders
-public class Shader
+public class Shader : IDisposable
 {
 	public readonly int Handle;
 
@@ -306,5 +306,10 @@ public class Shader
 			return;
 		}
 		//Debug.WriteLine($"Error setting mat4 uniform {name} | {data}!");
+	}
+
+	public void Dispose()
+	{
+		GL.DeleteShader( Handle );
 	}
 }

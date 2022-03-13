@@ -6,7 +6,7 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 namespace Vanadium;
 
 //Taken from https://github.com/opentk/LearnOpenTK
-public class Texture
+public class Texture : IDisposable
 {
 	public readonly int Handle;
 
@@ -76,5 +76,10 @@ public class Texture
 	{
 		GL.ActiveTexture( unit );
 		GL.BindTexture( TextureTarget.Texture2D, Handle );
+	}
+
+	public void Dispose()
+	{
+		GL.DeleteTexture( Handle );
 	}
 }
