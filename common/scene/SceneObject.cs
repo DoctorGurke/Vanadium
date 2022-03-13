@@ -78,7 +78,14 @@ public class SceneObject
 		}
 		set
 		{
+			// don't parent to itself
 			if ( value == this ) return;
+			
+			// remove child ref from old parent list
+			if ( _parent is not null )
+				_parent.Children.Remove( this );
+			
+			// add new parent
 			_parent = value;
 			value?.Children.Add( this );
 		}
