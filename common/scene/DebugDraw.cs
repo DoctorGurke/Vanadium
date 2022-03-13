@@ -52,12 +52,18 @@ public static class DebugDraw
 	// no depth
 	private static int nvao, nvbo, nebo;
 
+	/// <summary>
+	/// Init both no-depth and depth buffers
+	/// </summary>
 	public static void Init()
 	{
 		InitDepth();
 		InitNoDepth();
 	}
 
+	/// <summary>
+	/// Init the buffers used for depth debug lines
+	/// </summary>
 	private static void InitDepth()
 	{
 		Material.Use();
@@ -88,6 +94,9 @@ public static class DebugDraw
 		GL.BindBuffer( BufferTarget.ElementArrayBuffer, debo );
 	}
 
+	/// <summary>
+	/// Init the buffers used for no-depth debug lines
+	/// </summary>
 	private static void InitNoDepth()
 	{
 		Material.Use();
@@ -118,6 +127,9 @@ public static class DebugDraw
 		GL.BindBuffer( BufferTarget.ElementArrayBuffer, nebo );
 	}
 
+	/// <summary>
+	/// Draw all debug lines with depth enabled
+	/// </summary>
 	public static void DrawDepthLines()
 	{
 		Material.Use();
@@ -140,6 +152,9 @@ public static class DebugDraw
 		GL.DrawElements( PrimitiveType.Lines, indices.Length, DrawElementsType.UnsignedInt, 0 );
 	}
 
+	/// <summary>
+	/// Draw all debug lines with depth disabled
+	/// </summary>
 	public static void DrawNoDepthLines()
 	{
 		GL.Disable( EnableCap.DepthTest );
@@ -167,6 +182,9 @@ public static class DebugDraw
 	private static readonly IList<DebugLine.DebugVertex> DepthLineVertices = new List<DebugLine.DebugVertex>();
 	private static readonly IList<DebugLine.DebugVertex> NoDepthLineVertices = new List<DebugLine.DebugVertex>();
 
+	/// <summary>
+	/// Prepare all currently alive debug lines for drawing. Sorts them into their respective lists for buffer population, depending on their depthtest variable.
+	/// </summary>
 	public static void PrepareDraw()
 	{
 		// clear prev line vertices
@@ -175,6 +193,7 @@ public static class DebugDraw
 
 		foreach ( var line in DebugLines.Reverse() )
 		{
+			// sort lines into respective buffers, one for depth testing, one for no depth testing
 			if(line.depthtest)
 			{
 				DepthLineVertices.Add( line.start );
@@ -191,17 +210,42 @@ public static class DebugDraw
 		DebugLines = DebugLines.Except( DebugLines.Where(x => x.TimeSinceSpawned >= x.duration) ).ToList();
 	}
 
+	/// <summary>
+	/// Spawn a debug line
+	/// </summary>
+	/// <param name="start">Start position</param>
+	/// <param name="end">End position</param>
+	/// <param name="color">Color of the primitive</param>
+	/// <param name="duration">Lifetime of the line</param>
+	/// <param name="depthtest">Whether or not to enable depthtesting on this primitive</param>
 	public static void Line( Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true )
 	{
 		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ) );
 	}
 
+	/// <summary>
+	/// Spawn a debug box
+	/// </summary>
+	/// <param name="position">Position of the box (Center)</param>
+	/// <param name="mins">Local Mins to the position</param>
+	/// <param name="maxs">Local Maxs to the position</param>
+	/// <param name="color">Color of the box</param>
+	/// <param name="duration">Lifetime of the box</param>
+	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
 	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true )
 	{
 		var bbox = new BBox( mins, maxs );
 		Box( position, bbox, color, duration, depthtest );
 	}
 
+	/// <summary>
+	/// Spawn a debug box
+	/// </summary>
+	/// <param name="position">Position of the box (Center)</param>
+	/// <param name="box">The Bounding box, local to the position</param>
+	/// <param name="color">Color of the box</param>
+	/// <param name="duration">Lifetime of the box</param>
+	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
 	public static void Box( Vector3 position, BBox box, Color color, float duration = 0, bool depthtest = true )
 	{
 		var corners = box.Corners.ToArray();

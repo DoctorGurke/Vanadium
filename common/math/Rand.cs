@@ -2,7 +2,7 @@
 
 public static class Rand
 {
-	private static Random CurrentRandom = new Random();
+	private static Random CurrentRandom = new();
 
 	/// <summary>
 	/// Sets the seed for these static classes
