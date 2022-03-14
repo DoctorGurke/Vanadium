@@ -38,7 +38,7 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 params, vec3 normal, vec3
     float attenuation = 1.0 / (params.x + params.y * distance + params.z * (distance * distance));
 
     vec3 ambient = g_vAmbientLightingColor.rgb * baseDiffuse;
-    vec3 diffuse = diff * baseDiffuse;
+    vec3 diffuse = lightCol * diff * baseDiffuse;
     vec3 specular = spec * baseSpecular;
 
     ambient *= attenuation;
@@ -60,13 +60,15 @@ void main() {
 
     //col *= g_vAmbientLightingColor;
 
+    vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
+
     for(int i = 0; i <= g_nNumPointlights - 1; i++) {
         light pLight  = g_Pointlights[i];
         vec3 lightpos = pLight.Position.xyz;
         vec3 lightcol = pLight.Color.rgb;
         vec3 lightparams = pLight.Params.xyz;
 
-        col.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, g_vCameraDirWs, col.rgb, vec3(0.5, 0.5, 0.5), 32.0);
+        col.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, vec3(0.5, 0.5, 0.5), 32.0);
     }
 
     gl_Color = col;
