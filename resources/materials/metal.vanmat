@@ -1,0 +1,6 @@
+﻿{
+	"shader": "shaders/phong",
+	"diffuse": "textures/metal_corrugated_01_D.png",
+	"specular": "textures/metal_corrugated_01_S.png",
+	"gloss":  "200"
+}

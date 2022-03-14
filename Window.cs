@@ -51,8 +51,8 @@ public class Window : GameWindow
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
-		SceneLight.SetAmbientLightColor( Color.White );
-		SceneLight.AddPointlight( Vector3.Up * 3, Color.Random, 0, 1, 0);
+		SceneLight.SetAmbientLightColor( new Color( 32.0f / 255.0f, 22.0f / 255.0f, 50.0f / 255.0f ) );
+		SceneLight.AddPointlight( Vector3.Up * 3, Color.Random, 0, 1, 0 );
 		//SceneLight.AddPointlight( Vector3.Left * 3, Color.Random );
 		//SceneLight.AddPointlight( Vector3.Forward * 3, Color.Random );e
 		//SceneLight.AddPointlight( Vector3.Backward * 3, Color.Random );
@@ -69,13 +69,11 @@ public class Window : GameWindow
 		// set skybox
 		Skybox.Load( "materials/skybox/skybox02.vanmat" );
 
-		var floor = new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
 			Position = Vector3.Down
 		};
-		floor.RenderColor = Color.Blue;
-		floor.TintAmount = 0.5f;
 
 		_ = new SceneObject
 		{
@@ -218,8 +216,9 @@ public class Window : GameWindow
 				{
 					Position = cam.Position + cam.Rotation.Forward,
 					Rotation = cam.Rotation,
-					Model = Model.Load("models/bricks.fbx")
+					Model = Model.Load( "models/bricks.fbx" )
 				};
+				cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
 				//_ = new TestObject
 				//{
 				//	Position = cam.Position + cam.Rotation.Forward
