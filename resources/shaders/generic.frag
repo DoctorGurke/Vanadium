@@ -6,7 +6,8 @@
 
 void main()
 {
-    vec4 base = tex2D(tex, fs_in.vTexCoord0).rgba;
+    vec2 uv = fs_in.vTexCoord0;
+    vec4 base = tex2D(tex, uv).rgba;
     vec4 tint = base * renderColor;
 
     vec4 col = mix(base, tint, tintAmount);
