@@ -52,10 +52,6 @@ public class Window : GameWindow
 		UniformBufferManager.Init();
 
 		SceneLight.SetAmbientLightColor( new Color( 32.0f / 255.0f, 22.0f / 255.0f, 50.0f / 255.0f ) );
-		SceneLight.AddPointlight( Vector3.Up * 3, Color.Random, 0, 1, 0 );
-		//SceneLight.AddPointlight( Vector3.Left * 3, Color.Random );
-		//SceneLight.AddPointlight( Vector3.Forward * 3, Color.Random );e
-		//SceneLight.AddPointlight( Vector3.Backward * 3, Color.Random );
 
 		// init debug line buffers
 		DebugDraw.Init();

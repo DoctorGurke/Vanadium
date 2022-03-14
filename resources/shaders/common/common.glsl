@@ -19,7 +19,7 @@ struct light {
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
-    light[128] g_Pointlights;
+    light[512] g_Pointlights;
 };
 
 vec4 tex2D(sampler2D tex, vec2 uv) {

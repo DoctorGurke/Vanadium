@@ -8,7 +8,7 @@ public class SceneLightManager
 	private int NumPointLights;
 	private UniformBufferManager.Light[] Lights;
 
-	public static int MaxPointLights => 128;
+	public static int MaxPointLights => 512;
 
 	public SceneLightManager()
 	{
