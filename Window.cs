@@ -31,7 +31,7 @@ public class Window : GameWindow
 		GL.Enable( EnableCap.DebugOutput );
 		GL.Enable( EnableCap.DebugOutputSynchronous );
 
-		// setup defaults
+		// setup defaultse
 		GL.ClearColor( 0.1f, 0.1f, 0.1f, 1.0f );
 
 		GL.Enable( EnableCap.CullFace );
@@ -51,11 +51,11 @@ public class Window : GameWindow
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
-		SceneLight.SetAmbientLightColor( Color.Random );
-		SceneLight.AddPointlight( Vector3.Right * 3, Color.Random );
-		SceneLight.AddPointlight( Vector3.Left * 3, Color.Random );
-		SceneLight.AddPointlight( Vector3.Forward * 3, Color.Random );
-		SceneLight.AddPointlight( Vector3.Backward * 3, Color.Random );
+		SceneLight.SetAmbientLightColor( Color.White );
+		SceneLight.AddPointlight( Vector3.Up * 3, Color.Random, 0, 1, 0);
+		//SceneLight.AddPointlight( Vector3.Left * 3, Color.Random );
+		//SceneLight.AddPointlight( Vector3.Forward * 3, Color.Random );e
+		//SceneLight.AddPointlight( Vector3.Backward * 3, Color.Random );
 
 		// init debug line buffers
 		DebugDraw.Init();
@@ -233,9 +233,10 @@ public class Window : GameWindow
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
 			}
 
-			if ( mouse.IsButtonDown( MouseButton.Button2 ) )
+			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
 			{
-				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
+				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
+				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
 			WasUiMode = false;
