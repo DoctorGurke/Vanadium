@@ -222,5 +222,6 @@ public class Model : IDisposable
 		public static Model Error => Load( "models/primitives/error.fbx" );
 		public static Model Cube => Load( "models/primitives/cube.fbx" );
 		public static Model InvertedCube => Load( "models/primitives/cube_inv.fbx" );
+		public static Model Sphere => Load( "models/primitives/sphere.fbx" );
 	}
 }

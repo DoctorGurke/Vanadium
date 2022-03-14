@@ -1,0 +1,4 @@
+﻿{
+	"shader": "shaders/generic",
+	"tex": "textures/core/default.png"
+}

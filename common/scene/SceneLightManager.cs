@@ -36,6 +36,14 @@ public class SceneLightManager
 	{
 		var light = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 		Log.Info( $"new light {light} {position} {color} {constant} {linear} {quadratic}" );
+		var lightmodel = new SceneObject
+		{
+			Model = Model.Primitives.Sphere,
+			Scale = 0.1f,
+			Position = position
+		};
+		lightmodel.RenderColor = color;
+
 		Lights[light].Position = new Vector4( position );
 		Lights[light].Color = color.WithAlpha( 1.0f );
 		Lights[light].Params = new Vector4( constant, linear, quadratic, 0.0f );
