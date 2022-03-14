@@ -22,9 +22,6 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
-    <None Update="shaders\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
 	<None Update="resources\**">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
