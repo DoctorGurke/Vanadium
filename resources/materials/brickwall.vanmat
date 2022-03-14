@@ -1,4 +1,6 @@
 {
 	"shader": "shaders/phong",
-	"tex": "textures/brickwall.jpg"
+	"diffuse": "textures/bricks_classic_02_D.png",
+	"specular": "textures/bricks_classic_02_S.png",
+	"gloss":  "12"
 }

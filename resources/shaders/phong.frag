@@ -23,7 +23,9 @@ vec4 GammaCorrect(vec4 col, float gamma) {
 	return vec4(pow(col.rgb, vec3(1.0 / gamma)), col.a);
 }
 
-#material sampler2D tex
+#material sampler2D diffuse
+#material sampler2D specular
+#material float gloss
 
 // params = constant, linear, quadratic attenuation
 vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 params, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
@@ -39,7 +41,7 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 params, vec3 normal, vec3
 
     vec3 ambient = g_vAmbientLightingColor.rgb * baseDiffuse;
     vec3 diffuse = lightCol * diff * baseDiffuse;
-    vec3 specular = spec * baseSpecular;
+    vec3 specular = lightCol * spec * baseSpecular;
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -50,15 +52,16 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 params, vec3 normal, vec3
 
 void main() {
     vec2 uv = fs_in.vTexCoord0;
-    vec4 base = tex2D(tex, uv).rgba;
+    vec4 base = tex2D(diffuse, uv).rgba;
     vec4 tint = base * renderColor;
 
     vec4 col = mix(base, tint, tintAmount);
+    vec3 spec = tex2D(specular, uv).rgb;
 
     if(col.a <= 0.0)
         discard;
 
-    //col *= g_vAmbientLightingColor;
+    col *= g_vAmbientLightingColor;
 
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
 
@@ -68,7 +71,7 @@ void main() {
         vec3 lightcol = pLight.Color.rgb;
         vec3 lightparams = pLight.Params.xyz;
 
-        col.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, vec3(0.5, 0.5, 0.5), 32.0);
+        col.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, spec, gloss);
     }
 
     gl_Color = col;
