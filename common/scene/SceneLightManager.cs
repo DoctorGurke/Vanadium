@@ -18,16 +18,16 @@ public class SceneLightManager
 	public void SetAmbientLightColor( Color col )
 	{
 		AmbientLightColor = col.WithAlpha( 1.0f );
-		Log.Info($"new ambient light color {col}");
+		Log.Info( $"new ambient light color {col}" );
 		UniformBufferManager.Current.UpdateAmbientLightColor( AmbientLightColor );
 	}
 
-	public void AddPointlight(Vector3 position)
+	public void AddPointlight( Vector3 position )
 	{
 		AddPointlight( position, Color.White, 0.0f, 0.0f, 1.0f );
 	}
 
-	public void AddPointlight(Vector3 position, Color color)
+	public void AddPointlight( Vector3 position, Color color )
 	{
 		AddPointlight( position, color, 0.0f, 0.0f, 1.0f );
 	}
@@ -35,6 +35,12 @@ public class SceneLightManager
 	public void AddPointlight( Vector3 position, Color color, float constant, float linear, float quadratic )
 	{
 		var light = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
+		if ( light >= MaxPointLights )
+		{
+			Log.Info( $"UNABLE TO ADD MORE POINT LIGHTS {MaxPointLights}" );
+			return;
+		}
+
 		Log.Info( $"new light {light} {position} {color} {constant} {linear} {quadratic}" );
 		var lightmodel = new SceneObject
 		{
@@ -49,6 +55,6 @@ public class SceneLightManager
 		Lights[light].Params = new Vector4( constant, linear, quadratic, 0.0f );
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current.UpdatePointlights(Lights, NumPointLights);
+		UniformBufferManager.Current.UpdatePointlights( Lights, NumPointLights );
 	}
 }
