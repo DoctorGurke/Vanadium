@@ -13,7 +13,7 @@ public class TestObject : SceneObject
 		{
 			var ent = new SceneObject
 			{
-				Model = Model.Load( "models/fancy.fbx" ),
+				Model = Model.Load( "models/asd.fbx" ),
 				Position = Vector3.Up + rotation.RotateAroundAxis( Vector3.Up, anglestep * i ).Forward * 3
 			};
 			ent.Parent = this;
