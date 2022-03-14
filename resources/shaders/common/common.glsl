@@ -10,6 +10,13 @@
     float g_flFarPlane;
 };
 
+layout (std140) uniform PerViewLightingUniformBuffer {
+    vec4 g_vAmbientLightingColor;
+    vec4[128] g_vPointlightPosition;
+    vec4[128] g_vPointlightColor;
+    int g_nNumPointlights;
+};
+
 vec4 tex2D(sampler2D tex, vec2 uv) {
     return textureLod(tex, uv, textureQueryLod(tex, uv).x);
 }
