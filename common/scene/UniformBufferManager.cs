@@ -28,7 +28,7 @@ public class UniformBufferManager
 		// setup per view lighting uniform buffer
 		GLUtil.CreateBuffer( "PerViewLightingUniformBuffer", out PerViewLightingUniformBufferHandle );
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
-		var perviewlightingbuffersize = Marshal.SizeOf( typeof( PerViewLightingUniformBuffer ) ).RoundUpToMultipleOf( 16 );
+		var perviewlightingbuffersize = (Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) + Marshal.SizeOf( typeof( Light ) ) * SceneLightManager.MaxPointLights).RoundUpToMultipleOf( 16 );
 		GL.BufferData( BufferTarget.UniformBuffer, perviewlightingbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBuffer( BufferTarget.UniformBuffer, 1 );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 1, PerViewLightingUniformBufferHandle, IntPtr.Zero, perviewlightingbuffersize );
@@ -55,13 +55,21 @@ public class UniformBufferManager
 		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( perviewuniformbuffer ).RoundUpToMultipleOf( 16 ), ref perviewuniformbuffer, BufferUsageHint.StaticDraw );
 	}
 
-	public void UpdatePerViewLightingUniformBuffer( PerViewLightingUniformBuffer data )
+	public void UpdateAmbientLightColor( Color col )
 	{
-		// update per view uniform buffer
+		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
-		Log.Info( $"-------------------------update lighting buffer {data.g_vAmbientLightingColor}" );
-		// put data in buffer
-		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( data ).RoundUpToMultipleOf( 16 ), ref data, BufferUsageHint.StaticDraw );
+
+		GL.BufferSubData( BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf( typeof( Vector4 ) ), ref col );
+	}
+
+	public void UpdatePointlights( Light[] lights, int num )
+	{
+		// update light uniform buffer
+		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
+
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ), sizeof( int ), ref num );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( Light ) ) * SceneLightManager.MaxPointLights, lights );
 	}
 
 	public struct PerViewUniformBuffer
@@ -86,11 +94,10 @@ public class UniformBufferManager
 		public float g_flFarPlane;              // 4
 	}
 
-	public struct PerViewLightingUniformBuffer
+	public struct Light
 	{
-		public Vector4 g_vAmbientLightingColor; // 16
-		//public Vector4[] g_vPointlightPosition; // 
-		//public Vector4[] g_vPointlightColor;    // 
-		//public int g_nNumPointlights;           // 4
+		public Vector4 Position;
+		public Vector4 Color;
+		public Vector4 Params;
 	}
 }

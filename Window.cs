@@ -51,7 +51,11 @@ public class Window : GameWindow
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
-		SceneLight.SetAmbientLightColor( new Color( 0.7f, 0.3f, 0.4f, 1.0f ) );
+		SceneLight.SetAmbientLightColor( Color.Random );
+		SceneLight.AddPointlight( Vector3.Right * 3, Color.Random );
+		SceneLight.AddPointlight( Vector3.Left * 3, Color.Random );
+		SceneLight.AddPointlight( Vector3.Forward * 3, Color.Random );
+		SceneLight.AddPointlight( Vector3.Backward * 3, Color.Random );
 
 		// init debug line buffers
 		DebugDraw.Init();
@@ -210,17 +214,23 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				_ = new TestObject
+				var cube = new SceneObject
 				{
-					Position = cam.Position + cam.Rotation.Forward
+					Position = cam.Position + cam.Rotation.Forward,
+					Rotation = cam.Rotation,
+					Model = Model.Load("models/bricks.fbx")
 				};
+				//_ = new TestObject
+				//{
+				//	Position = cam.Position + cam.Rotation.Forward
+				//};
 				//new SceneObject
 				//{
 				//	Model = Model.Load( "models/transparency_test.fbx" ),
 				//	Position = cam.Position + cam.Rotation.Forward,
 				//	Rotation = cam.Rotation
 				//};
-				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
+				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) )

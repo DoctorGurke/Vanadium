@@ -66,4 +66,9 @@ public struct Color
 	{
 		return new Color( value.X, value.Y, value.Z, value.W );
 	}
+
+	public override string ToString()
+	{
+		return $"r:{r} g:{g} b:{b} a:{a}";
+	}
 }

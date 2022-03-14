@@ -10,11 +10,16 @@
     float g_flFarPlane;
 };
 
+struct light {
+    vec4 Position;
+    vec4 Color;
+    vec4 Params;
+};
+
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
-    //vec4[128] g_vPointlightPosition;
-    //vec4[128] g_vPointlightColor;
-    //int g_nNumPointlights;
+    int g_nNumPointlights;
+    light[128] g_Pointlights;
 };
 
 vec4 tex2D(sampler2D tex, vec2 uv) {

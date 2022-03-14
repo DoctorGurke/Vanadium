@@ -170,8 +170,9 @@ public class Shader : IDisposable
 		GL.GetProgram( program, GetProgramParameterName.LinkStatus, out var code );
 		if ( code != (int)All.True )
 		{
+			Log.Info(GL.GetProgramInfoLog( program ));
 			// We can use `GL.GetProgramInfoLog(program)` to get information about the error.
-			throw new Exception( $"Error occurred whilst linking Program({program})" );
+			throw new Exception( $"Error occurred whilst linking Program({program}) {code}" );
 		}
 	}
 

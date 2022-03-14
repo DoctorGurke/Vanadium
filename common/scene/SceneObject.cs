@@ -134,7 +134,7 @@ public class SceneObject
 
 	protected virtual void OnRender()
 	{
-		if ( Model is not null )
-			DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
+		//if ( Model is not null )
+			//DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
 	}
 }
