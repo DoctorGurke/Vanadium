@@ -1,4 +1,4 @@
 {
-	"shader": "shaders/color",
+	"shader": "shaders/core/error",
 	"color": "1 0 0"
 }
