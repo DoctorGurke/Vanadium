@@ -19,6 +19,7 @@ public class Model : IDisposable
 
 	public void SetMaterialOverride( string path )
 	{
+		if ( IsError ) return;
 		foreach ( var mesh in Meshes )
 		{
 			mesh.Material = Material.Load( path );
