@@ -1,4 +1,4 @@
 {
-	"shader": "shaders/generic",
+	"shader": "shaders/phong",
 	"tex": "textures/brickwall.jpg"
 }

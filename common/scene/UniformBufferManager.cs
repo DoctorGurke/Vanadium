@@ -7,6 +7,13 @@ namespace Vanadium;
 public class UniformBufferManager
 {
 	public int PerViewUniformBufferHandle;
+	public int PerViewLightingUniformBufferHandle;
+	public static UniformBufferManager Current;
+
+	public UniformBufferManager()
+	{
+		Current = this;
+	}
 
 	public void Init()
 	{
@@ -17,6 +24,14 @@ public class UniformBufferManager
 		GL.BufferData( BufferTarget.UniformBuffer, perviewbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, PerViewUniformBufferHandle, IntPtr.Zero, perviewbuffersize );
+
+		// setup per view lighting uniform buffer
+		GLUtil.CreateBuffer( "PerViewLightingUniformBuffer", out PerViewLightingUniformBufferHandle );
+		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
+		var perviewlightingbuffersize = Marshal.SizeOf( typeof( PerViewLightingUniformBuffer ) ).RoundUpToMultipleOf( 16 );
+		GL.BufferData( BufferTarget.UniformBuffer, perviewlightingbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
+		GL.BindBuffer( BufferTarget.UniformBuffer, 1 );
+		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 1, PerViewLightingUniformBufferHandle, IntPtr.Zero, perviewlightingbuffersize );
 	}
 
 	public void UpdatePerViewUniformBuffer()
@@ -40,7 +55,16 @@ public class UniformBufferManager
 		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( perviewuniformbuffer ).RoundUpToMultipleOf( 16 ), ref perviewuniformbuffer, BufferUsageHint.StaticDraw );
 	}
 
-	private struct PerViewUniformBuffer
+	public void UpdatePerViewLightingUniformBuffer( PerViewLightingUniformBuffer data )
+	{
+		// update per view uniform buffer
+		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
+		Log.Info( $"-------------------------update lighting buffer {data.g_vAmbientLightingColor}" );
+		// put data in buffer
+		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( data ).RoundUpToMultipleOf( 16 ), ref data, BufferUsageHint.StaticDraw );
+	}
+
+	public struct PerViewUniformBuffer
 	{
 		public Matrix4 g_matWorldToProjection;  // 16	(col0)
 												// 16	(col1)
@@ -62,11 +86,11 @@ public class UniformBufferManager
 		public float g_flFarPlane;              // 4
 	}
 
-	private struct PerViewLightingUniformBuffer
+	public struct PerViewLightingUniformBuffer
 	{
 		public Vector4 g_vAmbientLightingColor; // 16
-		public Vector4[] g_vPointlightPosition; // 
-		public Vector4[] g_vPointlightColor;	// 
-		public int g_nNumPointlights;			// 4
+		//public Vector4[] g_vPointlightPosition; // 
+		//public Vector4[] g_vPointlightColor;    // 
+		//public int g_nNumPointlights;           // 4
 	}
 }

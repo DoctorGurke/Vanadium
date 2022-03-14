@@ -55,6 +55,13 @@ public class Shader : IDisposable
 			GL.UniformBlockBinding( Handle, matricesblockindex, 0 );
 		}
 
+		// bind per view uniform light buffer
+		var lightblockindex = GL.GetUniformBlockIndex( Handle, "PerViewLightingUniformBuffer" );
+		if ( lightblockindex >= 0 )
+		{
+			GL.UniformBlockBinding( Handle, lightblockindex, 1 );
+		}
+
 		// Loop over all the uniforms,
 
 		for ( var i = 0; i < numberOfUniforms; i++ )

@@ -18,7 +18,8 @@ public class Window : GameWindow
 	private readonly Stopwatch Timer = new();
 
 	private ImGuiController _guicontroller;
-	private UniformBufferManager UniformBufferManager;
+	private UniformBufferManager UniformBufferManager = new();
+	private SceneLightManager SceneLight = new();
 
 	protected override void OnLoad()
 	{
@@ -48,8 +49,9 @@ public class Window : GameWindow
 		GL.Enable( EnableCap.TextureCubeMapSeamless );
 
 		// setup uniform buffers
-		UniformBufferManager = new();
 		UniformBufferManager.Init();
+
+		SceneLight.SetAmbientLightColor( new Color( 0.7f, 0.3f, 0.4f, 1.0f ) );
 
 		// init debug line buffers
 		DebugDraw.Init();
@@ -107,7 +109,7 @@ public class Window : GameWindow
 		// clear buffer
 		GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
-
+		// update per view buffer
 		UniformBufferManager.UpdatePerViewUniformBuffer();
 
 		// drawing the scene
