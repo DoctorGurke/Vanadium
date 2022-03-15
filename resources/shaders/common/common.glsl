@@ -16,10 +16,12 @@ struct light {
     vec4 Params;
 };
 
+#define MAX_POINT_LIGHTS 512
+
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
-    light[512] g_Pointlights;
+    light[MAX_POINT_LIGHTS] g_Pointlights;
 };
 
 vec4 tex2D(sampler2D tex, vec2 uv) {
