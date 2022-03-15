@@ -65,11 +65,12 @@ public class Window : GameWindow
 		// set skybox
 		Skybox.Load( "materials/skybox/skybox02.vanmat" );
 
-		_ = new SceneObject
+		var floor = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
 			Position = Vector3.Down
 		};
+		floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
 
 		_ = new SceneObject
 		{
@@ -208,31 +209,21 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				var cube = new SceneObject
-				{
-					Position = cam.Position + cam.Rotation.Forward,
-					Rotation = cam.Rotation,
-					Model = Model.Load( "models/bricks.fbx" )
-				};
-				cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
-				//_ = new TestObject
+				//var cube = new SceneObject
 				//{
-				//	Position = cam.Position + cam.Rotation.Forward
-				//};
-				//new SceneObject
-				//{
-				//	Model = Model.Load( "models/transparency_test.fbx" ),
 				//	Position = cam.Position + cam.Rotation.Forward,
-				//	Rotation = cam.Rotation
+				//	Rotation = cam.Rotation,
+				//	Model = Model.Load( "models/bricks.fbx" )
 				//};
-				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10, false );
+				//cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
+				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 1, 0 );
+				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
 			}
 
 			WasUiMode = false;
