@@ -10,18 +10,29 @@
     float g_flFarPlane;
 };
 
-struct light {
+struct pointlight {
     vec4 Position;
     vec4 Color;
-    vec4 Params;
+    vec4 Attenuation;
 };
 
-#define MAX_POINT_LIGHTS 512
+struct spotlight {
+    vec4 Position;
+    vec4 Direction;
+    vec4 Color;
+    vec4 Attenuation;
+    vec4 Params; // inner angle, out angle
+};
+
+#define MAX_POINT_LIGHTS 256
+#define MAX_SPOT_LIGHTS 256
 
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
-    light[MAX_POINT_LIGHTS] g_Pointlights;
+    int g_nNumSpotlights;
+    pointlight[MAX_POINT_LIGHTS] g_Pointlights;
+    spotlight[MAX_SPOT_LIGHTS] g_Spotlights;
 };
 
 vec4 tex2D(sampler2D tex, vec2 uv) {

@@ -28,7 +28,12 @@ public class UniformBufferManager
 		// setup per view lighting uniform buffer
 		GLUtil.CreateBuffer( "PerViewLightingUniformBuffer", out PerViewLightingUniformBufferHandle );
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
-		var perviewlightingbuffersize = (Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) + Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights).RoundUpToMultipleOf( 16 );
+		var perviewlightingbuffersize = 0;
+		perviewlightingbuffersize += Marshal.SizeOf( typeof( Vector4 ) );
+		perviewlightingbuffersize += sizeof( int );
+		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
+		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
+		perviewlightingbuffersize = perviewlightingbuffersize.RoundUpToMultipleOf( 16 );
 		GL.BufferData( BufferTarget.UniformBuffer, perviewlightingbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBuffer( BufferTarget.UniformBuffer, 1 );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 1, PerViewLightingUniformBufferHandle, IntPtr.Zero, perviewlightingbuffersize );
@@ -70,6 +75,20 @@ public class UniformBufferManager
 
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ), sizeof( int ), ref num );
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights, lights );
+	}
+
+	public void UpdateSpotlights( SceneLightManager.SpotLight[] lights, int num )
+	{
+		// update light uniform buffer
+		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
+
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ), sizeof( int ), ref num );
+		var offset = 0;
+		offset += Marshal.SizeOf( typeof( Vector4 ) );
+		offset += sizeof( int ) * 4;
+		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
+		var size = Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr) offset, size, lights );
 	}
 
 	public struct PerViewUniformBuffer

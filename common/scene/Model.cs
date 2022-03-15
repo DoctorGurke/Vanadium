@@ -223,5 +223,6 @@ public class Model : IDisposable
 		public static Model Cube => Load( "models/primitives/cube.fbx" );
 		public static Model InvertedCube => Load( "models/primitives/cube_inv.fbx" );
 		public static Model Sphere => Load( "models/primitives/sphere.fbx" );
+		public static Model ForwardCone => Load( "models/primitives/cone_forward.fbx" );
 	}
 }

@@ -231,7 +231,8 @@ public class Window : GameWindow
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
-				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 1, 0 );
 			}
 
 			WasUiMode = false;
