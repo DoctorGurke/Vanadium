@@ -68,7 +68,7 @@ void main() {
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
 
     for(int i = 0; i <= g_nNumPointlights - 1; i++) {
-        pointlight pLight  = g_Pointlights[i];
+        PointLight pLight  = g_PointLights[i];
         vec3 lightpos = pLight.Position.xyz;
         vec3 lightcol = pLight.Color.rgb;
         vec3 lightparams = pLight.Attenuation.xyz;
@@ -77,13 +77,13 @@ void main() {
     }
 
     for(int i = 0; i <= g_nNumSpotlights - 1; i++) {
-        spotlight sLight  = g_Spotlights[i];
+        SpotLight sLight  = g_SpotLights[i];
         vec3 lightpos = sLight.Position.xyz;
         vec3 lightdir = sLight.Direction.xyz;
         vec3 lightcol = sLight.Color.rgb;
         vec3 lightparams = sLight.Attenuation.xyz;
-        float inner = sLight.Params.x;
-        float outer = sLight.Params.y;
+        float inner = cos(sLight.Params.x);
+        float outer = cos(sLight.Params.y);
 
         col.rgb += CalcSpotLight(lightpos, lightdir, lightcol, lightparams, inner, outer, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, spec, gloss);
     }

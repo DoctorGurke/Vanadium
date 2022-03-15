@@ -10,13 +10,13 @@
     float g_flFarPlane;
 };
 
-struct pointlight {
+struct PointLight {
     vec4 Position;
     vec4 Color;
     vec4 Attenuation;
 };
 
-struct spotlight {
+struct SpotLight {
     vec4 Position;
     vec4 Direction;
     vec4 Color;
@@ -31,8 +31,8 @@ layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
     int g_nNumSpotlights;
-    pointlight[MAX_POINT_LIGHTS] g_Pointlights;
-    spotlight[MAX_SPOT_LIGHTS] g_Spotlights;
+    PointLight[MAX_POINT_LIGHTS] g_PointLights;
+    SpotLight[MAX_SPOT_LIGHTS] g_SpotLights;
 };
 
 vec4 tex2D(sampler2D tex, vec2 uv) {

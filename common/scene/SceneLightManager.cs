@@ -7,8 +7,8 @@ public class SceneLightManager
 	private Color AmbientLightColor;
 	private int NumPointLights;
 	private int NumSpotLights;
-	private PointLight[] Lights;
-	private SpotLight[] Spotlights;
+	private PointLight[] PointLights;
+	private SpotLight[] SpotLights;
 
 	public static int MaxPointLights => 256;
 	public static int MaxSpotLights => 256;
@@ -31,8 +31,8 @@ public class SceneLightManager
 
 	public SceneLightManager()
 	{
-		Lights = new PointLight[MaxPointLights];
-		Spotlights = new SpotLight[MaxSpotLights];
+		PointLights = new PointLight[MaxPointLights];
+		SpotLights = new SpotLight[MaxSpotLights];
 	}
 
 	public void SetAmbientLightColor( Color col )
@@ -70,12 +70,12 @@ public class SceneLightManager
 		};
 		lightmodel.RenderColor = color;
 
-		Lights[light].Position = new Vector4( position );
-		Lights[light].Color = color;
-		Lights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
+		PointLights[light].Position = new Vector4( position );
+		PointLights[light].Color = color;
+		PointLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current.UpdatePointlights( Lights, NumPointLights );
+		UniformBufferManager.Current.UpdatePointlights( PointLights, NumPointLights );
 	}
 
 	public void AddSpotlight( Vector3 position, Rotation rotation, Color color, float innerangle, float outerangle, float constant, float linear, float quadratic )
@@ -97,13 +97,13 @@ public class SceneLightManager
 		};
 		lightmodel.RenderColor = color;
 
-		Spotlights[light].Position = new Vector4( position );
-		Spotlights[light].Direction = new Vector4( rotation.Forward );
-		Spotlights[light].Color = color;
-		Spotlights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
-		Spotlights[light].Params = new Vector4( MathF.Cos(innerangle.DegreeToRadian()), MathF.Cos(outerangle.DegreeToRadian()), 0.0f, 0.0f );
+		SpotLights[light].Position = new Vector4( position );
+		SpotLights[light].Direction = new Vector4( rotation.Forward );
+		SpotLights[light].Color = color;
+		SpotLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
+		SpotLights[light].Params = new Vector4( innerangle.DegreeToRadian(), outerangle.DegreeToRadian(), 0.0f, 0.0f );
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current.UpdateSpotlights( Spotlights, NumSpotLights );
+		UniformBufferManager.Current.UpdateSpotlights( SpotLights, NumSpotLights );
 	}
 }
