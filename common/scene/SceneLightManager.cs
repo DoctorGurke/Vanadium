@@ -6,13 +6,20 @@ public class SceneLightManager
 {
 	private Color AmbientLightColor;
 	private int NumPointLights;
-	private UniformBufferManager.PointLight[] Lights;
+	private PointLight[] Lights;
 
 	public static int MaxPointLights => 512;
 
+	public struct PointLight
+	{
+		public Vector4 Position;
+		public Vector4 Color;
+		public Vector4 Attenuation;
+	}
+
 	public SceneLightManager()
 	{
-		Lights = new UniformBufferManager.PointLight[MaxPointLights];
+		Lights = new PointLight[MaxPointLights];
 	}
 
 	public void SetAmbientLightColor( Color col )
