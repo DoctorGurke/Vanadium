@@ -16,6 +16,7 @@ void main() {
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
 
     col.rgb = CommonPhongLighting(col.rgb, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, spec, gloss);
+    col = GammaCorrect(col, 2.2);
 
     gl_Color = col;
 }
