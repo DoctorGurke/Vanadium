@@ -6,13 +6,13 @@ public class SceneLightManager
 {
 	private Color AmbientLightColor;
 	private int NumPointLights;
-	private UniformBufferManager.Light[] Lights;
+	private UniformBufferManager.PointLight[] Lights;
 
 	public static int MaxPointLights => 512;
 
 	public SceneLightManager()
 	{
-		Lights = new UniformBufferManager.Light[MaxPointLights];
+		Lights = new UniformBufferManager.PointLight[MaxPointLights];
 	}
 
 	public void SetAmbientLightColor( Color col )
@@ -51,8 +51,8 @@ public class SceneLightManager
 		lightmodel.RenderColor = color;
 
 		Lights[light].Position = new Vector4( position );
-		Lights[light].Color = color.WithAlpha( 1.0f );
-		Lights[light].Params = new Vector4( constant, linear, quadratic, 0.0f );
+		Lights[light].Color = color;
+		Lights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current.UpdatePointlights( Lights, NumPointLights );

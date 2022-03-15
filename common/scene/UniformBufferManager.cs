@@ -28,7 +28,7 @@ public class UniformBufferManager
 		// setup per view lighting uniform buffer
 		GLUtil.CreateBuffer( "PerViewLightingUniformBuffer", out PerViewLightingUniformBufferHandle );
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
-		var perviewlightingbuffersize = (Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) + Marshal.SizeOf( typeof( Light ) ) * SceneLightManager.MaxPointLights).RoundUpToMultipleOf( 16 );
+		var perviewlightingbuffersize = (Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) + Marshal.SizeOf( typeof( PointLight ) ) * SceneLightManager.MaxPointLights).RoundUpToMultipleOf( 16 );
 		GL.BufferData( BufferTarget.UniformBuffer, perviewlightingbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBuffer( BufferTarget.UniformBuffer, 1 );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 1, PerViewLightingUniformBufferHandle, IntPtr.Zero, perviewlightingbuffersize );
@@ -63,13 +63,13 @@ public class UniformBufferManager
 		GL.BufferSubData( BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf( typeof( Vector4 ) ), ref col );
 	}
 
-	public void UpdatePointlights( Light[] lights, int num )
+	public void UpdatePointlights( PointLight[] lights, int num )
 	{
 		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ), sizeof( int ), ref num );
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( Light ) ) * SceneLightManager.MaxPointLights, lights );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( PointLight ) ) * SceneLightManager.MaxPointLights, lights );
 	}
 
 	public struct PerViewUniformBuffer
@@ -94,10 +94,10 @@ public class UniformBufferManager
 		public float g_flFarPlane;              // 4
 	}
 
-	public struct Light
+	public struct PointLight
 	{
 		public Vector4 Position;
 		public Vector4 Color;
-		public Vector4 Params;
+		public Vector4 Attenuation;
 	}
 }
