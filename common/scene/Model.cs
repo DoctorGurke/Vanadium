@@ -57,7 +57,7 @@ public class Model : IDisposable
 		Scene? scene;
 		try
 		{
-			scene = importer.ImportFile( fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate );
+			scene = importer.ImportFile( fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate | PostProcessSteps.CalculateTangentSpace );
 		}
 		catch ( FileNotFoundException ex )
 		{

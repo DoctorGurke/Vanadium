@@ -2,9 +2,10 @@
 
 in VS_OUT {
 	vec3 vPositionWs;
-	vec3 vNormalWs;
 	vec3 vTangentWs;
 	vec3 vBitangentWs;
+	vec3 vNormalWs;
+	mat3 mTBN;
 	vec2 vTexCoord0;
 	vec2 vTexCoord1;
 	vec2 vTexCoord2;
@@ -17,6 +18,6 @@ uniform float tintAmount;
 
 out vec4 gl_Color;
 
-vec4 GammaCorrect(vec4 col, float gamma) {
-	return vec4(pow(col.rgb, vec3(1.0 / gamma)), col.a);
+vec3 GammaCorrect(vec3 col, float gamma) {
+	return pow(col.rgb, vec3(1.0 / gamma));
 }

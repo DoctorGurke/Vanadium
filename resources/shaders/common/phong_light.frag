@@ -2,6 +2,7 @@
 
 #material sampler2D diffuse
 #material sampler2D specular
+#material sampler2D normal
 #material float gloss
 
 vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
