@@ -3,5 +3,5 @@
 	"diffuse": "textures/core/default.png",
 	"specular": "textures/core/default.png",
 	"envmap": "textures/skybox/skybox03/skybox03.jpg",
-	"gloss": 32
+	"gloss": 16
 }
