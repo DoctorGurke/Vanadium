@@ -70,7 +70,7 @@ public class Window : GameWindow
 			Model = Model.Load( "models/brickwall.fbx" ),
 			Position = Vector3.Down
 		};
-		//floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
+		floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
 
 		_ = new SceneObject
 		{
@@ -215,7 +215,7 @@ public class Window : GameWindow
 					Rotation = cam.Rotation,
 					Model = Model.Load( "models/bricks.fbx" )
 				};
-				cube.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
+				cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
