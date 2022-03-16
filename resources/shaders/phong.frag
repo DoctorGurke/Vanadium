@@ -38,11 +38,11 @@ void main() {
     // tint envmap by diffuse of the material
     env *= diff;
 
-    // apply cubemap according to specular of the material
+    // apply cubemap according to specular of the material before lighting
     vec3 col = mix(diff, env, spec);
 
     // get lighting results
-    col = CommonPhongLighting(col, normal, fs_in.vPositionWs, viewDir, diff, spec, gloss);
+    col = CommonPhongLighting(col, diff, spec, gloss, normal, fs_in.vPositionWs, viewDir);
 
     // gamma correct
     col = GammaCorrect(col, 2.2);

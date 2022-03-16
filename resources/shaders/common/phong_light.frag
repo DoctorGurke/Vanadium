@@ -10,8 +10,6 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 n
 
     float diff = max(dot(normal, lightDir), 0.0);
 
-    //vec3 reflectDir = reflect(-lightDir, normal);
-    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
 
@@ -32,10 +30,8 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 n
 vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationparams, float innerangle, float outerangle, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
     vec3 lightDir = normalize(spotPos - fragPos);
 
-    float diff = max(dot(normal, spotDir), 0.0);
+    float diff = max(dot(-normal, spotDir), 0.0);
 
-    //vec3 reflectDir = reflect(-lightDir, normal);
-    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
 
@@ -55,9 +51,11 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationpar
     return (ambient + diffuse + specular);
 }
 
-vec3 CommonPhongLighting(vec3 col, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float gloss) {
+vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    // apply global ambient light color
     vec3 returncol = col * g_vAmbientLightingColor.rgb;
 
+    // calc point lights
     for(int i = 0; i <= g_nNumPointlights - 1; i++) {
         PointLight pLight  = g_PointLights[i];
         vec3 lightpos = pLight.Position.xyz;
@@ -67,6 +65,7 @@ vec3 CommonPhongLighting(vec3 col, vec3 normal, vec3 fragPos, vec3 viewDir, vec3
         returncol.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
     }
 
+    // calc spot lights
     for(int i = 0; i <= g_nNumSpotlights - 1; i++) {
         SpotLight sLight  = g_SpotLights[i];
         vec3 lightpos = sLight.Position.xyz;
