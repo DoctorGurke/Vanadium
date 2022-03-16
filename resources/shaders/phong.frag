@@ -1,4 +1,6 @@
-﻿#version 400 core
+﻿#version 410 core
+
+#material samplerCube envmap
 
 #include shaders/common/phong_light.frag
 
@@ -14,6 +16,15 @@ void main() {
         discard;
 
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
+
+    //vec3 dir = normalize(fs_in.vPositionWs - g_vCameraPositionWs);
+    vec3 reflect = reflect(viewDir, fs_in.vNormalWs);
+    vec3 env = texture(envmap, viewDir.xyz).rgb;
+
+    // tint envmap by color of the material
+    env *= col.rgb;
+
+    col.rgb = mix(col.rgb, env, spec);
 
     col.rgb = CommonPhongLighting(col.rgb, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, col.rgb, spec, gloss);
     col = GammaCorrect(col, 2.2);

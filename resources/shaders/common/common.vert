@@ -26,7 +26,7 @@ uniform mat4 transform;
 
 vec4 CommonVertexProcessing(void) {
 	vs_out.vPositionWs = vec3(vec4(vPosition, 1.0) * transform);
-	vs_out.vNormalWs = vNormal * mat3(transpose(inverse(transform)));
+	vs_out.vNormalWs = mat3(transpose(inverse(transform))) * vNormal;
 	vs_out.vBitangentWs = vBitangent;
 	vs_out.vTangentWs = vTangent;
 	vs_out.vTexCoord0 = vTexCoord0;

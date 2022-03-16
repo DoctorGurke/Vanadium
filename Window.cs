@@ -63,14 +63,14 @@ public class Window : GameWindow
 		Model.Precache( Model.ErrorModel );
 
 		// set skybox
-		Skybox.Load( "materials/skybox/skybox02.vanmat" );
+		Skybox.Load( "materials/skybox/skybox01.vanmat" );
 
 		var floor = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
 			Position = Vector3.Down
 		};
-		floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
+		//floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
 
 		_ = new SceneObject
 		{
@@ -209,14 +209,14 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				//var cube = new SceneObject
-				//{
-				//	Position = cam.Position + cam.Rotation.Forward,
-				//	Rotation = cam.Rotation,
-				//	Model = Model.Load( "models/bricks.fbx" )
-				//};
-				//cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
-				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+				var cube = new SceneObject
+				{
+					Position = cam.Position + cam.Rotation.Forward,
+					Rotation = cam.Rotation,
+					Model = Model.Load( "models/bricks.fbx" )
+				};
+				cube.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
+				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )

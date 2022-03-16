@@ -2,5 +2,6 @@
 	"shader": "shaders/phong",
 	"diffuse": "textures/bricks_classic_02_D.png",
 	"specular": "textures/bricks_classic_02_S.png",
-	"gloss":  "12"
+	"envmap": "textures/skybox/skybox01/skybox01.png",
+	"gloss": "12"
 }

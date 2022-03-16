@@ -1,6 +1,7 @@
 ﻿{
-	"shader":"shaders/phong",
+	"shader": "shaders/phong",
 	"diffuse": "textures/core/default.png",
 	"specular": "textures/core/default.png",
+	"envmap": "textures/skybox/skybox01/skybox01.png",
 	"gloss": 32
 }

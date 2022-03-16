@@ -208,7 +208,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform1( location, data );
 			return;
 		}
@@ -224,7 +224,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform1( location, data );
 			return;
 		}
@@ -240,7 +240,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform1( location, data );
 			return;
 		}
@@ -256,7 +256,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform2( location, data );
 			return;
 		}
@@ -272,7 +272,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform3( location, data );
 			return;
 		}
@@ -288,7 +288,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.Uniform4( location, data );
 			return;
 		}
@@ -309,7 +309,7 @@ public class Shader : IDisposable
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
-			GL.UseProgram( Handle );
+			//GL.UseProgram( Handle );
 			GL.UniformMatrix4( location, true, ref data );
 			return;
 		}
