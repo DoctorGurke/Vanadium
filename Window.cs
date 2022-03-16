@@ -51,7 +51,7 @@ public class Window : GameWindow
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
-		SceneLight.SetAmbientLightColor( new Color( 32.0f / 255.0f, 22.0f / 255.0f, 50.0f / 255.0f ) );
+		SceneLight.SetAmbientLightColor( new Color( 36.0f / 255.0f, 60.0f / 255.0f, 102.0f / 255.0f ) );
 
 		// init debug line buffers
 		DebugDraw.Init();
@@ -63,7 +63,7 @@ public class Window : GameWindow
 		Model.Precache( Model.ErrorModel );
 
 		// set skybox
-		Skybox.Load( "materials/skybox/skybox01.vanmat" );
+		Skybox.Load( "materials/skybox/skybox03.vanmat" );
 
 		var floor = new SceneObject
 		{

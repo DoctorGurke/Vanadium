@@ -2,6 +2,6 @@
 	"shader": "shaders/phong",
 	"diffuse": "textures/core/default.png",
 	"specular": "textures/core/default.png",
-	"envmap": "textures/skybox/skybox01/skybox01.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg",
 	"gloss": 32
 }
