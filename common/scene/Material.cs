@@ -131,6 +131,7 @@ public struct Material : IDisposable
 			if ( MaterialParameters.TryGetValue( name, out var type ) )
 			{
 				Log.Info( $"serializing for {name} {value} {type}" );
+
 				switch ( type )
 				{
 					case MaterialParamType.Unset:
@@ -369,43 +370,23 @@ public struct Material : IDisposable
 	public void AddParameter( string type, string name )
 	{
 		Log.Info( $"adding parameter {type} {name}" );
-		MaterialParamType paramtype = MaterialParamType.Unset;
-		switch ( type )
+
+		var paramtype = type switch
 		{
-			case "bool":
-				paramtype = MaterialParamType.Boolean;
-				break;
-			case "int":
-				paramtype = MaterialParamType.Integer;
-				break;
-			case "uint":
-				paramtype = MaterialParamType.UnsignedInteger;
-				break;
-			case "float":
-				paramtype = MaterialParamType.Float;
-				break;
-			case "double":
-				paramtype = MaterialParamType.Double;
-				break;
-			case "sampler2D":
-				paramtype = MaterialParamType.Sampler2D;
-				break;
-			case "samplerCube":
-				paramtype = MaterialParamType.SamplerCube;
-				break;
-			case "vec2":
-				paramtype = MaterialParamType.Vector2;
-				break;
-			case "vec3":
-				paramtype = MaterialParamType.Vector3;
-				break;
-			case "vec4":
-				paramtype = MaterialParamType.Vector4;
-				break;
-			case "mat4":
-				paramtype = MaterialParamType.Matrix4;
-				break;
-		}
+			"bool" => MaterialParamType.Boolean,
+			"int" => MaterialParamType.Integer,
+			"uint" => MaterialParamType.UnsignedInteger,
+			"float" => MaterialParamType.Float,
+			"double" => MaterialParamType.Double,
+			"sampler2D" => MaterialParamType.Sampler2D,
+			"samplerCube" => MaterialParamType.SamplerCube,
+			"vec2" => MaterialParamType.Vector2,
+			"vec3" => MaterialParamType.Vector3,
+			"vec4" => MaterialParamType.Vector4,
+			"mat4" => MaterialParamType.Matrix4,
+			_ => throw new NotImplementedException()
+		};
+
 		MaterialParameters.Add( name, paramtype );
 	}
 }
