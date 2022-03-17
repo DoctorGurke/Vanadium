@@ -57,6 +57,7 @@ public struct Material : IDisposable
 
 	public static Material ErrorMaterial => Load( "materials/core/error.vanmat" );
 	public bool IsError { get; private set; } = false;
+	private MaterialParameters? Parameters;
 	public bool Transparent { get; private set; } = false;
 
 	public static Material Load( string path )
@@ -85,7 +86,7 @@ public struct Material : IDisposable
 			return mat;
 		}
 
-		// our material parameters get loaded into the material by the shader, according to #material macros
+		// our material parameters get loaded into the material by the shader, according to #material preprocessors
 		try
 		{
 			var shadername = parameters["shader"];
@@ -99,18 +100,134 @@ public struct Material : IDisposable
 			return mat;
 		}
 
-		Log.Info( "material json" );
-		foreach ( var param in parameters.Properties() )
-		{
-			mat.AddData( param.Name, $"{param.Value}" );
-			Log.Info( $"{param.Name} = {param.Value}" );
-		}
-
-		// the shader will have registered the parameter types and data at this point already, so we can parse the actual runtime types here
-		// which then get fed to the shader via Material.Use()
-		mat.SerializeMaterialParameters();
+		// the shader will have registered the parameter types at this point already, so we can parse the actual runtime types here
+		// which then get fed to the shader uniforms via Material.Use()
+		var settings = mat.SerializeMaterialParameters( parameters );
+		mat.Parameters = new MaterialParameters( settings );
 		PrecachedMaterials.Add( path, mat );
 		return mat;
+	}
+
+	// get enumerable of IRenderSetting according to the types of the data
+	public IEnumerable<IRenderSetting> SerializeMaterialParameters( JObject parameters )
+	{
+		Log.Info( "serializing material" );
+		foreach ( var param in parameters.Properties() )
+		{
+			Log.Info( $"{param.Name} = {param.Value}" );
+			var name = param.Name;
+			var value = $"{param.Value}";
+
+			// check for global transparent property
+			if ( bool.TryParse( value, out var transparent ) )
+			{
+				if ( name == "transparent" && transparent )
+				{
+					Transparent = true;
+					continue;
+				}
+			}
+
+			if ( MaterialParameters.TryGetValue( name, out var type ) )
+			{
+				Log.Info( $"serializing for {name} {value} {type}" );
+				switch ( type )
+				{
+					case MaterialParamType.Unset:
+						throw new NotImplementedException();
+					case MaterialParamType.Boolean:
+						Log.Info( $"parsing bool material data {name} {value}" );
+						if ( bool.TryParse( value, out var bdata ) )
+						{
+							yield return new BoolUniform( name, bdata );
+						}
+						break;
+					case MaterialParamType.Integer:
+						Log.Info( $"parsing int material data {name} {value}" );
+						if ( int.TryParse( value, out var idata ) )
+						{
+							yield return new IntUniform( name, idata );
+						}
+						break;
+					case MaterialParamType.UnsignedInteger:
+						Log.Info( $"parsing uint material data {name} {value}" );
+						if ( uint.TryParse( value, out var uidata ) )
+						{
+							yield return new UIntUniform( name, uidata );
+						}
+						break;
+					case MaterialParamType.Float:
+						Log.Info( $"parsing float material data {name} {value}" );
+						if ( float.TryParse( value, out var fdata ) )
+						{
+							yield return new FloatUniform( name, fdata );
+						}
+						break;
+					case MaterialParamType.Double:
+						Log.Info( $"parsing double material data {name} {value}" );
+						if ( double.TryParse( value, out var ddata ) )
+						{
+							yield return new DoubleUniform( name, ddata );
+						}
+						break;
+					case MaterialParamType.Vector2:
+						Log.Info( $"parsing vec2 material data {name} {value}" );
+						// TODO make wrapper for vec2 and add TryParse directly to type
+						if ( Parse.TryParse( value, out Vector2 vec2data ) )
+						{
+							yield return new Vector2Uniform( name, vec2data );
+						}
+						break;
+					case MaterialParamType.Vector3:
+						Log.Info( $"parsing vec3 material data {name} {value}" );
+						if ( Vector3.TryParse( value, out var vec3data ) )
+						{
+							yield return new Vector3Uniform( name, vec3data );
+						}
+						break;
+					case MaterialParamType.Vector4:
+						Log.Info( $"parsing vec4 material data {name} {value}" );
+						// TODO make wrapper for vec4 and add TryParse directly to type
+						if ( Parse.TryParse( value, out Vector4 vec4data ) )
+						{
+							yield return new Vector4Uniform( name, vec4data );
+						}
+						break;
+					case MaterialParamType.Matrix4:
+						Log.Info( $"parsing mat4 material data {name} {value}" );
+						// TODO make wrapper for mat4 and add TryParse directly to type (?)
+						if ( Parse.TryParse( value, out Matrix4 mat4data ) )
+						{
+							yield return new Matrix4Uniform( name, mat4data );
+						}
+						break;
+					case MaterialParamType.Sampler2D:
+						Log.Info( $"parsing sampler2D material data {name} {value}" );
+						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
+						yield return new TextureUniform( name, value );
+						break;
+					case MaterialParamType.SamplerCube:
+						Log.Info( $"parsing samplerCube material data {name} {value}" );
+						var sides = new List<string>();
+						var path = value;
+						var oldpath = path;
+						var ext = Path.GetExtension( path );
+						path = path.Replace( ext, "" );
+						foreach ( var side in skyboxSides )
+						{
+							var full = $"{path}_{side}{ext}";
+							Log.Info( $"adding cubemap side {full}" );
+							sides.Add( full );
+						}
+						var cube = TextureCube.Load( sides, oldpath );
+
+						yield return new TextureCubeUniform( name, cube );
+						break;
+					default:
+						throw new NotImplementedException();
+				}
+			}
+		}
 	}
 
 	public int GetAttribLocation( string attribname )
@@ -245,68 +362,10 @@ public struct Material : IDisposable
 
 		Shader.Use();
 
-		foreach ( var data in BooleanData )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in IntegerData )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in UnsignedIntegerData )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in FloatData )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in DoubleData )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in Vector2Data )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in Vector3Data )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in Vector4Data )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		foreach ( var data in Matrix4Data )
-		{
-			Shader.Set( data.Key, data.Value );
-		}
-
-		for ( int tex = 0; tex < TextureData.Count; tex++ )
-		{
-			var data = TextureData.ElementAtOrDefault( tex );
-			var texture = Texture.Load( data.Value );
-			Shader.Set( data.Key, tex );
-			texture.Use( TextureUnit.Texture0 + tex );
-		}
-
-		for ( int cube = 0; cube < CubeTextureData.Count; cube++ )
-		{
-			var texture = CubeTextureData.ElementAtOrDefault( cube );
-			Shader.Set( texture.Key, TextureData.Count + cube );
-			texture.Value.Use( TextureUnit.Texture0 + TextureData.Count + cube );
-		}
+		Parameters?.Set( Shader );
 	}
 
-	// this is kinda dumb
+	// serialize string type to type enum
 	public void AddParameter( string type, string name )
 	{
 		Log.Info( $"adding parameter {type} {name}" );
@@ -349,138 +408,4 @@ public struct Material : IDisposable
 		}
 		MaterialParameters.Add( name, paramtype );
 	}
-
-	public void AddData( string name, string data )
-	{
-		Log.Info( $"adding material data {name} {data}" );
-		MaterialData.Add( name, data );
-
-		if ( bool.TryParse( data, out var bdata ) )
-		{
-			if ( name == "transparent" && bdata )
-			{
-				Transparent = true;
-			}
-		}
-	}
-
-	// this is a bit dumb
-	public void SerializeMaterialParameters()
-	{
-		Log.Info( $"Serializing material parameters" );
-		foreach ( var param in MaterialData )
-		{
-			if ( MaterialParameters.TryGetValue( param.Key, out var type ) )
-			{
-				Log.Info( $"serializing for {param.Key} {param.Value} {type}" );
-				switch ( type )
-				{
-					case MaterialParamType.Unset:
-						Log.Info( "unset data!" );
-						break;
-					case MaterialParamType.Boolean:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( bool.TryParse( param.Value, out var bdata ) )
-						{
-							BooleanData.Add( param.Key, bdata );
-						}
-						break;
-					case MaterialParamType.Integer:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( int.TryParse( param.Value, out var idata ) )
-						{
-							IntegerData.Add( param.Key, idata );
-						}
-						break;
-					case MaterialParamType.UnsignedInteger:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( uint.TryParse( param.Value, out var uidata ) )
-						{
-							UnsignedIntegerData.Add( param.Key, uidata );
-						}
-						break;
-					case MaterialParamType.Float:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( float.TryParse( param.Value, out var fdata ) )
-						{
-							FloatData.Add( param.Key, fdata );
-						}
-						break;
-					case MaterialParamType.Double:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( double.TryParse( param.Value, out var ddata ) )
-						{
-							DoubleData.Add( param.Key, ddata );
-						}
-						break;
-					case MaterialParamType.Vector2:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						// TODO make wrapper for vec2 and add TryParse directly to type
-						if ( Parse.TryParse( param.Value, out Vector2 vec2data ) )
-						{
-							Vector2Data.Add( param.Key, vec2data );
-						}
-						break;
-					case MaterialParamType.Vector3:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						if ( Vector3.TryParse( param.Value, out var vec3data ) )
-						{
-							Vector3Data.Add( param.Key, vec3data );
-						}
-						break;
-					case MaterialParamType.Vector4:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						// TODO make wrapper for vec4 and add TryParse directly to type
-						if ( Parse.TryParse( param.Value, out Vector4 vec4data ) )
-						{
-							Vector4Data.Add( param.Key, vec4data );
-						}
-						break;
-					case MaterialParamType.Matrix4:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						// TODO make wrapper for mat4 and add TryParse directly to type (?)
-						if ( Parse.TryParse( param.Value, out Matrix4 mat4data ) )
-						{
-							Matrix4Data.Add( param.Key, mat4data );
-						}
-						break;
-					case MaterialParamType.Sampler2D:
-						Log.Info( $"parsing material data {param.Key} {param.Value}" );
-						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						TextureData.Add( param.Key, param.Value );
-						break;
-					case MaterialParamType.SamplerCube:
-						Log.Info( $"parsing material data {param.Key} {param.Value} texcube" );
-						var sides = new List<string>();
-						var path = param.Value;
-						var oldpath = path;
-						var ext = Path.GetExtension( path );
-						path = path.Replace( ext, "" );
-						foreach ( var side in skyboxSides )
-						{
-							var full = $"{path}_{side}{ext}";
-							Log.Info( $"adding cubemap side {full}" );
-							sides.Add( full );
-						}
-						var cube = TextureCube.Load( sides, oldpath );
-						// keep the reference to the texture
-						CubeTextureData.Add( param.Key, cube );
-						break;
-				}
-			}
-		}
-	}
-
-	// this is dumb
-	private readonly Dictionary<string, bool> BooleanData = new();
-	private readonly Dictionary<string, int> IntegerData = new();
-	private readonly Dictionary<string, uint> UnsignedIntegerData = new();
-	private readonly Dictionary<string, float> FloatData = new();
-	private readonly Dictionary<string, double> DoubleData = new();
-	private readonly Dictionary<string, Vector2> Vector2Data = new();
-	private readonly Dictionary<string, Vector3> Vector3Data = new();
-	private readonly Dictionary<string, Vector4> Vector4Data = new();
-	private readonly Dictionary<string, Matrix4> Matrix4Data = new();
-	private readonly Dictionary<string, string> TextureData = new(); // just keep the path, we load it from the Texture class
-	private readonly Dictionary<string, TextureCube> CubeTextureData = new(); // keep reference since we don't cache cubemap textures
 }
