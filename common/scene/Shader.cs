@@ -17,7 +17,7 @@ public class Shader : IDisposable
 	{
 		var container = LoadContainer( path );
 
-		if ( !VerifyIntegrity( container ) ) throw new NotImplementedException();
+		if ( !VerifyIntegrity( container ) ) throw new Exception("Shader missing either Vertex or Fragment components!");
 
 		// load vertex shader and compile
 		var vertsource = container.First( x => x.Key == ShaderType.VertexShader ).Value;
