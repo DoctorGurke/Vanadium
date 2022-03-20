@@ -13,6 +13,11 @@ public class Program
 {
 	public static void Main( string[] args )
 	{
+		Debug.Assert( File.Exists( "resources/shaders/core/error.vfx" ) );
+		Debug.Assert( File.Exists( "resources/materials/core/error.vanmat" ) );
+		Debug.Assert( File.Exists( "resources/models/primitives/error.fbx" ) );
+		Debug.Assert( File.Exists( "resources/textures/core/error.png" ) );
+
 		// init the settings for our main window
 		var nativeWindowSettings = new NativeWindowSettings()
 		{
