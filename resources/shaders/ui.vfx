@@ -1,4 +1,6 @@
-﻿#version 330 core
+﻿#VS
+
+#version 330 core
 
 uniform mat4 projection_matrix;
 
@@ -14,4 +16,20 @@ void main()
     gl_Position = projection_matrix * vec4(in_position, 0, 1);
     color = in_color;
     texCoord = in_texCoord;
+}
+
+#FS
+
+#version 330 core
+
+uniform sampler2D in_fontTexture;
+
+in vec4 color;
+in vec2 texCoord;
+
+out vec4 outputColor;
+
+void main()
+{
+    outputColor = color * texture(in_fontTexture, texCoord);
 }

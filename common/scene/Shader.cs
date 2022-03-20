@@ -2,6 +2,7 @@
 using OpenTK.Mathematics;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Vanadium;
 
@@ -12,40 +13,74 @@ public class Shader : IDisposable
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
-	public Shader( string vertPath, string fragPath, Material material )
+	public Shader( string path, Material material )
 	{
+		var container = LoadContainer( path );
+
+		if ( !VerifyIntegrity( container ) ) throw new NotImplementedException();
+
 		// load vertex shader and compile
-		var shaderSource = Load( vertPath, material );
-		GLUtil.CreateShader( ShaderType.VertexShader, "Vert", Path.GetFileName( vertPath ), out int vertexShader );
-		GL.ShaderSource( vertexShader, shaderSource );
+		var vertsource = container.First( x => x.Key == ShaderType.VertexShader ).Value;
+		vertsource = HandleIncludes( vertsource, path, material );
+		vertsource = HandleMaterial( vertsource, path, material );
+		GLUtil.CreateShader( ShaderType.VertexShader, "Vert", Path.GetFileName( path ), out int vertexShader );
+		GL.ShaderSource( vertexShader, vertsource );
 		CompileShader( vertexShader );
 
+		// see if there's a geo shader
+		int geometryShader = -1;
+		if(container.Any(x => x.Key == ShaderType.GeometryShader))
+		{
+			// load geo shader and compile
+			var geosource = container.First( x => x.Key == ShaderType.GeometryShader ).Value;
+			geosource = HandleIncludes( geosource, path, material );
+			geosource = HandleMaterial( geosource, path, material );
+			GLUtil.CreateShader( ShaderType.VertexShader, "Geo", Path.GetFileName( path ), out geometryShader );
+			GL.ShaderSource( vertexShader, geosource );
+			CompileShader( vertexShader );
+		}
+
 		// load fragment shader and compile
-		shaderSource = Load( fragPath, material );
-		GLUtil.CreateShader( ShaderType.FragmentShader, "Frag", Path.GetFileName( fragPath ), out int fragmentShader );
-		GL.ShaderSource( fragmentShader, shaderSource );
+		var fragsource = container.First( x => x.Key == ShaderType.FragmentShader ).Value;
+		fragsource = HandleIncludes( fragsource, path, material );
+		fragsource = HandleMaterial( fragsource, path, material );
+		GLUtil.CreateShader( ShaderType.FragmentShader, "Frag", Path.GetFileName( path ), out int fragmentShader );
+		GL.ShaderSource( fragmentShader, fragsource );
 		CompileShader( fragmentShader );
 
 		// create opengl shader program
-		GLUtil.CreateProgram( $"{Path.GetFileName( vertPath )}-{Path.GetFileName( fragPath )}", out Handle );
+		GLUtil.CreateProgram( $"Shader: {Path.GetFileName( path )}", out Handle );
 
-		// attach vert + fragment shaders and link
+		// attach vert + (geo) + fragment shaders and link
 		GL.AttachShader( Handle, vertexShader );
+		// link if exists
+		if ( geometryShader >= 0 )
+			GL.AttachShader( Handle, geometryShader );
 		GL.AttachShader( Handle, fragmentShader );
 		LinkProgram( Handle );
 
-		// When the shader program is linked, it no longer needs the individual shaders attached to it; the compiled code is copied into the shader program.
-		// Detach them, and then delete them.
+		// detatch shaders
 		GL.DetachShader( Handle, vertexShader );
+		// detach if exists
+		if ( geometryShader >= 0 )
+			GL.DetachShader( Handle, geometryShader );
 		GL.DetachShader( Handle, fragmentShader );
+
+		// delete shaders
 		GL.DeleteShader( fragmentShader );
+		// delete if exists
+		if ( geometryShader >= 0 )
+			GL.DetachShader( Handle, geometryShader );
 		GL.DeleteShader( vertexShader );
 
-		// The shader is now ready to go, but first, we're going to cache all the shader uniform locations.
-		// Querying this from the shader is very slow, so we do it once on initialization and reuse those values
-		// later.
+		InitUniforms();
+	}
 
-		// First, we have to get the number of active uniforms in the shader.
+	/// <summary>
+	/// Init uniform dictionary and uniform block bindings
+	/// </summary>
+	private void InitUniforms()
+	{
 		GL.GetProgram( Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms );
 
 		// bind per view uniform buffer
@@ -86,6 +121,77 @@ public class Shader : IDisposable
 		data = HandleMaterial( data, path, material );
 
 		return data;
+	}
+
+	/// <summary>
+	/// Check if a serialized shader container collection has the minimum required components.
+	/// </summary>
+	/// <param name="sections"></param>
+	/// <returns>True if it contains a vertex and fragment component.</returns>
+	private static bool VerifyIntegrity( IEnumerable<KeyValuePair<ShaderType, string>> sections )
+	{
+		// check if shader has both vertex and fragment components
+		if ( sections.Any( x => x.Key == ShaderType.VertexShader ) && sections.Any( x => x.Key == ShaderType.FragmentShader ) )
+			return true;
+		return false;
+	}
+
+	private static readonly Dictionary<string, ShaderType> shadertypes = new Dictionary<string, ShaderType>()
+	{
+		{"#VS", ShaderType.VertexShader},
+		{"#VERT", ShaderType.VertexShader},
+		{"#VERTEX", ShaderType.VertexShader},
+		{"#FS", ShaderType.FragmentShader},
+		{"#FRAG", ShaderType.FragmentShader},
+		{"#FRAGMENT", ShaderType.FragmentShader},
+		{"#GS", ShaderType.GeometryShader},
+		{"#GEO", ShaderType.GeometryShader},
+		{"#GEOMETRY", ShaderType.GeometryShader},
+	};
+
+	/// <summary>
+	/// Split a shader container into the individual parts.
+	/// </summary>
+	/// <param name="path">The path to the shader file.</param>
+	/// <returns>A Key value pair of the shader section and the shader type.</returns>
+	private static IEnumerable<KeyValuePair<ShaderType, string>> LoadContainer( string path )
+	{
+		using var stream = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
+		using ( var sr = new StreamReader( stream ) )
+		{
+			var builder = new StringBuilder();
+			ShaderType curtype = 0;
+
+			string? line;
+			while ( (line = sr.ReadLine()) != null )
+			{
+				// special case if we've reached the end of the file
+				if ( sr.EndOfStream && curtype != 0 )
+				{
+					builder.Append( line );
+					yield return new KeyValuePair<ShaderType, string>( curtype, builder.ToString() );
+					continue;
+				}
+
+				// new shader section started, check lookup dict for key (#VS, #FS, #GS)
+				if ( shadertypes.TryGetValue( line.Trim(), out var type ) )
+				{
+					// return code block as shader type
+					if ( curtype != 0 )
+					{
+						yield return new KeyValuePair<ShaderType, string>( curtype, builder.ToString() );
+					}
+					curtype = type;
+
+					// reset builder
+					builder.Clear();
+				}
+				else
+				{
+					builder.AppendLine( line );
+				}
+			}
+		};
 	}
 
 	private static string HandleIncludes( string data, string path, Material mat )

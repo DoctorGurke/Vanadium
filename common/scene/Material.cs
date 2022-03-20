@@ -90,7 +90,7 @@ public struct Material : IDisposable
 		try
 		{
 			var shadername = parameters["shader"];
-			var shader = new Shader( $"{shadername}.vert", $"{shadername}.frag", mat );
+			var shader = new Shader( $"resources/{shadername}.vfx", mat );
 			mat.Shader = shader;
 		}
 		catch ( Exception ex )

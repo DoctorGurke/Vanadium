@@ -1,4 +1,6 @@
-﻿#version 400 core
+﻿#VS 
+
+#version 400 core
 
 #include shaders/common/common.glsl
 
@@ -15,4 +17,20 @@ void main(void)
 	vs_out.vPositionWs = vPosition;
 	vs_out.vVertexColor = vColor;
 	gl_Position = vec4(vPosition, 1.0) * g_matWorldToView * g_matWorldToProjection;
+}
+
+#FS
+
+#version 400 core
+
+in VS_OUT {
+	vec3 vPositionWs;
+	vec4 vVertexColor;
+} fs_in;
+
+out vec4 gl_Color;
+
+void main()
+{
+    gl_Color = fs_in.vVertexColor;
 }
