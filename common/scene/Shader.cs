@@ -35,7 +35,7 @@ public class Shader : IDisposable
 			var geosource = container.First( x => x.Key == ShaderType.GeometryShader ).Value;
 			geosource = HandleIncludes( geosource, path, material );
 			geosource = HandleMaterial( geosource, path, material );
-			GLUtil.CreateShader( ShaderType.VertexShader, "Geo", Path.GetFileName( path ), out geometryShader );
+			GLUtil.CreateShader( ShaderType.GeometryShader, "Geo", Path.GetFileName( path ), out geometryShader );
 			GL.ShaderSource( vertexShader, geosource );
 			CompileShader( vertexShader );
 		}
