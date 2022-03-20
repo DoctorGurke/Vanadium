@@ -8,6 +8,7 @@
     float g_flTime;
     float g_flNearPlane;
     float g_flFarPlane;
+    float g_flGamma;
 };
 
 struct PointLight {

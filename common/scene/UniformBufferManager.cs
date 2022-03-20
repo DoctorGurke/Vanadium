@@ -54,7 +54,8 @@ public class UniformBufferManager
 			g_flTime = Time.Now,
 			g_flNearPlane = Camera.ActiveCamera.ZNear,
 			g_flFarPlane = Camera.ActiveCamera.ZFar,
-			g_vViewportSize = Screen.Size
+			g_vViewportSize = Screen.Size,
+			g_flGamma = DebugOverlay.Gamma
 		};
 		// put data in buffer
 		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( perviewuniformbuffer ).RoundUpToMultipleOf( 16 ), ref perviewuniformbuffer, BufferUsageHint.StaticDraw );
@@ -111,5 +112,6 @@ public class UniformBufferManager
 		public float g_flTime;                  // 4
 		public float g_flNearPlane;             // 4
 		public float g_flFarPlane;              // 4
+		public float g_flGamma;					// 4
 	}
 }

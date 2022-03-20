@@ -59,7 +59,7 @@ void main() {
     col = CommonPhongLighting(col, diff, spec, gloss, normal, fs_in.vPositionWs, viewDir);
 
     // gamma correct
-    col = GammaCorrect(col, 2.2);
+    col = GammaCorrect(col, g_flGamma);
 
     gl_Color = vec4(col, alpha);
 }
