@@ -11,7 +11,7 @@ public class Model : IDisposable
 
 	public bool IsError = false;
 
-	public static string ErrorModel { get; } = "models/primitives/error.fbx";
+	public static string ErrorModel => "models/primitives/error.fbx";
 
 	private static readonly Dictionary<string, Model> PrecachedModels = new();
 

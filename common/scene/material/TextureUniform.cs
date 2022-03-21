@@ -12,7 +12,7 @@ public class TextureUniform : MaterialUniform<string>
 	public void SetTexture(Shader shader, int tex )
 	{
 		if ( Value is null ) return;
-		var texture = Texture.Load( Value );
+		var texture = Texture.Load2D( Value );
 		shader.Set( Name, tex );
 		texture.Use( TextureUnit.Texture0 + tex );
 	}
