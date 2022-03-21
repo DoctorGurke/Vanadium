@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Vanadium;
 
-public struct Material : IDisposable
+public struct Material : IDisposable, IEquatable<Material>
 {
 	public enum MaterialParamType
 	{
@@ -59,6 +59,11 @@ public struct Material : IDisposable
 	public bool IsError { get; private set; } = false;
 	private MaterialParameters? Parameters;
 	public bool Transparent { get; private set; } = false;
+
+	public bool Equals( Material other )
+	{
+		return GetHashCode() == other.GetHashCode();
+	}
 
 	public static Material Load( string path )
 	{

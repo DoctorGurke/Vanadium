@@ -42,12 +42,26 @@ public class Mesh : IDisposable
 		Vertices = vertices;
 		Indices = indices;
 		Material = Material.Load( $"{material}.vanmat" );
-		SetupMesh();
 	}
 
 	private int vao, vbo, ebo;
 
-	public Material Material;
+	private Material _material;
+
+	public Material Material
+	{
+		get
+		{
+			return _material;
+		}
+		set
+		{
+			if ( _material.Equals( value ) ) return;
+
+			_material = value;
+			SetupMesh();
+		}
+	}
 
 	public void Dispose()
 	{
