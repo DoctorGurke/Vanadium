@@ -29,7 +29,7 @@ vec4 CommonVertexProcessing(void) {
 	vs_out.vPositionWs = vec3(vec4(vPosition, 1.0) * transform);
 	vs_out.vTangentWs = vTangent;
 	vs_out.vBitangentWs = vBitangent;
-	vs_out.vNormalWs = mat3(transpose(inverse(transform))) * vNormal;
+	vs_out.vNormalWs = mat3(inverse(transform)) * vNormal;
 	vs_out.mTBN = mat3(vs_out.vTangentWs, vs_out.vBitangentWs, vs_out.vNormalWs);
 	vs_out.vTexCoord0 = vTexCoord0;
 	vs_out.vTexCoord1 = vTexCoord1;
