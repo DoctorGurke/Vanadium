@@ -58,6 +58,15 @@ public struct Color
 		this.a = a;
 	}
 
+	public static implicit operator System.Numerics.Vector4( Color value )
+	{
+		return new System.Numerics.Vector4( value.r, value.g, value.b, value.a );
+	}
+	public static implicit operator Color( System.Numerics.Vector4 value )
+	{
+		return new Color( value.X, value.Y, value.Z, value.W );
+	}
+
 	public static implicit operator Vector4( Color value )
 	{
 		return new Vector4( value.r, value.g, value.b, value.a );

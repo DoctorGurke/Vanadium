@@ -38,7 +38,6 @@ public class SceneLightManager
 	public void SetAmbientLightColor( Color col )
 	{
 		AmbientLightColor = col.WithAlpha( 1.0f );
-		Log.Info( $"new ambient light color {col}" );
 		UniformBufferManager.Current.UpdateAmbientLightColor( AmbientLightColor );
 	}
 

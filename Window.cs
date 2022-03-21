@@ -18,8 +18,8 @@ public class Window : GameWindow
 	private readonly Stopwatch Timer = new();
 
 	private ImGuiController _guicontroller;
-	private UniformBufferManager UniformBufferManager = new();
-	private SceneLightManager SceneLight = new();
+	public UniformBufferManager UniformBufferManager = new();
+	public SceneLightManager SceneLight = new();
 
 	protected override void OnLoad()
 	{
@@ -213,9 +213,9 @@ public class Window : GameWindow
 				{
 					Position = cam.Position + cam.Rotation.Forward,
 					Rotation = cam.Rotation,
-					Model = Model.Load( "models/bricks.fbx" )
+					Model = Model.Primitives.Sphere
 				};
-				cube.Model.SetMaterialOverride( "materials/metal.vanmat" );
+				cube.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
