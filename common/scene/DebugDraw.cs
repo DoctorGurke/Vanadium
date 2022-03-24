@@ -5,6 +5,66 @@ namespace Vanadium;
 
 public static class DebugDraw
 {
+
+	/// <summary>
+	/// Spawn a debug line
+	/// </summary>
+	/// <param name="start">Start position</param>
+	/// <param name="end">End position</param>
+	/// <param name="color">Color of the primitive</param>
+	/// <param name="duration">Lifetime of the line</param>
+	/// <param name="depthtest">Whether or not to enable depthtesting on this primitive</param>
+	public static void Line( Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true )
+	{
+		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ) );
+	}
+
+	/// <summary>
+	/// Spawn a debug box
+	/// </summary>
+	/// <param name="position">Position of the box (Center)</param>
+	/// <param name="mins">Local Mins to the position</param>
+	/// <param name="maxs">Local Maxs to the position</param>
+	/// <param name="color">Color of the box</param>
+	/// <param name="duration">Lifetime of the box</param>
+	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
+	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true )
+	{
+		var bbox = new BBox( mins, maxs );
+		Box( position, bbox, color, duration, depthtest );
+	}
+
+	/// <summary>
+	/// Spawn a debug box
+	/// </summary>
+	/// <param name="position">Position of the box (Center)</param>
+	/// <param name="box">The Bounding box, local to the position</param>
+	/// <param name="color">Color of the box</param>
+	/// <param name="duration">Lifetime of the box</param>
+	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
+	public static void Box( Vector3 position, BBox box, Color color, float duration = 0, bool depthtest = true )
+	{
+		var corners = box.Corners.ToArray();
+
+		// bottom
+		Line( position + corners[0], position + corners[1], color, duration, depthtest );
+		Line( position + corners[1], position + corners[5], color, duration, depthtest );
+		Line( position + corners[5], position + corners[4], color, duration, depthtest );
+		Line( position + corners[4], position + corners[0], color, duration, depthtest );
+
+		// top
+		Line( position + corners[3], position + corners[2], color, duration, depthtest );
+		Line( position + corners[2], position + corners[6], color, duration, depthtest );
+		Line( position + corners[6], position + corners[7], color, duration, depthtest );
+		Line( position + corners[7], position + corners[3], color, duration, depthtest );
+
+		// sides
+		Line( position + corners[0], position + corners[3], color, duration, depthtest );
+		Line( position + corners[1], position + corners[2], color, duration, depthtest );
+		Line( position + corners[5], position + corners[6], color, duration, depthtest );
+		Line( position + corners[4], position + corners[7], color, duration, depthtest );
+	}
+
 	private class DebugLine
 	{
 		public DebugVertex start;
@@ -208,64 +268,5 @@ public static class DebugDraw
 
 		// remove expired lines
 		(DebugLines as List<DebugLine>)?.RemoveAll( x => x.TimeSinceSpawned >= x.duration );
-	}
-
-	/// <summary>
-	/// Spawn a debug line
-	/// </summary>
-	/// <param name="start">Start position</param>
-	/// <param name="end">End position</param>
-	/// <param name="color">Color of the primitive</param>
-	/// <param name="duration">Lifetime of the line</param>
-	/// <param name="depthtest">Whether or not to enable depthtesting on this primitive</param>
-	public static void Line( Vector3 start, Vector3 end, Color color, float duration = 0, bool depthtest = true )
-	{
-		DebugLines.Add( new DebugLine( start, end, color, duration, depthtest ) );
-	}
-
-	/// <summary>
-	/// Spawn a debug box
-	/// </summary>
-	/// <param name="position">Position of the box (Center)</param>
-	/// <param name="mins">Local Mins to the position</param>
-	/// <param name="maxs">Local Maxs to the position</param>
-	/// <param name="color">Color of the box</param>
-	/// <param name="duration">Lifetime of the box</param>
-	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
-	public static void Box( Vector3 position, Vector3 mins, Vector3 maxs, Color color, float duration = 0, bool depthtest = true )
-	{
-		var bbox = new BBox( mins, maxs );
-		Box( position, bbox, color, duration, depthtest );
-	}
-
-	/// <summary>
-	/// Spawn a debug box
-	/// </summary>
-	/// <param name="position">Position of the box (Center)</param>
-	/// <param name="box">The Bounding box, local to the position</param>
-	/// <param name="color">Color of the box</param>
-	/// <param name="duration">Lifetime of the box</param>
-	/// <param name="depthtest">Whether or not to enable depthesting on this box</param>
-	public static void Box( Vector3 position, BBox box, Color color, float duration = 0, bool depthtest = true )
-	{
-		var corners = box.Corners.ToArray();
-
-		// bottom
-		Line( position + corners[0], position + corners[1], color, duration, depthtest );
-		Line( position + corners[1], position + corners[5], color, duration, depthtest );
-		Line( position + corners[5], position + corners[4], color, duration, depthtest );
-		Line( position + corners[4], position + corners[0], color, duration, depthtest );
-
-		// top
-		Line( position + corners[3], position + corners[2], color, duration, depthtest );
-		Line( position + corners[2], position + corners[6], color, duration, depthtest );
-		Line( position + corners[6], position + corners[7], color, duration, depthtest );
-		Line( position + corners[7], position + corners[3], color, duration, depthtest );
-
-		// sides
-		Line( position + corners[0], position + corners[3], color, duration, depthtest );
-		Line( position + corners[1], position + corners[2], color, duration, depthtest );
-		Line( position + corners[5], position + corners[6], color, duration, depthtest );
-		Line( position + corners[4], position + corners[7], color, duration, depthtest );
 	}
 }
