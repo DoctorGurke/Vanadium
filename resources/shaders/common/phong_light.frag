@@ -16,11 +16,12 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 n
     float distance = length(lightPos - fragPos);
     float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
 
-    vec3 ambient = lightCol * baseDiffuse;
+    vec3 ambient = baseDiffuse * lightCol;
     vec3 diffuse = lightCol * diff * baseDiffuse;
     vec3 specular = lightCol * spec * baseSpecular;
 
     ambient *= attenuation;
+    ambient *= (dot(normal, lightDir) + 1) / 2;
     diffuse *= attenuation;
     specular *= attenuation;
 
@@ -42,12 +43,15 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationpar
     float epsilon = innerangle - outerangle;
     float intensity = clamp((theta - outerangle) / epsilon, 0.0, 1.0);
 
-    vec3 ambient = spotCol * baseDiffuse;
+    vec3 ambient = baseDiffuse * spotCol;
     vec3 diffuse = spotCol * diff * baseDiffuse;
     vec3 specular = spotCol * spec * baseSpecular;
+
     ambient *= attenuation * intensity;
+    ambient *= (dot(-normal, spotDir) + 1) / 2;
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
+
     return (ambient + diffuse + specular);
 }
 

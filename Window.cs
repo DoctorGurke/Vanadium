@@ -213,17 +213,17 @@ public class Window : GameWindow
 				{
 					Position = cam.Position + cam.Rotation.Forward,
 					Rotation = cam.Rotation,
-					Model = Model.Primitives.Sphere
+					Model = Model.Primitives.Cube
 				};
-				cube.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
+				cube.Model.SetMaterialOverride( "materials/brickwall.vanmat" );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
 			{
-				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 10 );
+				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
+				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.White, 30, 35, 0, 0, 1 );
 			}
 
 			WasUiMode = false;
