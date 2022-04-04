@@ -24,6 +24,7 @@ public class Window : GameWindow
 	protected override void OnLoad()
 	{
 		base.OnLoad();
+		Timer.Start();
 
 		// enable debugging
 		_ = GCHandle.Alloc( _debugProcCallback );
@@ -85,7 +86,9 @@ public class Window : GameWindow
 
 		CursorGrabbed = true;
 
-		Timer.Start();
+		Log.Debug($"Load took: {Timer.ElapsedMilliseconds}ms");
+
+		Timer.Restart();
 	}
 
 	protected override void OnRenderFrame( FrameEventArgs e )
