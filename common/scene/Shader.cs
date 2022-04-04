@@ -17,10 +17,10 @@ public class Shader : IDisposable
 	{
 		var container = LoadContainer( path );
 
-		if ( !VerifyIntegrity( container ) ) throw new Exception("Shader missing either Vertex or Fragment components!");
+		if ( !container.IsValid ) throw new Exception( "Shader missing either Vertex or Fragment components!" );
 
 		// load vertex shader and compile
-		var vertsource = container.First( x => x.Key == ShaderType.VertexShader ).Value;
+		var vertsource = container.VertexShader;
 		vertsource = HandleIncludes( vertsource, path, material );
 		vertsource = HandleMaterial( vertsource, path, material );
 		GLUtil.CreateShader( ShaderType.VertexShader, "Vert", Path.GetFileName( path ), out int vertexShader );
@@ -29,10 +29,10 @@ public class Shader : IDisposable
 
 		// see if there's a geo shader
 		int geometryShader = -1;
-		if(container.Any(x => x.Key == ShaderType.GeometryShader))
+		if ( container.HasGeometryShader )
 		{
 			// load geo shader and compile
-			var geosource = container.First( x => x.Key == ShaderType.GeometryShader ).Value;
+			var geosource = container.GeometryShader;
 			geosource = HandleIncludes( geosource, path, material );
 			geosource = HandleMaterial( geosource, path, material );
 			GLUtil.CreateShader( ShaderType.GeometryShader, "Geo", Path.GetFileName( path ), out geometryShader );
@@ -41,7 +41,7 @@ public class Shader : IDisposable
 		}
 
 		// load fragment shader and compile
-		var fragsource = container.First( x => x.Key == ShaderType.FragmentShader ).Value;
+		var fragsource = container.FragmentShader;
 		fragsource = HandleIncludes( fragsource, path, material );
 		fragsource = HandleMaterial( fragsource, path, material );
 		GLUtil.CreateShader( ShaderType.FragmentShader, "Frag", Path.GetFileName( path ), out int fragmentShader );
@@ -123,40 +123,39 @@ public class Shader : IDisposable
 		return data;
 	}
 
-	/// <summary>
-	/// Check if a serialized shader container collection has the minimum required components.
-	/// </summary>
-	/// <param name="sections"></param>
-	/// <returns>True if it contains a vertex and fragment component.</returns>
-	private static bool VerifyIntegrity( IEnumerable<KeyValuePair<ShaderType, string>> sections )
-	{
-		// check if shader has both vertex and fragment components
-		if ( sections.Any( x => x.Key == ShaderType.VertexShader ) && sections.Any( x => x.Key == ShaderType.FragmentShader ) )
-			return true;
-		return false;
-	}
-
 	private static readonly Dictionary<string, ShaderType> shadertypes = new()
 	{
-		{"#VS", ShaderType.VertexShader},
-		{"#VERT", ShaderType.VertexShader},
-		{"#VERTEX", ShaderType.VertexShader},
-		{"#FS", ShaderType.FragmentShader},
-		{"#FRAG", ShaderType.FragmentShader},
-		{"#FRAGMENT", ShaderType.FragmentShader},
-		{"#GS", ShaderType.GeometryShader},
-		{"#GEO", ShaderType.GeometryShader},
-		{"#GEOMETRY", ShaderType.GeometryShader},
+		{ "#VS", ShaderType.VertexShader },
+		{ "#VERT", ShaderType.VertexShader },
+		{ "#VERTEX", ShaderType.VertexShader },
+		{ "#FS", ShaderType.FragmentShader },
+		{ "#FRAG", ShaderType.FragmentShader },
+		{ "#FRAGMENT", ShaderType.FragmentShader },
+		{ "#GS", ShaderType.GeometryShader },
+		{ "#GEO", ShaderType.GeometryShader },
+		{ "#GEOMETRY", ShaderType.GeometryShader },
 	};
+
+	private struct ShaderContainer
+	{
+		public string VertexShader = "";
+		public string FragmentShader = "";
+		public string GeometryShader = "";
+		public bool HasVertexShader => !string.IsNullOrEmpty( VertexShader.Clean() );
+		public bool HasFragmentShader => !string.IsNullOrEmpty( FragmentShader.Clean() );
+		public bool HasGeometryShader => !string.IsNullOrEmpty( GeometryShader.Clean() );
+		public bool IsValid => HasVertexShader && HasFragmentShader;
+	}
 
 	/// <summary>
 	/// Split a shader container into the individual parts.
 	/// </summary>
 	/// <param name="path">The path to the shader file.</param>
 	/// <returns>A Key value pair of the shader section and the shader type.</returns>
-	private static IEnumerable<KeyValuePair<ShaderType, string>> LoadContainer( string path )
+	private static ShaderContainer LoadContainer( string path )
 	{
 		using var stream = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
+		var container = new ShaderContainer();
 		using ( var sr = new StreamReader( stream ) )
 		{
 			var builder = new StringBuilder();
@@ -169,7 +168,20 @@ public class Shader : IDisposable
 				if ( sr.EndOfStream && curtype != 0 )
 				{
 					builder.Append( line );
-					yield return new KeyValuePair<ShaderType, string>( curtype, builder.ToString() );
+					switch ( curtype )
+					{
+						case ShaderType.FragmentShader:
+							container.FragmentShader += builder.ToString();
+							break;
+						case ShaderType.VertexShader:
+							container.VertexShader += builder.ToString();
+							break;
+						case ShaderType.GeometryShader:
+							container.GeometryShader += builder.ToString();
+							break;
+						default:
+							break;
+					}
 					continue;
 				}
 
@@ -179,7 +191,20 @@ public class Shader : IDisposable
 					// return code block as shader type
 					if ( curtype != 0 )
 					{
-						yield return new KeyValuePair<ShaderType, string>( curtype, builder.ToString() );
+						switch ( curtype )
+						{
+							case ShaderType.FragmentShader:
+								container.FragmentShader += builder.ToString();
+								break;
+							case ShaderType.VertexShader:
+								container.VertexShader += builder.ToString();
+								break;
+							case ShaderType.GeometryShader:
+								container.GeometryShader += builder.ToString();
+								break;
+							default:
+								break;
+						}
 					}
 					curtype = type;
 
@@ -192,6 +217,7 @@ public class Shader : IDisposable
 				}
 			}
 		};
+		return container;
 	}
 
 	private static string HandleIncludes( string data, string path, Material mat )
@@ -276,7 +302,7 @@ public class Shader : IDisposable
 		GL.GetProgram( program, GetProgramParameterName.LinkStatus, out var code );
 		if ( code != (int)All.True )
 		{
-			Log.Info(GL.GetProgramInfoLog( program ));
+			Log.Info( GL.GetProgramInfoLog( program ) );
 			// We can use `GL.GetProgramInfoLog(program)` to get information about the error.
 			throw new Exception( $"Error occurred whilst linking Program({program}) {code}" );
 		}
