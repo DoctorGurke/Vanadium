@@ -5,7 +5,7 @@ namespace Vanadium;
 
 public abstract class Camera
 {
-	public static Camera ActiveCamera { get; private set; }
+	public static Camera? ActiveCamera { get; private set; }
 	internal CameraSetup setup;
 
 	public Vector3 Position
@@ -50,8 +50,8 @@ public abstract class Camera
 
 	public static void BuildActiveCamera()
 	{
-		ActiveCamera.Update();
-		ActiveCamera.BuildView( ref ActiveCamera.setup );
+		ActiveCamera?.Update();
+		ActiveCamera?.BuildView( ref ActiveCamera.setup );
 	}
 
 	public virtual void BuildView( ref CameraSetup setup )

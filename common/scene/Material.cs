@@ -373,4 +373,24 @@ public struct Material : IDisposable, IEquatable<Material>
 
 		MaterialParameters.Add( name, paramtype );
 	}
+
+	public override bool Equals( object? obj )
+	{
+		return obj is Material material && Equals( material );
+	}
+
+	public static bool operator ==( Material left, Material right )
+	{
+		return left.Equals( right );
+	}
+
+	public static bool operator !=( Material left, Material right )
+	{
+		return !(left == right);
+	}
+
+	public override int GetHashCode()
+	{
+		return base.GetHashCode();
+	}
 }

@@ -6,8 +6,6 @@ namespace Vanadium;
 
 public class Mesh : IDisposable
 {
-
-	public Model Model;
 	public Vertex[] Vertices;
 	public int[] Indices;
 

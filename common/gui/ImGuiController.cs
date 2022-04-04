@@ -19,7 +19,7 @@ public class ImGuiController : IDisposable
 	private int _indexBuffer;
 	private int _indexBufferSize;
 
-	private Texture _fontTexture;
+	private Texture? _fontTexture;
 	private Material _material;
 
 	private int _windowWidth;
@@ -198,7 +198,7 @@ public class ImGuiController : IDisposable
 		PressedChars.Add( keyChar );
 	}
 
-	internal void MouseScroll( Vector2 offset )
+	internal static void MouseScroll( Vector2 offset )
 	{
 		ImGuiIOPtr io = ImGui.GetIO();
 
@@ -343,14 +343,14 @@ public class ImGuiController : IDisposable
 		PressChar( (char)e.Unicode );
 	}
 
-	public void OnMouseWheel( MouseWheelEventArgs e )
+	public static void OnMouseWheel( MouseWheelEventArgs e )
 	{
 		MouseScroll( e.Offset );
 	}
 
 	public void Dispose()
 	{
-		_fontTexture.Dispose();
+		_fontTexture?.Dispose();
 		GC.SuppressFinalize( this );
 	}
 }

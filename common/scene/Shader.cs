@@ -136,7 +136,7 @@ public class Shader : IDisposable
 		return false;
 	}
 
-	private static readonly Dictionary<string, ShaderType> shadertypes = new Dictionary<string, ShaderType>()
+	private static readonly Dictionary<string, ShaderType> shadertypes = new()
 	{
 		{"#VS", ShaderType.VertexShader},
 		{"#VERT", ShaderType.VertexShader},

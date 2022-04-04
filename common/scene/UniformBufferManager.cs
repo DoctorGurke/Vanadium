@@ -8,7 +8,7 @@ public class UniformBufferManager
 {
 	public int PerViewUniformBufferHandle;
 	public int PerViewLightingUniformBufferHandle;
-	public static UniformBufferManager Current;
+	public static UniformBufferManager? Current { get; private set; }
 
 	public UniformBufferManager()
 	{
@@ -46,14 +46,14 @@ public class UniformBufferManager
 		// prepare data
 		var perviewuniformbuffer = new PerViewUniformBuffer
 		{
-			g_matWorldToProjection = Camera.ActiveCamera.ProjectionMatrix,
-			g_matWorldToView = Camera.ActiveCamera.ViewMatrix,
-			g_vCameraPositionWs = Camera.ActiveCamera.Position,
-			g_vCameraDirWs = Camera.ActiveCamera.Rotation.Forward,
-			g_vCameraUpDirWs = Camera.ActiveCamera.Rotation.Up,
+			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? Matrix4.CreatePerspectiveFieldOfView(0, 0, 0, 0),
+			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? Matrix4.LookAt(new Vector3(), new Vector3(), new Vector3()),
+			g_vCameraPositionWs = Camera.ActiveCamera?.Position ?? new Vector3(),
+			g_vCameraDirWs = Camera.ActiveCamera?.Rotation.Forward ?? new Vector3(),
+			g_vCameraUpDirWs = Camera.ActiveCamera?.Rotation.Up ?? new Vector3(),
 			g_flTime = Time.Now,
-			g_flNearPlane = Camera.ActiveCamera.ZNear,
-			g_flFarPlane = Camera.ActiveCamera.ZFar,
+			g_flNearPlane = Camera.ActiveCamera?.ZNear ?? 0.0f,
+			g_flFarPlane = Camera.ActiveCamera?.ZFar ?? 0.0f,
 			g_vViewportSize = Screen.Size,
 			g_flGamma = DebugOverlay.Gamma
 		};

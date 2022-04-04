@@ -5,7 +5,7 @@ namespace Vanadium;
 
 public class Skybox
 {
-	public static Skybox ActiveSkybox { get; private set; }
+	public static Skybox? ActiveSkybox { get; private set; }
 
 	public static void Load( string path )
 	{
@@ -14,7 +14,7 @@ public class Skybox
 		ActiveSkybox = skybox;
 	}
 
-	private Model Model;
+	private Model? Model;
 
 	public void Setup( string path )
 	{
@@ -26,7 +26,7 @@ public class Skybox
 	{
 		GL.DepthFunc( DepthFunction.Lequal );
 
-		Model.Draw();
+		Model?.Draw();
 
 		GL.DepthFunc( DepthFunction.Less );
 	}

@@ -7,7 +7,7 @@ namespace Vanadium;
 
 public class Model : IDisposable
 {
-	public Mesh[] Meshes;
+	public Mesh[]? Meshes;
 
 	public bool IsError = false;
 
@@ -20,6 +20,7 @@ public class Model : IDisposable
 	public void SetMaterialOverride( string path )
 	{
 		if ( IsError ) return;
+		if ( Meshes is null ) return;
 		foreach ( var mesh in Meshes )
 		{
 			mesh.Material = Material.Load( path );
@@ -33,9 +34,12 @@ public class Model : IDisposable
 
 	public void Dispose()
 	{
-		foreach(var mesh in Meshes)
+		if ( Meshes is not null )
 		{
-			mesh.Dispose();
+			foreach ( var mesh in Meshes )
+			{
+				mesh.Dispose();
+			}
 		}
 		GC.SuppressFinalize( this );
 	}
@@ -91,6 +95,7 @@ public class Model : IDisposable
 
 	public void Draw( SceneObject? sceneobject )
 	{
+		if ( Meshes is null ) return;
 		foreach ( var mesh in Meshes )
 		{
 			mesh.Draw( sceneobject );
@@ -99,6 +104,7 @@ public class Model : IDisposable
 
 	private void ProcessNode( Node node, Scene scene )
 	{
+		if ( Meshes is null ) return;
 		foreach ( int index in node.MeshIndices )
 		{
 			Assimp.Mesh mesh = scene.Meshes[index];
@@ -110,7 +116,7 @@ public class Model : IDisposable
 		}
 	}
 
-	private Mesh ProcessMesh( Assimp.Mesh mesh, Scene scene )
+	private static Mesh ProcessMesh( Assimp.Mesh mesh, Scene scene )
 	{
 		Mesh.Vertex[] vertices = new Mesh.Vertex[mesh.VertexCount];
 		int[] indices = new int[mesh.FaceCount * 3];
@@ -182,12 +188,12 @@ public class Model : IDisposable
 
 		Log.Info( $"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}" );
 		Mesh fmesh = new( vertices, indices, scene.Materials[mesh.MaterialIndex].Name );
-		fmesh.Model = this;
 		return fmesh;
 	}
 
 	private BBox GetRenderBounds()
 	{
+		if ( Meshes is null ) return new BBox();
 		Vector3 mins = Meshes[0].Vertices[0].position;
 		Vector3 maxs = Meshes[0].Vertices[0].position;
 

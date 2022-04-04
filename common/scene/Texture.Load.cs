@@ -83,7 +83,7 @@ public partial class Texture
 		return tex;
 	}
 
-	private static TextureTarget[] targets = {
+	private static readonly TextureTarget[] targets = {
 		// right								// left
 		TextureTarget.TextureCubeMapPositiveX, TextureTarget.TextureCubeMapNegativeX,
 		// up									// down

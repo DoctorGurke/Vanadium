@@ -17,7 +17,7 @@ public class Window : GameWindow
 
 	private readonly Stopwatch Timer = new();
 
-	private ImGuiController _guicontroller;
+	private ImGuiController? _guicontroller;
 	public UniformBufferManager UniformBufferManager = new();
 	public SceneLightManager SceneLight = new();
 
@@ -120,7 +120,7 @@ public class Window : GameWindow
 		SceneWorld.DrawOpaques();
 
 		// draw skybox after opaques
-		Skybox.ActiveSkybox.Draw();
+		Skybox.ActiveSkybox?.Draw();
 
 		DebugDraw.Line( Vector3.Zero, Vector3.Up * 10, Color.Red );
 
@@ -142,7 +142,7 @@ public class Window : GameWindow
 		DebugOverlay.Draw( this );
 
 		// draw ui
-		_guicontroller.Draw();
+		_guicontroller?.Draw();
 
 		SwapBuffers();
 	}
@@ -172,7 +172,7 @@ public class Window : GameWindow
 		Camera.BuildActiveCamera();
 
 		// update ui
-		_guicontroller.Update( this, (float)e.Time );
+		_guicontroller?.Update( this, (float)e.Time );
 
 		// do not process any input if we're not focused
 		if ( !IsFocused )
@@ -204,6 +204,9 @@ public class Window : GameWindow
 			CursorGrabbed = true;
 
 			var cam = Camera.ActiveCamera;
+			// no cam initialized
+			if ( cam is null ) return;
+
 			// reset lastpos so the camera doesn't snap to cursor after closing ui
 			if ( cam is FirstPersonCamera fcam && WasUiMode )
 				fcam.ResetLastPosition( MouseState.Position );
@@ -236,13 +239,13 @@ public class Window : GameWindow
 	protected override void OnTextInput( TextInputEventArgs e )
 	{
 		base.OnTextInput( e );
-		_guicontroller.OnTextInput( e );
+		_guicontroller?.OnTextInput( e );
 	}
 
 	protected override void OnMouseWheel( MouseWheelEventArgs e )
 	{
 		base.OnMouseWheel( e );
-		_guicontroller.OnMouseWheel( e );
+		ImGuiController.OnMouseWheel( e );
 	}
 
 	public void OnSecondTick()
@@ -257,7 +260,7 @@ public class Window : GameWindow
 
 		Screen.UpdateSize( ClientSize );
 		GL.Viewport( 0, 0, ClientSize.X, ClientSize.Y );
-		_guicontroller.WindowResized( ClientSize );
+		_guicontroller?.WindowResized( ClientSize );
 	}
 
 	[DebuggerStepThrough]
