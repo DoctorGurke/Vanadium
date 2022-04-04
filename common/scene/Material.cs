@@ -24,15 +24,6 @@ public struct Material : IDisposable, IEquatable<Material>
 		SamplerCube
 	}
 
-	private static readonly string[] skyboxSides = {
-		"right",
-		"left",
-		"up",
-		"down",
-		"back",
-		"front"
-	};
-
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
 	public Shader Shader { get; set; }
 
@@ -214,20 +205,8 @@ public struct Material : IDisposable, IEquatable<Material>
 						break;
 					case MaterialParamType.SamplerCube:
 						Log.Info( $"parsing samplerCube material data {name} {value}" );
-						var sides = new List<string>();
-						var path = value;
-						var oldpath = path;
-						var ext = Path.GetExtension( path );
-						path = path.Replace( ext, "" );
-						foreach ( var side in skyboxSides )
-						{
-							var full = $"{path}_{side}{ext}";
-							Log.Info( $"adding cubemap side {full}" );
-							sides.Add( full );
-						}
-						var cube = TextureCube.Load( sides, oldpath );
-
-						yield return new TextureCubeUniform( name, cube );
+						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
+						yield return new TextureCubeUniform( name, value );
 						break;
 					default:
 						throw new NotImplementedException();

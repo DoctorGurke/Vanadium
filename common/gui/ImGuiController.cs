@@ -19,7 +19,7 @@ public class ImGuiController : IDisposable
 	private int _indexBuffer;
 	private int _indexBufferSize;
 
-	private FontTexture _fontTexture;
+	private Texture _fontTexture;
 	private Material _material;
 
 	private int _windowWidth;
@@ -98,9 +98,9 @@ public class ImGuiController : IDisposable
 		ImGuiIOPtr io = ImGui.GetIO();
 		io.Fonts.GetTexDataAsRGBA32( out IntPtr pixels, out int width, out int height, out int _ );
 
-		_fontTexture = new FontTexture( "ImGui Text Atlas", width, height, pixels );
+		_fontTexture = Texture.Load2D( "ImGui Text Atlas", width, height, pixels );
 
-		io.Fonts.SetTexID( (IntPtr)_fontTexture.GLTexture );
+		io.Fonts.SetTexID( (IntPtr)_fontTexture.Handle );
 
 		io.Fonts.ClearTexData();
 	}
