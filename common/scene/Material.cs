@@ -25,7 +25,19 @@ public struct Material : IDisposable, IEquatable<Material>
 	}
 
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
-	public Shader Shader { get; set; }
+	public Shader Shader { 
+		get
+		{
+			if ( _shader is null ) return ErrorMaterial.Shader;
+			return _shader;
+		} 
+		set 
+		{
+			_shader = value;
+		}
+	}
+
+	private Shader? _shader;
 
 	public void Dispose()
 	{

@@ -7,8 +7,8 @@ public class SceneLightManager
 	private Color AmbientLightColor;
 	private int NumPointLights;
 	private int NumSpotLights;
-	private PointLight[] PointLights;
-	private SpotLight[] SpotLights;
+	private readonly PointLight[] PointLights;
+	private readonly SpotLight[] SpotLights;
 
 	public static int MaxPointLights => 256;
 	public static int MaxSpotLights => 256;
@@ -38,7 +38,7 @@ public class SceneLightManager
 	public void SetAmbientLightColor( Color col )
 	{
 		AmbientLightColor = col.WithAlpha( 1.0f );
-		UniformBufferManager.Current.UpdateAmbientLightColor( AmbientLightColor );
+		UniformBufferManager.Current?.UpdateAmbientLightColor( AmbientLightColor );
 	}
 
 	public void AddPointlight( Vector3 position )
@@ -74,7 +74,7 @@ public class SceneLightManager
 		PointLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current.UpdatePointlights( PointLights, NumPointLights );
+		UniformBufferManager.Current?.UpdatePointlights( PointLights, NumPointLights );
 	}
 
 	public void AddSpotlight( Vector3 position, Rotation rotation, Color color, float innerangle, float outerangle, float constant, float linear, float quadratic )
@@ -103,6 +103,6 @@ public class SceneLightManager
 		SpotLights[light].Params = new Vector4( innerangle.DegreeToRadian(), outerangle.DegreeToRadian(), 0.0f, 0.0f );
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current.UpdateSpotlights( SpotLights, NumSpotLights );
+		UniformBufferManager.Current?.UpdateSpotlights( SpotLights, NumSpotLights );
 	}
 }

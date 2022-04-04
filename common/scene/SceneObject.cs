@@ -105,12 +105,16 @@ public class SceneObject
 	{
 		if ( Model is null ) return;
 		var transparent = false;
-		foreach ( var mesh in Model.Meshes )
+
+		if ( Model.Meshes is not null )
 		{
-			if ( mesh.Material.Transparent )
+			foreach ( var mesh in Model.Meshes )
 			{
-				transparent = true;
-				break;
+				if ( mesh.Material.Transparent )
+				{
+					transparent = true;
+					break;
+				}
 			}
 		}
 
