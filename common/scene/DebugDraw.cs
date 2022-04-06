@@ -151,7 +151,6 @@ public static class DebugDraw
 	{
 		public DebugVertex start;
 		public DebugVertex end;
-		public Color color;
 		public float duration;
 		public bool depthtest;
 		public TimeSince TimeSinceSpawned;
@@ -172,7 +171,6 @@ public static class DebugDraw
 		{
 			this.start = new DebugVertex( start, color );
 			this.end = new DebugVertex( end, color );
-			this.color = color;
 			this.duration = duration;
 			this.depthtest = depthtest;
 
@@ -181,11 +179,11 @@ public static class DebugDraw
 
 		public override string ToString()
 		{
-			return $"start: {start} end: {end} color: {color} duration: {duration} depth: {depthtest}";
+			return $"start: {start} end: {end} duration: {duration} depth: {depthtest}";
 		}
 	}
 
-	private static IList<DebugLine> DebugLines = new List<DebugLine>();
+	private static readonly IList<DebugLine> DebugLines = new List<DebugLine>();
 
 	private static Material Material = Material.Load( "materials/core/debugline.vanmat" );
 
