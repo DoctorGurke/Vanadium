@@ -65,12 +65,18 @@ public static class DebugDraw
 		Line( position + corners[4], position + corners[7], color, duration, depthtest );
 	}
 
+	/// <summary>
+	/// Spawn a debug Sphere
+	/// </summary>
+	/// <param name="position">Center position</param>
+	/// <param name="radius">Radius of the Sphere</param>
+	/// <param name="color">Color of the Sphere</param>
+	/// <param name="duration">Lifetime of the Sphere</param>
+	/// <param name="depthtest">Whether or not to enable depthesting on this Sphere</param>
 	public static void Sphere( Vector3 position, float radius, Color color, float duration = 0, bool depthtest = true )
 	{
 		var top = position + Vector3.Up * radius;
 		var bottom = position + Vector3.Down * radius;
-		//Line( position, top, color, duration, depthtest );
-		//Line( position, bottom, color, duration, depthtest );
 
 		var equatorsegments = 12f;
 		var incr = MathF.PI * 2.0f / equatorsegments;
@@ -96,6 +102,7 @@ public static class DebugDraw
 
 			if ( i == 0 )
 			{
+				// init last and first segment info
 				lasttop = position + upoffset;
 				firsttop = lasttop;
 
@@ -107,28 +114,34 @@ public static class DebugDraw
 			}
 			else if ( i == equatorsegments - 1 )
 			{
+				// Last segment to close the gap
 				Line( position + upoffset, firsttop, color, duration, depthtest );
 				Line( position + offset, firstcenter, color, duration, depthtest );
 				Line( position + downoffset, firstbottom, color, duration, depthtest );
 
+				// regular gap
 				Line( position + upoffset, lasttop, color, duration, depthtest );
 				Line( position + offset, lastcenter, color, duration, depthtest );
 				Line( position + downoffset, lastbottom, color, duration, depthtest );
 			}
 			else
 			{
+				// close gap between two radius segments
 				Line( position + upoffset, lasttop, color, duration, depthtest );
 				Line( position + offset, lastcenter, color, duration, depthtest );
 				Line( position + downoffset, lastbottom, color, duration, depthtest );
 
+				// update last segment
 				lasttop = position + upoffset;
 				lastcenter = position + offset;
 				lastbottom = position + downoffset;
 			}
 
+			// connect center ring to top and bottom ring
 			Line( position + offset, position + upoffset, color, duration, depthtest );
 			Line( position + offset, position + downoffset, color, duration, depthtest );
 
+			// connect top and bottom ring to top and bottom of sphere
 			Line( position + upoffset, top, color, duration, depthtest );
 			Line( position + downoffset, bottom, color, duration, depthtest );
 		}
