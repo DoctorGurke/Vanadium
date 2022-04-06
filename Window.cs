@@ -71,7 +71,7 @@ public class Window : GameWindow
 			Model = Model.Load( "models/brickwall.fbx" ),
 			Position = Vector3.Down
 		};
-		floor.Model.SetMaterialOverride("materials/phong_test.vanmat");
+		floor.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
 
 		_ = new SceneObject
 		{
@@ -86,7 +86,7 @@ public class Window : GameWindow
 
 		CursorGrabbed = true;
 
-		Log.Debug($"Load took: {Timer.ElapsedMilliseconds}ms");
+		Log.Debug( $"Load took: {Timer.ElapsedMilliseconds}ms" );
 
 		Timer.Restart();
 	}
@@ -215,14 +215,15 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				var cube = new SceneObject
-				{
-					Position = cam.Position + cam.Rotation.Forward,
-					Rotation = cam.Rotation,
-					Model = Model.Primitives.Cube
-				};
-				cube.Model.SetMaterialOverride( "materials/brickwall.vanmat" );
+				//var cube = new SceneObject
+				//{
+				//	Position = cam.Position + cam.Rotation.Forward,
+				//	Rotation = cam.Rotation,
+				//	Model = Model.Primitives.Cube
+				//};
+				//cube.Model.SetMaterialOverride( "materials/brickwall.vanmat" );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+				DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 3, Rand.Float(0, 1), Color.Random, 100 );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )

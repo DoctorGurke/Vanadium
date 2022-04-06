@@ -65,6 +65,75 @@ public static class DebugDraw
 		Line( position + corners[4], position + corners[7], color, duration, depthtest );
 	}
 
+	public static void Sphere( Vector3 position, float radius, Color color, float duration = 0, bool depthtest = true )
+	{
+		var top = position + Vector3.Up * radius;
+		var bottom = position + Vector3.Down * radius;
+		//Line( position, top, color, duration, depthtest );
+		//Line( position, bottom, color, duration, depthtest );
+
+		var equatorsegments = 12f;
+		var incr = MathF.PI * 2.0f / equatorsegments;
+
+		Vector3 lasttop = Vector3.Zero;
+		Vector3 lastcenter = Vector3.Zero;
+		Vector3 lastbottom = Vector3.Zero;
+
+		Vector3 firsttop = Vector3.Zero;
+		Vector3 firstcenter = Vector3.Zero;
+		Vector3 firstbottom = Vector3.Zero;
+
+		for ( int i = 0; i < equatorsegments; i++ )
+		{
+			// center offset
+			var offset = (Vector3.Forward * MathF.Sin( incr * i ) + Vector3.Right * MathF.Cos( incr * i )).Normal * radius;
+
+			// top offset
+			var upoffset = (offset + Vector3.Up * radius * 0.85f).Normal * radius;
+
+			// bottom offset
+			var downoffset = (offset + Vector3.Down * radius * 0.85f).Normal * radius;
+
+			if ( i == 0 )
+			{
+				lasttop = position + upoffset;
+				firsttop = lasttop;
+
+				lastcenter = position + offset;
+				firstcenter = lastcenter;
+
+				lastbottom = position + downoffset;
+				firstbottom = lastbottom;
+			}
+			else if ( i == equatorsegments - 1 )
+			{
+				Line( position + upoffset, firsttop, color, duration, depthtest );
+				Line( position + offset, firstcenter, color, duration, depthtest );
+				Line( position + downoffset, firstbottom, color, duration, depthtest );
+
+				Line( position + upoffset, lasttop, color, duration, depthtest );
+				Line( position + offset, lastcenter, color, duration, depthtest );
+				Line( position + downoffset, lastbottom, color, duration, depthtest );
+			}
+			else
+			{
+				Line( position + upoffset, lasttop, color, duration, depthtest );
+				Line( position + offset, lastcenter, color, duration, depthtest );
+				Line( position + downoffset, lastbottom, color, duration, depthtest );
+
+				lasttop = position + upoffset;
+				lastcenter = position + offset;
+				lastbottom = position + downoffset;
+			}
+
+			Line( position + offset, position + upoffset, color, duration, depthtest );
+			Line( position + offset, position + downoffset, color, duration, depthtest );
+
+			Line( position + upoffset, top, color, duration, depthtest );
+			Line( position + downoffset, bottom, color, duration, depthtest );
+		}
+	}
+
 	private class DebugLine
 	{
 		public DebugVertex start;
@@ -79,7 +148,7 @@ public static class DebugDraw
 			public Vector3 position;
 			public Color color;
 
-			public DebugVertex(Vector3 position, Color color)
+			public DebugVertex( Vector3 position, Color color )
 			{
 				this.position = position;
 				this.color = color;
@@ -88,8 +157,8 @@ public static class DebugDraw
 
 		public DebugLine( Vector3 start, Vector3 end, Color color, float duration, bool depthtest )
 		{
-			this.start = new DebugVertex(start, color);
-			this.end = new DebugVertex(end, color);
+			this.start = new DebugVertex( start, color );
+			this.end = new DebugVertex( end, color );
 			this.color = color;
 			this.duration = duration;
 			this.depthtest = depthtest;
@@ -254,11 +323,11 @@ public static class DebugDraw
 		foreach ( var line in DebugLines.Reverse() )
 		{
 			// sort lines into respective buffers, one for depth testing, one for no depth testing
-			if(line.depthtest)
+			if ( line.depthtest )
 			{
 				DepthLineVertices.Add( line.start );
 				DepthLineVertices.Add( line.end );
-			} 
+			}
 			else
 			{
 				NoDepthLineVertices.Add( line.start );
