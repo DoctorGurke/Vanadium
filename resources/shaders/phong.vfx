@@ -22,7 +22,7 @@ void main() {
     vec2 uv = fs_in.vTexCoord0;
     
     // grab diffuse and alpha
-    vec4 base = tex2D(diffuse, uv).rgba;
+    vec4 base = texture(diffuse, uv).rgba;
     vec3 diff = base.rgb;
     float alpha = base.a;
 
@@ -35,10 +35,10 @@ void main() {
     diff = mix(diff, tint, tintAmount);
     
     // grab specular
-    vec3 spec = tex2D(specular, uv).rgb;
+    vec3 spec = texture(specular, uv).rgb;
 
     // get ws normals from normal map
-    vec3 normal = tex2D(normal, uv).rgb;
+    vec3 normal = texture(normal, uv).rgb;
     normal = normal * 2.0 - 1.0;
     normal = normalize(fs_in.mTBN * normal);
 

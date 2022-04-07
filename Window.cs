@@ -213,7 +213,7 @@ public class Window : GameWindow
 
 			cam.BuildInput( KeyboardState, MouseState );
 
-			if ( mouse.IsButtonDown( MouseButton.Button1 ))// && !mouse.WasButtonDown( MouseButton.Button1 ) )
+			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
 				//var cube = new SceneObject
 				//{
@@ -223,7 +223,9 @@ public class Window : GameWindow
 				//};
 				//cube.Model.SetMaterialOverride( "materials/brickwall.vanmat" );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 100, false );
+				DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
+				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
+				DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 5, 0.2f, Color.Red, 100, false );
 				//DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 3, Rand.Float(0, 1), Color.Random, 100 );
 			}
 
