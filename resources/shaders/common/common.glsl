@@ -25,8 +25,8 @@ struct SpotLight {
     vec4 Params; // inner angle, out angle
 };
 
-#define MAX_POINT_LIGHTS 256
-#define MAX_SPOT_LIGHTS 256
+#define MAX_POINT_LIGHTS 128
+#define MAX_SPOT_LIGHTS 128
 
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;

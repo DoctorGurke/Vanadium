@@ -69,7 +69,8 @@ public class Window : GameWindow
 		var floor = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
-			Position = Vector3.Down
+			Position = Vector3.Down,
+			Scale = 10
 		};
 		floor.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
 
@@ -233,7 +234,7 @@ public class Window : GameWindow
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.White, 30, 35, 0, 0, 1 );
+				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
 			}
 
 			WasUiMode = false;

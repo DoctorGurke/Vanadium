@@ -10,8 +10,9 @@ public class SceneLightManager
 	private readonly PointLight[] PointLights;
 	private readonly SpotLight[] SpotLights;
 
-	public static int MaxPointLights => 256;
-	public static int MaxSpotLights => 256;
+	// Values need to match common.glsl
+	public static int MaxPointLights => 128;
+	public static int MaxSpotLights => 128;
 
 	public struct PointLight
 	{
@@ -25,7 +26,7 @@ public class SceneLightManager
 		public Vector4 Position;
 		public Vector4 Direction;
 		public Vector4 Color;
-		public Vector4 Attenuation; // constant, linear, quadratic
+		public Vector4 Attenuation; // constant, linear, quadratic, brightness mul
 		public Vector4 Params; // inner angle, outer angle
 	}
 
@@ -51,7 +52,7 @@ public class SceneLightManager
 		AddPointlight( position, color, 0.0f, 0.0f, 1.0f );
 	}
 
-	public void AddPointlight( Vector3 position, Color color, float constant, float linear, float quadratic )
+	public void AddPointlight( Vector3 position, Color color, float constant, float linear, float quadratic, float brightness = 1.0f )
 	{
 		var light = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 		if ( light >= MaxPointLights )
@@ -71,13 +72,23 @@ public class SceneLightManager
 
 		PointLights[light].Position = new Vector4( position );
 		PointLights[light].Color = color;
-		PointLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
+		PointLights[light].Attenuation = new Vector4( constant, linear, quadratic, brightness );
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdatePointlights( PointLights, NumPointLights );
 	}
 
-	public void AddSpotlight( Vector3 position, Rotation rotation, Color color, float innerangle, float outerangle, float constant, float linear, float quadratic )
+	public void AddSpotlight( Vector3 position, Rotation rotation )
+	{
+		AddSpotlight( position, rotation, Color.White, 30, 35, 0, 0, 1 );
+	}
+
+	public void AddSpotlight( Vector3 position, Rotation rotation, Color color )
+	{
+		AddSpotlight( position, rotation, color, 30, 35, 0, 0, 1 );
+	}
+
+	public void AddSpotlight( Vector3 position, Rotation rotation, Color color, float innerangle, float outerangle, float constant, float linear, float quadratic, float brightness = 1.0f )
 	{
 		var light = NumSpotLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 		if ( light >= MaxSpotLights )
@@ -99,7 +110,7 @@ public class SceneLightManager
 		SpotLights[light].Position = new Vector4( position );
 		SpotLights[light].Direction = new Vector4( rotation.Forward );
 		SpotLights[light].Color = color;
-		SpotLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
+		SpotLights[light].Attenuation = new Vector4( constant, linear, quadratic, brightness );
 		SpotLights[light].Params = new Vector4( innerangle.DegreeToRadian(), outerangle.DegreeToRadian(), 0.0f, 0.0f );
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on

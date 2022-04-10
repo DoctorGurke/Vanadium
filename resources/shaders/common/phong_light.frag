@@ -5,7 +5,7 @@
 #material sampler2D normal
 #material float gloss
 
-vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
+vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
     vec3 lightDir = normalize(lightPos - fragPos);
 
     float diff = max(dot(normal, lightDir), 0.0);
@@ -15,20 +15,21 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec3 attenuationparams, vec3 n
 
     float distance = length(lightPos - fragPos);
     float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
+    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
 
     vec3 ambient = baseDiffuse * lightCol;
     vec3 diffuse = lightCol * diff * baseDiffuse;
     vec3 specular = lightCol * spec * baseSpecular;
 
     ambient *= attenuation;
-    ambient *= (dot(normal, lightDir) + 1) / 2;
+    ambient *= (dot(normal, lightDir) + 1) / 2; // make "shadows" darker
     diffuse *= attenuation;
     specular *= attenuation;
 
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationparams, float innerangle, float outerangle, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
+vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationparams, float innerangle, float outerangle, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
     vec3 lightDir = normalize(spotPos - fragPos);
 
     float diff = max(dot(-normal, spotDir), 0.0);
@@ -38,6 +39,7 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationpar
 
     float distance = length(spotPos - fragPos);
     float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
+    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
 
     float theta = dot(lightDir, normalize(-spotDir));
     float epsilon = innerangle - outerangle;
@@ -48,7 +50,7 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec3 attenuationpar
     vec3 specular = spotCol * spec * baseSpecular;
 
     ambient *= attenuation * intensity;
-    ambient *= (dot(-normal, spotDir) + 1) / 2;
+    ambient *= (dot(-normal, spotDir) + 1) / 2; // make "shadows" darker
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
 
@@ -64,7 +66,7 @@ vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gl
         PointLight pLight  = g_PointLights[i];
         vec3 lightpos = pLight.Position.xyz;
         vec3 lightcol = pLight.Color.rgb;
-        vec3 lightparams = pLight.Attenuation.xyz;
+        vec4 lightparams = pLight.Attenuation.xyzw;
 
         returncol.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
     }
@@ -75,7 +77,7 @@ vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gl
         vec3 lightpos = sLight.Position.xyz;
         vec3 lightdir = sLight.Direction.xyz;
         vec3 lightcol = sLight.Color.rgb;
-        vec3 lightparams = sLight.Attenuation.xyz;
+        vec4 lightparams = sLight.Attenuation.xyzw;
         float inner = cos(sLight.Params.x);
         float outer = cos(sLight.Params.y);
 
