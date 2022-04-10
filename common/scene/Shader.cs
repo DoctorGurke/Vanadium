@@ -10,11 +10,13 @@ namespace Vanadium;
 public class Shader : IDisposable
 {
 	public readonly int Handle;
+	public readonly string Name;
 
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
 	public Shader( string path, Material material )
 	{
+		Name = Path.GetFileName(path);
 		var container = LoadContainer( path );
 
 		if ( !container.IsValid ) throw new Exception( "Shader missing either Vertex or Fragment components!" );
