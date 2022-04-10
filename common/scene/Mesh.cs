@@ -54,7 +54,7 @@ public class Mesh : IDisposable
 		}
 		set
 		{
-			if ( _material is null || _material.Equals( value ) ) return;
+			if ( _material is not null && _material.Equals( value ) ) return;
 
 			_material = value;
 			SetupMesh();
