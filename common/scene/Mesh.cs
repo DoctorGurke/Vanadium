@@ -44,17 +44,17 @@ public class Mesh : IDisposable
 
 	private int vao, vbo, ebo;
 
-	private Material _material;
+	private Material? _material;
 
 	public Material Material
 	{
 		get
 		{
-			return _material;
+			return _material ?? Material.ErrorMaterial;
 		}
 		set
 		{
-			if ( _material.Equals( value ) ) return;
+			if ( _material is null || _material.Equals( value ) ) return;
 
 			_material = value;
 			SetupMesh();
