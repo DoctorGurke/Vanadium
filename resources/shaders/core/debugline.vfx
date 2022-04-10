@@ -28,9 +28,9 @@ in VS_OUT {
 	vec4 vVertexColor;
 } fs_in;
 
-out vec4 gl_Color;
+out vec4 vColor;
 
 void main()
 {
-    gl_Color = fs_in.vVertexColor;
+    vColor = fs_in.vVertexColor;
 }

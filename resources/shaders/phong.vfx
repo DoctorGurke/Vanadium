@@ -61,6 +61,6 @@ void main() {
     // gamma correct
     col = GammaCorrect(col, g_flGamma);
 
-    gl_Color = vec4(col, alpha);
+    vColor = vec4(col, alpha);
 }
 

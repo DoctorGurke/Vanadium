@@ -21,9 +21,9 @@ in vec3 CubeCoords;
 
 #material samplerCube skybox
 
-out vec4 gl_Color;
+out vec4 vColor;
 
 void main()
 {   
-    gl_Color = texture(skybox, CubeCoords.xyz);
+    vColor = texture(skybox, CubeCoords.xyz);
 }

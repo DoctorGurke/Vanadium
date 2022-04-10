@@ -16,7 +16,7 @@ in VS_OUT {
 uniform vec4 renderColor;
 uniform float tintAmount;
 
-out vec4 gl_Color;
+out vec4 vColor;
 
 vec3 GammaCorrect(vec3 col, float gamma) {
 	return pow(col.rgb, vec3(1.0 / gamma));

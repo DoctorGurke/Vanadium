@@ -20,5 +20,5 @@ void main(void)
 
 void main()
 {
-    gl_Color = vec4(textureQueryLod(tex, fs_in.vTexCoord0).x * 0.1, 0.0, 0.0, 1.0);
+    vColor = vec4(textureQueryLod(tex, fs_in.vTexCoord0).x * 0.1, 0.0, 0.0, 1.0);
 }
