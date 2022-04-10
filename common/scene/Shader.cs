@@ -145,6 +145,8 @@ public class Shader : IDisposable
 		public bool HasFragmentShader => !string.IsNullOrEmpty( FragmentShader.Clean() );
 		public bool HasGeometryShader => !string.IsNullOrEmpty( GeometryShader.Clean() );
 		public bool IsValid => HasVertexShader && HasFragmentShader;
+
+		public ShaderContainer() { }
 	}
 
 	/// <summary>
