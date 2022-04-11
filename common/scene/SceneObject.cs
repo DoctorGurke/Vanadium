@@ -18,6 +18,13 @@ public class SceneObject
 		}
 	}
 
+	public void SetMaterialOverride(string path)
+	{
+		MaterialOverride = Material.Load( path );
+	}
+
+	public Material? MaterialOverride { get; set; }
+
 	public void SetModel( Model model )
 	{
 		Model = model;

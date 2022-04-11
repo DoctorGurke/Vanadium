@@ -72,7 +72,7 @@ public class Window : GameWindow
 			Position = Vector3.Down,
 			Scale = 10
 		};
-		floor.Model.SetMaterialOverride( "materials/phong_test.vanmat" );
+		floor.SetMaterialOverride( "materials/phong_test.vanmat" );
 
 		_ = new SceneObject
 		{

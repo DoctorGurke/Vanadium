@@ -165,7 +165,15 @@ public class Mesh : IDisposable
 
 	public void Draw( SceneObject? sceneobject )
 	{
-		Material.Use();
+		if ( sceneobject is not null && sceneobject.MaterialOverride is not null )
+		{
+			sceneobject.MaterialOverride.Use();
+		}
+		else
+		{
+			Material.Use();
+		}
+
 		Matrix4 transform = Matrix4.Identity;
 		if ( sceneobject is not null )
 		{
