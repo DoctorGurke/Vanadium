@@ -68,7 +68,7 @@ vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gl
         vec3 lightcol = pLight.Color.rgb;
         vec4 lightparams = pLight.Attenuation.xyzw;
 
-        returncol.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
+        returncol.rgb += CalcPointLight(lightpos, lightcol, lightparams, normal, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
     }
 
     // calc spot lights
@@ -81,7 +81,7 @@ vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gl
         float inner = cos(sLight.Params.x);
         float outer = cos(sLight.Params.y);
 
-        returncol.rgb += CalcSpotLight(lightpos, lightdir, lightcol, lightparams, inner, outer, fs_in.vNormalWs, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
+        returncol.rgb += CalcSpotLight(lightpos, lightdir, lightcol, lightparams, inner, outer, normal, fs_in.vPositionWs, viewDir, baseDiffuse, baseSpecular, gloss);
     }
     return returncol;
 }
