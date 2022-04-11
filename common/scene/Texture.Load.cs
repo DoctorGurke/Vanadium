@@ -1,7 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System.Drawing;
-using System.Drawing.Imaging;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
+using StbImageSharp;
 
 namespace Vanadium;
 
@@ -10,6 +9,25 @@ public partial class Texture
 	private static readonly Dictionary<string, Texture> PrecachedTextures = new();
 	public static string ErrorTexture => "textures/core/error.png";
 
+	private static ImageResult LoadImageData( string path )
+	{
+		ImageResult image;
+		try
+		{
+			using var stream = File.OpenRead( path );
+			Log.Info( $"Loading image data for: {path}" );
+			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
+		}
+		catch ( FileNotFoundException )
+		{
+			// bail with error texture
+			using var stream = File.OpenRead( $"resources/{ErrorTexture}" );
+			Log.Info( $"Error loading image data for: {path}, File not found!" );
+			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
+		}
+		return image;
+	}
+
 	public static Texture Load2D( string name, int width, int height, IntPtr data )
 	{
 		GLUtil.CreateTexture( TextureTarget.Texture2D, name, out int handle );
@@ -17,7 +35,7 @@ public partial class Texture
 
 		GL.TextureStorage2D( handle, 1, SizedInternalFormat.Rgba8, width, height );
 
-		GL.TextureSubImage2D( handle, 0, 0, 0, width, height, PixelFormat.Bgra, PixelType.UnsignedByte, data );
+		GL.TextureSubImage2D( handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data );
 
 		texture.SetWrap( TextureCoordinate.S, TextureWrapMode.Repeat );
 		texture.SetWrap( TextureCoordinate.T, TextureWrapMode.Repeat );
@@ -40,31 +58,12 @@ public partial class Texture
 		GL.ActiveTexture( TextureUnit.Texture0 );
 		GL.BindTexture( TextureTarget.Texture2D, handle );
 
-		Bitmap image;
-		try
-		{
-			Log.Info( "Loading texture: " + path );
-			image = new Bitmap( path );
-		}
-		catch
-		{
-			Log.Info( "Error loading texture: " + path + " File is missing or invalid" );
-			image = new Bitmap( $"resources/{ErrorTexture}" );
-		}
+		ImageResult image = LoadImageData( path );
 
 		var width = image.Width;
 		var height = image.Height;
 
-		// Load the image
-		using ( image )
-		{
-
-			// load pixel data
-			var data = image.LockBits( new Rectangle( 0, 0, width, height ), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
-
-			// generate gl texture
-			GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0 );
-		}
+		GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
 
 		// texture filtering
 		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, genmips ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear );
@@ -133,31 +132,20 @@ public partial class Texture
 		for ( int i = 0; i < sides.Count; i++ )
 		{
 			var cubepath = $"resources/{sides[i]}";
-			Bitmap image;
-			try
-			{
-				Log.Info( "Loading cube texture: " + cubepath );
-				image = new Bitmap( cubepath );
-			}
-			catch
-			{
-				Log.Info( "Error loading cube texture: " + cubepath + " File is missing or invalid" );
-				image = new Bitmap( "resources/textures/core/error.png" );
-			}
+
+			ImageResult image = LoadImageData( cubepath );
 
 			width = image.Width;
 			height = image.Height;
 
-			using ( image )
+			if ( targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY )
 			{
-				if ( targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY )
-				{
-					image.RotateFlip( RotateFlipType.Rotate180FlipNone );
-				}
-				var data = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
-
-				GL.TexImage2D( targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0 );
+				//image.RotateFlip( RotateFlipType.Rotate180FlipNone );
+				
 			}
+			//var data = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
+
+			GL.TexImage2D( targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
 
 			// texture filtering
 			GL.TexParameter( TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
