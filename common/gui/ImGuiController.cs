@@ -20,7 +20,20 @@ public class ImGuiController : IDisposable
 	private int _indexBufferSize;
 
 	private Texture? _fontTexture;
-	private Material _material;
+	private Material? _material;
+
+	private Material Material {
+		get
+		{
+			return _material ?? Material.ErrorMaterial;
+		}
+		set
+		{
+			if ( _material is not null && _material.Equals( value ) ) return;
+
+			_material = value;
+		}
+	}
 
 	private int _windowWidth;
 	private int _windowHeight;
@@ -73,7 +86,7 @@ public class ImGuiController : IDisposable
 
 		RecreateFontDeviceTexture();
 
-		_material = Material.Load( "materials/core/ui.vanmat" );
+		Material = Material.Load( "materials/core/ui.vanmat" );
 
 		GL.VertexArrayVertexBuffer( _vertexArray, 0, _vertexBuffer, IntPtr.Zero, Unsafe.SizeOf<ImDrawVert>() );
 		GL.VertexArrayElementBuffer( _vertexArray, _indexBuffer );
@@ -275,9 +288,9 @@ public class ImGuiController : IDisposable
 		ImGuiIOPtr io = ImGui.GetIO();
 		Matrix4 mvp = Matrix4.CreateOrthographicOffCenter( 0.0f, io.DisplaySize.X, io.DisplaySize.Y, 0.0f, -1.0f, 1.0f );
 
-		_material.Use();
-		GL.UniformMatrix4( _material.Shader.GetUniformLocation( "projection_matrix" ), false, ref mvp );
-		GL.Uniform1( _material.Shader.GetUniformLocation( "in_fontTexture" ), 0 );
+		Material.Use();
+		GL.UniformMatrix4( Material.Shader.GetUniformLocation( "projection_matrix" ), false, ref mvp );
+		GL.Uniform1( Material.Shader.GetUniformLocation( "in_fontTexture" ), 0 );
 		GLUtil.CheckGLError( "ImGui Projection" );
 
 		GL.BindVertexArray( _vertexArray );
