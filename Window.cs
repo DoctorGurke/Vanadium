@@ -160,6 +160,8 @@ public class Window : GameWindow
 	{
 		base.OnUpdateFrame( e );
 
+		Input.Update( KeyboardState, MouseState );
+
 		FramesPerSecond = (int)(1.0 / e.Time);
 		FrameTime = e.Time;
 
@@ -214,7 +216,7 @@ public class Window : GameWindow
 
 			cam.BuildInput( KeyboardState, MouseState );
 
-			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
+			if ( Input.IsPressed( MouseButton.Left ) )
 			{
 				var ent = new SceneObject
 				{
@@ -229,7 +231,7 @@ public class Window : GameWindow
 				//DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 3, Rand.Float(0, 1), Color.Random, 100 );
 			}
 
-			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
+			if ( Input.IsPressed( MouseButton.Right ) )
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
 				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.White, 0, 0, 1 );
