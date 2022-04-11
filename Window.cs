@@ -234,7 +234,7 @@ public class Window : GameWindow
 			if ( Input.IsPressed( MouseButton.Right ) )
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
-				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.White, 0, 0, 1 );
+				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random );
 				//SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
 			}
 

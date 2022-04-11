@@ -57,8 +57,9 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 n
     vec3 L = normalize(lightPos - fragPos);
     vec3 H = normalize(viewDir + L);
     float distance    = length(lightPos - fragPos);
-    float attenuation = 1.0 / (distance * distance);
-    vec3 radiance     = lightCol * attenuation;        
+    float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
+    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
+    vec3 radiance     = lightCol * attenuation;    
         
     // cook-torrance brdf
     float NDF = DistributionGGX(normal, H, baseRoughness);        
