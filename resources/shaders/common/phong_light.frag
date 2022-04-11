@@ -57,9 +57,9 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationpar
     return (ambient + diffuse + specular);
 }
 
-vec3 CommonPhongLighting(vec3 col, vec3 baseDiffuse, vec3 baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 CommonPhongLighting(vec3 baseDiffuse, vec3 baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // apply global ambient light color
-    vec3 returncol = col * g_vAmbientLightingColor.rgb;
+    vec3 returncol = baseDiffuse * g_vAmbientLightingColor.rgb;
 
     // calc point lights
     for(int i = 0; i <= g_nNumPointlights - 1; i++) {

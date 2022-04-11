@@ -45,6 +45,9 @@ void main() {
     // view dir to fragment
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
 
+    // get lighting results
+    vec3 col = CommonPhongLighting(diff, spec, gloss, normal, fs_in.vPositionWs, viewDir);
+
     // env map sampling
     vec3 reflect = reflect(-viewDir, normal);
     vec3 env = texture(envmap, reflect).rgb;
@@ -54,9 +57,6 @@ void main() {
 
     // apply cubemap according to specular of the material before lighting
     vec3 col = mix(diff, env, spec);
-
-    // get lighting results
-    col = CommonPhongLighting(col, diff, spec, gloss, normal, fs_in.vPositionWs, viewDir);
 
     // gamma correct
     col = GammaCorrect(col, g_flGamma);
