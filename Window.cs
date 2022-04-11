@@ -183,10 +183,7 @@ public class Window : GameWindow
 			return;
 		}
 
-		var mouse = MouseState;
-		var input = KeyboardState;
-
-		if ( input.IsKeyPressed( Keys.F1 ) )
+		if ( Input.IsPressed( Keys.F1 ) )
 		{
 			UiMode = !UiMode;
 		}
