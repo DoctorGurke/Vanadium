@@ -1,0 +1,43 @@
+﻿#VS
+
+#version 400 core
+
+#include shaders/common/common.vert
+
+void main(void)
+{
+	vec4 pos = CommonVertexProcessing();
+	gl_Position = pos;
+}
+
+#FS
+
+#version 410 core
+
+#include shaders/common/pbr_light.frag
+
+void main()
+{
+	vec2 uv = fs_in.vTexCoord0;
+
+    vec3 albedo = texture(albedo, uv).rgb;
+
+	// get ws normals from normal map
+    vec3 normal = texture(normal, uv).rgb;
+    normal = normal * 2.0 - 1.0;
+    normal = normalize(fs_in.mTBN * normal);
+
+    // view dir to fragment
+    vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
+
+    // extract rma
+    vec3 rma = vec3(texture(roughness, uv).r, texture(metallic, uv).r, texture(ao, uv).r);
+
+    // get pbr color
+    vec3 col = CommonPbrLighting(albedo, normal, rma.r, rma.b, rma.g, fs_in.vPositionWs, viewDir);
+
+    // apply gamma correction
+    col = GammaCorrect(col, g_flGamma);
+
+    vColor = vec4(col, 1.0);
+}

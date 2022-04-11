@@ -216,25 +216,24 @@ public class Window : GameWindow
 
 			if ( mouse.IsButtonDown( MouseButton.Button1 ) && !mouse.WasButtonDown( MouseButton.Button1 ) )
 			{
-				//var cube = new SceneObject
-				//{
-				//	Position = cam.Position + cam.Rotation.Forward,
-				//	Rotation = cam.Rotation,
-				//	Model = Model.Primitives.Cube
-				//};
-				//cube.Model.SetMaterialOverride( "materials/brickwall.vanmat" );
+				var ent = new SceneObject
+				{
+					Position = cam.Position + cam.Rotation.Forward * 3,
+					Rotation = cam.Rotation,
+					Model = Model.Load( "models/cannon.fbx" )
+				};
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
-				DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
-				DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 5, 0.2f, Color.Red, 100, false );
+				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
+				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
+				//DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 5, 0.2f, Color.Red, 100, false );
 				//DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 3, Rand.Float(0, 1), Color.Random, 100 );
 			}
 
 			if ( mouse.IsButtonDown( MouseButton.Button2 ) && !mouse.WasButtonDown( MouseButton.Button2 ) )
 			{
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
-				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
-				SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
+				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.White, 0, 0, 1 );
+				//SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
 			}
 
 			WasUiMode = false;
