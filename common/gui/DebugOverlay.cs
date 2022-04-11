@@ -6,7 +6,7 @@ public class DebugOverlay
 {
 	public static int FPS;
 	public static float FT;
-	public static float Gamma = 2.2f;
+	public static float Gamma = 1.5f;
 	private static System.Numerics.Vector4 AmbientColor = new Color( 36.0f / 255.0f, 60.0f / 255.0f, 102.0f / 255.0f );
 	private static System.Numerics.Vector4 PrevAmbientColor = Color.White;
 
