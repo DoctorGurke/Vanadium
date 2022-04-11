@@ -4,5 +4,6 @@
 	"normal": "textures/cannon/cannon_normal.png",
 	"roughness": "textures/cannon/cannon_rough.png",
 	"metallic": "textures/cannon/cannon_metal.png",
-	"ao": "textures/cannon/cannon_ao.png"
+	"ao": "textures/cannon/cannon_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
 }

@@ -14,6 +14,8 @@ void main(void)
 
 #version 410 core
 
+#material samplerCube envmap
+
 #include shaders/common/pbr_light.frag
 
 void main()
@@ -35,6 +37,16 @@ void main()
 
     // get pbr color
     vec3 col = CommonPbrLighting(albedo, normal, rma.r, rma.b, rma.g, fs_in.vPositionWs, viewDir);
+
+    // env map sampling
+    vec3 reflect = reflect(-viewDir, normal);
+    vec3 env = texture(envmap, reflect).rgb;
+
+    // tint envmap by diffuse of the material
+    env *= albedo;
+
+    // mix in envmap based on roughness
+    col = mix(col, env, 1 - rma.r);
 
     // apply gamma correction
     col = GammaCorrect(col, g_flGamma);
