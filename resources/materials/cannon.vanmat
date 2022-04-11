@@ -1,0 +1,8 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/cannon/cannon_color.png",
+	"normal": "textures/cannon/cannon_normal.png",
+	"roughness": "textures/cannon/cannon_rough.png",
+	"metallic": "textures/cannon/cannon_metal.png",
+	"ao": "textures/cannon/cannon_ao.png"
+}
