@@ -22,7 +22,13 @@ void main()
 {
 	vec2 uv = fs_in.vTexCoord0;
 
-    vec3 albedo = texture(albedo, uv).rgb;
+    vec4 base = texture(albedo, ub).rgba;
+    vec3 albedo = base.rgb;
+    float alpha = base.a;
+
+    // don't bother with invisible fragments
+    if(alpha <= 0.0)
+        discard;
 
 	// get ws normals from normal map
     vec3 normal = texture(normal, uv).rgb;
