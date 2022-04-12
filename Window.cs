@@ -221,8 +221,7 @@ public class Window : GameWindow
 					Model = Model.Primitives.Sphere,
 					Scale = 0.3f
 				};
-				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
-				sphere.Model.SetMaterialOverride( "materials/discoball.vanmat" );
+				sphere.SetMaterialOverride( "materials/discoball.vanmat" );
 
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );

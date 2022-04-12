@@ -18,12 +18,30 @@ public class SceneObject
 		}
 	}
 
-	public void SetMaterialOverride(string path)
+	public void SetMaterialOverride( string path )
 	{
 		MaterialOverride = Material.Load( path );
 	}
 
-	public Material? MaterialOverride { get; set; }
+	private Material? _materialoverride;
+	public Material? MaterialOverride
+	{
+		get
+		{ 
+			return _materialoverride; 
+		}
+		set
+		{
+			if ( Model is null ) return;
+			if ( value is null )
+			{
+				Model.SetupMeshes();
+				return;
+			}
+			Model.SetMeshMaterials( value );
+			_materialoverride = value;
+		}
+	}
 
 	public void SetModel( Model model )
 	{
@@ -87,11 +105,11 @@ public class SceneObject
 		{
 			// don't parent to itself
 			if ( value == this ) return;
-			
+
 			// remove child ref from old parent list
 			if ( _parent is not null )
 				_parent.Children.Remove( this );
-			
+
 			// add new parent
 			_parent = value;
 			value?.Children.Add( this );
@@ -146,6 +164,6 @@ public class SceneObject
 	protected virtual void OnRender()
 	{
 		//if ( Model is not null )
-			//DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
+		//DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
 	}
 }

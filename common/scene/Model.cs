@@ -20,10 +20,33 @@ public class Model : IDisposable
 	public void SetMaterialOverride( string path )
 	{
 		if ( IsError ) return;
+		SetMeshMaterials( Material.Load( path ) );
+	}
+
+	public void SetMeshMaterials( Material mat )
+	{
 		if ( Meshes is null ) return;
 		foreach ( var mesh in Meshes )
 		{
-			mesh.Material = Material.Load( path );
+			mesh.Material = mat;
+		}
+	}
+
+	public void SetupMeshes()
+	{
+		if ( Meshes is null ) return;
+		foreach ( var mesh in Meshes )
+		{
+			mesh.SetupMesh();
+		}
+	}
+
+	public void SetupMeshes( Material mat )
+	{
+		if ( Meshes is null ) return;
+		foreach ( var mesh in Meshes )
+		{
+			mesh.SetupMesh( mat );
 		}
 	}
 

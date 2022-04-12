@@ -57,7 +57,7 @@ public class Mesh : IDisposable
 			if ( _material is not null && _material.Equals( value ) ) return;
 
 			_material = value;
-			SetupMesh();
+			SetupMesh( value );
 		}
 	}
 
@@ -70,10 +70,15 @@ public class Mesh : IDisposable
 		GC.SuppressFinalize( this );
 	}
 
-	private void SetupMesh()
+	public void SetupMesh()
+	{
+		SetupMesh( Material );
+	}
+
+	public void SetupMesh( Material mat )
 	{
 		// use shader first to get attributes
-		Material.Use();
+		mat.Use();
 
 		// create, bind and populate vbo
 		GLUtil.CreateBuffer( "Mesh VBO", out vbo );
