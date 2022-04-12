@@ -185,7 +185,7 @@ public static class DebugDraw
 
 	private static readonly IList<DebugLine> DebugLines = new List<DebugLine>();
 
-	private static Material Material = Material.Load( "materials/core/debugline.vanmat" );
+	private static readonly Material Material = Material.Load( "materials/core/debugline.vanmat" );
 
 	// depth
 	private static int dvao, dvbo, debo;
