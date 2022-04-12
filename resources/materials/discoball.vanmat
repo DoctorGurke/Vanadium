@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/discoball/discoball_color.png",
+	"normal": "textures/discoball/discoball_normal.png",
+	"roughness": "textures/discoball/discoball_rough.png",
+	"metallic": "textures/discoball/discoball_metal.png",
+	"ao": "textures/discoball/discoball_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}
