@@ -45,6 +45,8 @@ public class Window : GameWindow
 		GL.BlendFunc( BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha );
 		GL.BlendFuncSeparate( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero );
 
+		GL.Enable( EnableCap.FramebufferSrgb );
+
 		GL.Enable( EnableCap.Multisample );
 
 		GL.Enable( EnableCap.TextureCubeMapSeamless );
@@ -218,10 +220,10 @@ public class Window : GameWindow
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
-					Model = Model.Primitives.Sphere,
-					Scale = 0.3f
+					Model = Model.Load( "models/cannon.fbx" ),
+					//Scale = 0.3f
 				};
-				sphere.SetMaterialOverride( "materials/discoball.vanmat" );
+				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
 
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
