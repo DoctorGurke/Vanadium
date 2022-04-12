@@ -6,11 +6,17 @@ namespace Vanadium;
 
 public partial class Texture
 {
-	private static readonly Dictionary<string, Texture> PrecachedTextures = new();
+	private static readonly Dictionary<string, ImageResult> ImageData = new();
+	private static readonly Dictionary<string, Texture> TextureData = new();
 	public static string ErrorTexture => "textures/core/error.png";
 
 	private static ImageResult LoadImageData( string path )
 	{
+		if ( ImageData.TryGetValue( path, out var result ) )
+		{
+			return result;
+		}
+
 		ImageResult image;
 		try
 		{
@@ -25,15 +31,16 @@ public partial class Texture
 			Log.Info( $"Error loading image data for: {path}, File not found!" );
 			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
 		}
+		ImageData.Add( path, image );
 		return image;
 	}
 
-	public static Texture Load2D( string name, int width, int height, IntPtr data )
+	public static Texture Load2D( string name, int width, int height, IntPtr data, bool srgb = false )
 	{
 		GLUtil.CreateTexture( TextureTarget.Texture2D, name, out int handle );
 		var texture = new Texture( handle, TextureTarget.Texture2D, width, height );
 
-		GL.TextureStorage2D( handle, 1, SizedInternalFormat.Rgba8, width, height );
+		GL.TextureStorage2D( handle, 1, srgb ? (SizedInternalFormat)All.Srgb8Alpha8 : SizedInternalFormat.Rgba8, width, height );
 
 		GL.TextureSubImage2D( handle, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, data );
 
@@ -42,11 +49,11 @@ public partial class Texture
 		return texture;
 	}
 
-	public static Texture Load2D( string path, bool genmips = true )
+	public static Texture Load2D( string path, bool genmips = true, bool srgb = false )
 	{
 		path = $"resources/{path}";
 
-		if ( PrecachedTextures.TryGetValue( path, out var texture ) )
+		if ( TextureData.TryGetValue( path, out var texture ) )
 		{
 			return texture;
 		}
@@ -63,7 +70,7 @@ public partial class Texture
 		var width = image.Width;
 		var height = image.Height;
 
-		GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
+		GL.TexImage2D( TextureTarget.Texture2D, 0, srgb ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
 
 		// texture filtering
 		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, genmips ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear );
@@ -78,7 +85,7 @@ public partial class Texture
 			GL.GenerateMipmap( GenerateMipmapTarget.Texture2D );
 
 		var tex = new Texture( handle, TextureTarget.Texture2D, width, height );
-		PrecachedTextures.Add( path, tex );
+		TextureData.Add( path, tex );
 		return tex;
 	}
 
@@ -100,16 +107,16 @@ public partial class Texture
 		"front"
 	};
 
-	public static Texture LoadCube( string path )
+	public static Texture LoadCube( string path, bool srgb = false )
 	{
+		var sides = new List<string>();
+		var oldpath = path;
 
-		if ( PrecachedTextures.TryGetValue( path, out var texture ) )
+		if(TextureData.TryGetValue( oldpath, out var texture ) )
 		{
 			return texture;
 		}
 
-		var sides = new List<string>();
-		var oldpath = path;
 		var ext = Path.GetExtension( path );
 		path = path.Replace( ext, "" );
 		foreach ( var side in cubesides )
@@ -133,19 +140,15 @@ public partial class Texture
 		{
 			var cubepath = $"resources/{sides[i]}";
 
+			var flip = targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY;
+			StbImage.stbi_set_flip_vertically_on_load( flip ? 1 : 0 );
+
 			ImageResult image = LoadImageData( cubepath );
 
 			width = image.Width;
 			height = image.Height;
 
-			if ( targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY )
-			{
-				//image.RotateFlip( RotateFlipType.Rotate180FlipNone );
-				
-			}
-			//var data = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
-
-			GL.TexImage2D( targets[i], 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
+			GL.TexImage2D( targets[i], 0, srgb ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
 
 			// texture filtering
 			GL.TexParameter( TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
@@ -158,7 +161,7 @@ public partial class Texture
 		}
 
 		var tex = new Texture( handle, TextureTarget.TextureCubeMap, width, height );
-		PrecachedTextures.Add( oldpath, tex );
+		TextureData.Add( oldpath, tex );
 		return tex;
 	}
 }
