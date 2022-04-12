@@ -25,13 +25,14 @@ public class Material : IDisposable, IEquatable<Material>
 	}
 
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
-	public Shader Shader { 
+	public Shader Shader
+	{
 		get
 		{
 			if ( _shader is null ) return ErrorMaterial.Shader;
 			return _shader;
-		} 
-		set 
+		}
+		set
 		{
 			_shader = value;
 		}
@@ -213,7 +214,9 @@ public class Material : IDisposable, IEquatable<Material>
 					case MaterialParamType.Sampler2D:
 						Log.Info( $"parsing sampler2D material data {name} {value}" );
 						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						yield return new TextureUniform( name, value );
+						var srgb = name == "diffuse" || name == "albedo";
+						Log.Info( $"tex {name} {value} srgb: {srgb}" );
+						yield return new TextureUniform( name, value, srgb ); // hacky way to get color textures as srgb
 						break;
 					case MaterialParamType.SamplerCube:
 						Log.Info( $"parsing samplerCube material data {name} {value}" );

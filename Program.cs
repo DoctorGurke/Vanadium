@@ -6,6 +6,7 @@ global using System.Diagnostics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
@@ -27,6 +28,9 @@ public class Program
 			StartFocused = true,
 			NumberOfSamples = 4
 		};
+
+
+		GLFW.WindowHint(WindowHintBool.SrgbCapable, true);
 
 		// init and run our window type
 		using ( var window = new Window( GameWindowSettings.Default, nativeWindowSettings ) )

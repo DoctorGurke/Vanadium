@@ -59,8 +59,5 @@ void main()
     // mix in envmap based on roughness
     col = mix(col, env, 1 - rma.r);
 
-    // apply gamma correction
-    col = GammaCorrect(col, g_flGamma);
-
     vColor = vec4(col, 1.0);
 }

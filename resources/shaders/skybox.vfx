@@ -21,7 +21,7 @@ in vec3 CubeCoords;
 
 #material samplerCube skybox
 
-out vec4 vColor;
+#include shaders/common/common.frag
 
 void main()
 {   

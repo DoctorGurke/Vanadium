@@ -12,7 +12,7 @@ public class TextureCubeUniform : MaterialUniform<string>
 	public void SetTexture( Shader shader, int tex )
 	{
 		if ( Value is null ) return;
-		var texture = Texture.LoadCube( Value );
+		var texture = Texture.LoadCube( Value, true );
 		shader.Set( Name, tex );
 		texture.Use( TextureUnit.Texture0 + tex );
 	}

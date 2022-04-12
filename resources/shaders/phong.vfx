@@ -58,9 +58,6 @@ void main() {
     // apply cubemap according to specular of the material before lighting
     col = mix(col, env, spec);
 
-    // gamma correct
-    col = GammaCorrect(col, g_flGamma);
-
     vColor = vec4(col, alpha);
 }
 
