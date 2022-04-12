@@ -6,7 +6,7 @@ public class DebugOverlay
 {
 	public static int FPS;
 	public static float FT;
-	public static float Gamma = 2.2f;
+	public static float Gamma = 1.0f;
 	private static System.Numerics.Vector4 AmbientColor = new Color( 36.0f / 255.0f, 60.0f / 255.0f, 102.0f / 255.0f );
 	private static System.Numerics.Vector4 PrevAmbientColor = Color.White;
 
@@ -32,7 +32,7 @@ public class DebugOverlay
 		}
 		if(ImGui.CollapsingHeader("Settings"))
 		{
-			ImGui.SliderFloat( "Gamma", ref Gamma, 1, 3.5f );
+			ImGui.SliderFloat( "Gamma", ref Gamma, 0.7f, 1.3f );
 			ImGui.Text( "Ambient Color" );
 			ImGui.ColorPicker4( "", ref AmbientColor, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoAlpha );
 			if(AmbientColor != PrevAmbientColor )
