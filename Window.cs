@@ -66,13 +66,12 @@ public class Window : GameWindow
 		// set skybox
 		Skybox.Load( "materials/skybox/skybox03.vanmat" );
 
-		var floor = new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
-			Position = Vector3.Down,
-			Scale = 10
+			Position = Vector3.Down
 		};
-		floor.SetMaterialOverride( "materials/phong_test.vanmat" );
+		//floor.SetMaterialOverride( "materials/phong_test.vanmat" );
 
 		_ = new SceneObject
 		{
@@ -215,12 +214,16 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				var ent = new SceneObject
+				var sphere = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
-					Rotation = cam.Rotation,
-					Model = Model.Load( "models/cannon.fbx" )
+					//Rotation = cam.Rotation,
+					Model = Model.Primitives.Sphere,
+					Scale = 0.3f
 				};
+				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
+				sphere.Model.SetMaterialOverride( "materials/discoball.vanmat" );
+
 				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
