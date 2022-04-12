@@ -15,10 +15,10 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
-    float a      = roughness*roughness;
-    float a2     = a*a;
+    float a      = roughness * roughness;
+    float a2     = a * a;
     float NdotH  = max(dot(N, H), 0.0);
-    float NdotH2 = NdotH*NdotH;
+    float NdotH2 = NdotH * NdotH;
 	
     float num   = a2;
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
@@ -30,7 +30,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
 float GeometrySchlickGGX(float NdotV, float roughness)
 {
     float r = (roughness + 1.0);
-    float k = (r*r) / 8.0;
+    float k = (r * r) / 8.0;
 
     float num   = NdotV;
     float denom = NdotV * (1.0 - k) + k;
@@ -48,10 +48,10 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseAlbedo, float baseRoughness, float baseMetallic)
+vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 fragPos, vec3 viewDir, Material material)
 {
     vec3 F0 = g_vAmbientLightingColor.rgb;
-    F0 = mix(F0, baseAlbedo, baseMetallic);
+    F0 = mix(F0, material.Albedo, material.Metallic);
 
     // calculate per-light radiance
     vec3 L = normalize(lightPos - fragPos);
@@ -59,27 +59,27 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 n
     float distance    = length(lightPos - fragPos);
     float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
     attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
-    vec3 radiance     = lightCol * attenuation;    
-        
+    vec3 radiance     = lightCol * attenuation;
+    
     // cook-torrance brdf
-    float NDF = DistributionGGX(normal, H, baseRoughness);        
-    float G   = GeometrySmith(normal, viewDir, L, baseRoughness);      
+    float NDF = DistributionGGX(material.Normal, H, material.Roughness);        
+    float G   = GeometrySmith(material.Normal, viewDir, L, material.Roughness);      
     vec3 F    = fresnelSchlick(max(dot(H, viewDir), 0.0), F0);       
         
     vec3 kS = F;
     vec3 kD = vec3(1.0) - kS;
-    kD *= 1.0 - baseMetallic;
+    kD *= 1.0 - material.Metallic;
         
     vec3 numerator    = NDF * G * F;
-    float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, L), 0.0) + 0.0001;
+    float denominator = 4.0 * max(dot(material.Normal, viewDir), 0.0) * max(dot(material.Normal, L), 0.0) + 0.0001;
     vec3 specular     = numerator / denominator;  
             
     // add to outgoing radiance Lo
-    float NdotL = max(dot(normal, L), 0.0);                
-    return ((kD * baseAlbedo / PI + specular) * radiance * NdotL);
+    float NdotL = max(dot(material.Normal, L), 0.0);                
+    return ((kD * material.Albedo / PI + specular) * radiance * NdotL);
 }
 
-vec3 CommonPbrLighting(vec3 baseAlbedo, vec3 normal, float baseRoughness, float baseMetallic, float baseAo, vec3 fragPos, vec3 viewDir)
+vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
 {
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -91,11 +91,11 @@ vec3 CommonPbrLighting(vec3 baseAlbedo, vec3 normal, float baseRoughness, float 
         vec3 lightcol = pLight.Color.rgb;
         vec4 lightparams = pLight.Attenuation.xyzw;
 
-        Lo.rgb += CalcPointLight(lightpos, lightcol, lightparams, normal, fs_in.vPositionWs, viewDir, baseAlbedo, baseRoughness, baseMetallic);
+        Lo.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vPositionWs, viewDir, material);
     }
 
     // apply ao
-    vec3 ambient = g_vAmbientLightingColor.rgb * baseAlbedo * baseAo;
+    vec3 ambient = g_vAmbientLightingColor.rgb * material.Albedo * material.AmbientOcclusion;
     vec3 returncol = ambient + Lo;
 
     return returncol;

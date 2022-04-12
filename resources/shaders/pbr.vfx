@@ -22,7 +22,7 @@ void main()
 {
 	vec2 uv = fs_in.vTexCoord0;
 
-    vec4 base = texture(albedo, ub).rgba;
+    vec4 base = texture(albedo, uv).rgba;
     vec3 albedo = base.rgb;
     float alpha = base.a;
 
@@ -40,9 +40,14 @@ void main()
 
     // extract rma
     vec3 rma = vec3(texture(roughness, uv).r, texture(metallic, uv).r, texture(ao, uv).r);
+    float roughness = rma.r;
+    float metallic = rma.g;
+    float ambientocclusion = rma.b;
+
+    Material mat = Material(albedo, alpha, normal, roughness, metallic, ambientocclusion);
 
     // get pbr color
-    vec3 col = CommonPbrLighting(albedo, normal, rma.r, rma.b, rma.g, fs_in.vPositionWs, viewDir);
+    vec3 col = CommonPbrLighting(mat, fs_in.vPositionWs, viewDir);
 
     // env map sampling
     vec3 reflect = reflect(-viewDir, normal);

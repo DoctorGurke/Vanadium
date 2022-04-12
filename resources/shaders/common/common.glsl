@@ -35,3 +35,12 @@ layout (std140) uniform PerViewLightingUniformBuffer {
     PointLight[MAX_POINT_LIGHTS] g_PointLights;
     SpotLight[MAX_SPOT_LIGHTS] g_SpotLights;
 };
+
+struct Material {
+    vec3 Albedo;
+    float Opacity;
+    vec3 Normal;
+    float Roughness;
+    float Metallic;
+    float AmbientOcclusion;
+};
