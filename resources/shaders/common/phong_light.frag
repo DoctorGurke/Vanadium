@@ -77,7 +77,7 @@ vec3 CalcDirLight(vec3 dir, vec3 col, vec3 normal, vec3 viewDir, vec3 baseDiffus
 }  
 
 vec3 CommonPhongLighting(vec3 baseDiffuse, float baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    vec3 returncol = baseDiffuse;
+    vec3 returncol = baseDiffuse * g_vAmbientLightingColor.rgb;
     
     // calc dir lights
     for(int i = 0; i <= g_nNumDirlights - 1; i++) {

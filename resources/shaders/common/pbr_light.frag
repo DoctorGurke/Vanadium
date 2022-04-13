@@ -136,7 +136,7 @@ vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
     }
 
     // apply ao
-    vec3 ambient = material.Albedo * material.AmbientOcclusion;
+    vec3 ambient = g_vAmbientLightingColor.rgb * material.Albedo * material.AmbientOcclusion;
     vec3 returncol = ambient + Lo;
 
     returncol = returncol / (returncol + vec3(1.0));
