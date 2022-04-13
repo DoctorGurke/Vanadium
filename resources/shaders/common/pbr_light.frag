@@ -48,19 +48,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 fragPos, vec3 viewDir, Material material)
-{
-    vec3 F0 = g_vAmbientLightingColor.rgb;
-    F0 = mix(F0, material.Albedo, material.Metallic);
-
-    // calculate per-light radiance
-    vec3 L = normalize(lightPos - fragPos);
-    vec3 H = normalize(viewDir + L);
-    float distance    = length(lightPos - fragPos);
-    float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
-    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
-    vec3 radiance     = lightCol * attenuation;
-    
+vec3 CalcLight(vec3 radiance, Material material, vec3 viewDir, vec3 F0, vec3 L, vec3 H) {
     // cook-torrance brdf
     float NDF = DistributionGGX(material.Normal, H, material.Roughness);        
     float G   = GeometrySmith(material.Normal, viewDir, L, material.Roughness);      
@@ -77,6 +65,23 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 f
     // add to outgoing radiance Lo
     float NdotL = max(dot(material.Normal, L), 0.0);                
     return ((kD * material.Albedo / PI + specular) * radiance * NdotL);
+}
+
+vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 fragPos, vec3 viewDir, Material material)
+{
+    vec3 F0 = g_vAmbientLightingColor.rgb;
+    F0 = mix(F0, material.Albedo, material.Metallic);
+
+    // calculate per-light radiance
+    vec3 L = normalize(lightPos - fragPos);
+    vec3 H = normalize(viewDir + L);
+
+    float distance    = length(lightPos - fragPos);
+    float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
+    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
+    vec3 radiance = lightCol * attenuation;
+    
+    return CalcLight(radiance, material, viewDir, F0, L, H);
 }
 
 vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
