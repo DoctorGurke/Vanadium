@@ -17,7 +17,7 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 n
     float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
     attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
 
-    vec3 ambient = baseDiffuse * lightCol;
+    vec3 ambient = lightCol * baseDiffuse;
     vec3 diffuse = lightCol * diff * baseDiffuse;
     vec3 specular = lightCol * spec * baseSpecular;
 
@@ -45,7 +45,7 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationpar
     float epsilon = innerangle - outerangle;
     float intensity = clamp((theta - outerangle) / epsilon, 0.0, 1.0);
 
-    vec3 ambient = baseDiffuse * spotCol;
+    vec3 ambient = spotCol * baseDiffuse;
     vec3 diffuse = spotCol * diff * baseDiffuse;
     vec3 specular = spotCol * spec * baseSpecular;
 
@@ -57,9 +57,37 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationpar
     return (ambient + diffuse + specular);
 }
 
+vec3 CalcDirLight(vec3 dir, vec3 col, vec3 normal, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess)
+{
+    vec3 lightDir = normalize(-dir);
+
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+
+    // combine results
+    vec3 ambient  = col * baseDiffuse;
+    ambient *= (dot(-normal, dir) + 1) / 2; // make "shadows" darker
+    vec3 diffuse  = col * diff * baseDiffuse;
+    vec3 specular = col * spec * baseSpecular;
+    return (ambient + diffuse + specular);
+}  
+
 vec3 CommonPhongLighting(vec3 baseDiffuse, vec3 baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // apply global ambient light color
     vec3 returncol = baseDiffuse * g_vAmbientLightingColor.rgb;
+
+    // calc dir lights
+    for(int i = 0; i <= g_nNumDirlights - 1; i++) {
+        DirLight dLight = g_DirLights[i];
+        vec3 lightdir = dLight.Direction.xyz;
+        vec3 lightcol = dLight.Color.rgb;
+
+        returncol.rgb += CalcDirLight(lightdir, lightcol, normal, viewDir, baseDiffuse, baseSpecular, gloss);
+    }
 
     // calc point lights
     for(int i = 0; i <= g_nNumPointlights - 1; i++) {
