@@ -29,7 +29,7 @@ public partial class Texture
 		catch ( FileNotFoundException )
 		{
 			// bail with error texture
-			using var stream = File.OpenRead( $"resources/{ErrorTexture}" );
+			using var stream = File.OpenRead( $"resources/{Error}" );
 			Log.Info( $"Error loading image data for: {path}, File not found!" );
 			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
 		}

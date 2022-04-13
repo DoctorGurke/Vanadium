@@ -68,12 +68,13 @@ public class Window : GameWindow
 		// set skybox
 		Skybox.Load( "materials/skybox/skybox03.vanmat" );
 
-		_ = new SceneObject
+		var floor = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
-			Position = Vector3.Down
+			Position = Vector3.Down,
+			Scale = 0.5f
 		};
-		//floor.SetMaterialOverride( "materials/phong_test.vanmat" );
+		floor.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
 
 		_ = new SceneObject
 		{
@@ -235,15 +236,15 @@ public class Window : GameWindow
 			{
 				if ( Input.IsDown( Keys.LeftAlt ) )
 				{
-					SceneLight.AddDirLight( cam.Rotation, Color.Random );
+					SceneLight.AddDirLight( cam.Rotation );
 				}
 				else if ( Input.IsDown( Keys.LeftShift ) )
 				{
-					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
+					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1, 10 );
 				}
 				else
 				{
-					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1, 10 );
 				}
 			}
 

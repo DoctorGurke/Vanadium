@@ -69,7 +69,7 @@ vec3 CalcLight(vec3 radiance, Material material, vec3 viewDir, vec3 F0, vec3 L, 
 
 vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 fragPos, vec3 viewDir, Material material)
 {
-    vec3 F0 = g_vAmbientLightingColor.rgb;
+    vec3 F0 = vec3(0.04);
     F0 = mix(F0, material.Albedo, material.Metallic);
 
     // calculate per-light radiance
@@ -83,6 +83,29 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 f
     
     return CalcLight(radiance, material, viewDir, F0, L, H);
 }
+
+vec3 CalcSpotLight(vec3 lightPos, vec3 lightDir, vec3 lightCol, vec4 attenuationparams, float innerangle, float outerangle, vec3 fragPos, vec3 viewDir, Material material) {
+    vec3 F0 = vec3(0.04); 
+    F0 = mix(F0, material.Albedo, material.Metallic);
+
+    // calculate per-light radiance
+    vec3 L = normalize(lightPos - fragPos);
+    vec3 H = normalize(viewDir + L);
+
+    float distance    = length(lightPos - fragPos);
+    float attenuation = 1.0 / (attenuationparams.x + attenuationparams.y * distance + attenuationparams.z * (distance * distance));
+    attenuation = clamp(attenuation * attenuationparams.w, 0, 1); // brightness
+
+    vec3 relDir = normalize(lightPos - fragPos);
+    float theta = dot(relDir, normalize(-lightDir));
+    float epsilon = innerangle - outerangle;
+    float intensity = clamp((theta - outerangle) / epsilon, 0.0, 1.0);
+
+    vec3 radiance = lightCol * attenuation * intensity;
+    
+    return CalcLight(radiance, material, viewDir, F0, L, H);
+}
+
 
 vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
 {
@@ -99,8 +122,21 @@ vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
         Lo.rgb += CalcPointLight(lightpos, lightcol, lightparams, fs_in.vPositionWs, viewDir, material);
     }
 
+    // calc spot lights
+    for(int i = 0; i <= g_nNumSpotlights - 1; i++) {
+        SpotLight sLight  = g_SpotLights[i];
+        vec3 lightpos = sLight.Position.xyz;
+        vec3 lightdir = sLight.Direction.xyz;
+        vec3 lightcol = sLight.Color.rgb;
+        vec4 lightparams = sLight.Attenuation.xyzw;
+        float inner = cos(sLight.Params.x);
+        float outer = cos(sLight.Params.y);
+
+        Lo.rgb += CalcSpotLight(lightpos, lightdir, lightcol, lightparams, inner, outer, fs_in.vPositionWs, viewDir, material);
+    }
+
     // apply ao
-    vec3 ambient = g_vAmbientLightingColor.rgb * material.Albedo * material.AmbientOcclusion;
+    vec3 ambient = material.Albedo * material.AmbientOcclusion;
     vec3 returncol = ambient + Lo;
 
     returncol = returncol / (returncol + vec3(1.0));

@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/pbrtest/tiles/tiles_color.png",
+	"normal": "textures/pbrtest/tiles/tiles_normal.png",
+	"roughness": "textures/pbrtest/tiles/tiles_rough.png",
+	"metallic": "textures/core/default_0.png",
+	"ao": "textures/pbrtest/tiles/tiles_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}

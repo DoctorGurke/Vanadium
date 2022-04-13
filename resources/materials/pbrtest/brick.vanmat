@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/pbrtest/brick/brick_color.png",
+	"normal": "textures/pbrtest/brick/brick_normal.png",
+	"roughness": "textures/pbrtest/brick/brick_rough.png",
+	"metallic": "textures/core/default_0.png",
+	"ao": "textures/pbrtest/brick/brick_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}

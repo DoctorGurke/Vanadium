@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/pbrtest/metal/metal_color.png",
+	"normal": "textures/pbrtest/metal/metal_normal.png",
+	"roughness": "textures/pbrtest/metal/metal_rough.png",
+	"metallic": "textures/pbrtest/metal/metal_metal.png",
+	"ao": "textures/pbrtest/metal/metal_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}
