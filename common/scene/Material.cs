@@ -59,7 +59,8 @@ public class Material : IDisposable, IEquatable<Material>
 
 	private static readonly Dictionary<string, Material> PrecachedMaterials = new();
 
-	public static Material ErrorMaterial => Load( "materials/core/error.vanmat" );
+	public static string Error => "materials/core/error.vanmat";
+	public static Material ErrorMaterial => Load( Error );
 	public bool IsError { get; private set; } = false;
 	private MaterialParameters? Parameters;
 	public bool Transparent { get; private set; } = false;

@@ -14,10 +14,10 @@ public class Program
 {
 	public static void Main( string[] args )
 	{
-		Debug.Assert( File.Exists( "resources/shaders/core/error.vfx" ) );
-		Debug.Assert( File.Exists( "resources/materials/core/error.vanmat" ) );
-		Debug.Assert( File.Exists( "resources/models/primitives/error.fbx" ) );
-		Debug.Assert( File.Exists( "resources/textures/core/error.png" ) );
+		Assert.ResourcePresent( Shader.Error );
+		Assert.ResourcePresent( Material.Error );
+		Assert.ResourcePresent( Model.Error );
+		Assert.ResourcePresent( Texture.Error );
 
 		// init the settings for our main window
 		var nativeWindowSettings = new NativeWindowSettings()
@@ -30,7 +30,7 @@ public class Program
 		};
 
 
-		GLFW.WindowHint(WindowHintBool.SrgbCapable, true);
+		GLFW.WindowHint( WindowHintBool.SrgbCapable, true );
 
 		// init and run our window type
 		using ( var window = new Window( GameWindowSettings.Default, nativeWindowSettings ) )

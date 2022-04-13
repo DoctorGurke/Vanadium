@@ -12,6 +12,8 @@ public class Shader : IDisposable
 	public readonly int Handle;
 	public readonly string Name;
 
+	public static string Error => "shaders/core/error.vfx";
+
 	public Dictionary<string, int> UniformLocations { get; private set; } = new Dictionary<string, int>();
 
 	public Shader( string path, Material material )

@@ -11,7 +11,8 @@ public class Model : IDisposable
 
 	public bool IsError = false;
 
-	public static string ErrorModel => "models/primitives/error.fbx";
+	public static string Error => "models/primitives/error.fbx";
+	public static Model ErrorModel => Load( Error );
 
 	private static readonly Dictionary<string, Model> PrecachedModels = new();
 
@@ -69,6 +70,7 @@ public class Model : IDisposable
 
 	public static Model Load( string path )
 	{
+		var oldpath = path;
 		path = $"resources/{path}";
 
 		if ( PrecachedModels.TryGetValue( path, out var mdl ) )
@@ -89,13 +91,13 @@ public class Model : IDisposable
 		catch ( FileNotFoundException ex )
 		{
 			Log.Info( $"ERROR IMPORTING MODEL {fileName} ({ex})" );
-			return Load( ErrorModel );
+			return ErrorModel;
 		}
 
 		if ( scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null )
 		{
 			Log.Info( "ASSIMP IMPORT ERROR" );
-			return Load( ErrorModel );
+			return ErrorModel;
 		}
 
 		Model model = new();
@@ -104,7 +106,7 @@ public class Model : IDisposable
 		model.RenderBounds = model.GetRenderBounds();
 		PrecachedModels.Add( path, model );
 
-		if ( path == ErrorModel )
+		if ( oldpath == Error )
 			model.IsError = true;
 
 		Log.Info( $"finished loading model: {path}" );

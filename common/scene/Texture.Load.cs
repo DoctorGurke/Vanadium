@@ -8,7 +8,9 @@ public partial class Texture
 {
 	private static readonly Dictionary<string, ImageResult> ImageData = new();
 	private static readonly Dictionary<string, Texture> TextureData = new();
-	public static string ErrorTexture => "textures/core/error.png";
+
+	public static string Error => "textures/core/error.png";
+	public static Texture ErrorTexture => Load2D( Error );
 
 	private static ImageResult LoadImageData( string path )
 	{

@@ -63,7 +63,7 @@ public class Window : GameWindow
 		_guicontroller = new ImGuiController( ClientSize );
 
 		// precache error model
-		Model.Precache( Model.ErrorModel );
+		Model.Precache( Model.Error );
 
 		// set skybox
 		Skybox.Load( "materials/skybox/skybox03.vanmat" );
