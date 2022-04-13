@@ -57,7 +57,7 @@ void main()
     env *= albedo;
 
     // mix in envmap based on roughness
-    col = mix(col, env, 1 - rma.r);
+    col = mix(col, env, 1 - roughness);
 
     vColor = vec4(col, 1.0);
 }

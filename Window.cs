@@ -74,7 +74,7 @@ public class Window : GameWindow
 			Position = Vector3.Down,
 			Scale = 0.5f
 		};
-		floor.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
+		floor.SetMaterialOverride( "materials/pbrtest/planks.vanmat" );
 
 		_ = new SceneObject
 		{
@@ -240,11 +240,11 @@ public class Window : GameWindow
 				}
 				else if ( Input.IsDown( Keys.LeftShift ) )
 				{
-					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1, 10 );
+					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.White, 30, 35, 0, 0, 1 );
 				}
 				else
 				{
-					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1, 10 );
+					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.White, 0, 0, 1 );
 				}
 			}
 

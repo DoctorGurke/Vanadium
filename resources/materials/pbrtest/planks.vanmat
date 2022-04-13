@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/pbrtest/planks/planks_color.png",
+	"normal": "textures/pbrtest/planks/planks_normal.png",
+	"roughness": "textures/pbrtest/planks/planks_rough.png",
+	"metallic": "textures/pbrtest/planks/planks_metal.png",
+	"ao": "textures/pbrtest/planks/planks_ao.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}
