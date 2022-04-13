@@ -35,7 +35,7 @@ void main() {
     diff = mix(diff, tint, tintAmount);
     
     // grab specular
-    vec3 spec = texture(specular, uv).rgb;
+    float spec = texture(specular, uv).r;
 
     // get ws normals from normal map
     vec3 normal = texture(normal, uv).rgb;

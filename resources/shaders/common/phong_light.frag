@@ -5,7 +5,7 @@
 #material sampler2D normal
 #material float gloss
 
-vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
+vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, float baseSpecular, float shininess) {
     vec3 lightDir = normalize(lightPos - fragPos);
 
     float diff = max(dot(normal, lightDir), 0.0);
@@ -29,7 +29,7 @@ vec3 CalcPointLight(vec3 lightPos, vec3 lightCol, vec4 attenuationparams, vec3 n
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationparams, float innerangle, float outerangle, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess) {
+vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationparams, float innerangle, float outerangle, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 baseDiffuse, float baseSpecular, float shininess) {
     vec3 lightDir = normalize(spotPos - fragPos);
 
     float diff = max(dot(-normal, spotDir), 0.0);
@@ -57,7 +57,7 @@ vec3 CalcSpotLight(vec3 spotPos, vec3 spotDir, vec3 spotCol, vec4 attenuationpar
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcDirLight(vec3 dir, vec3 col, vec3 normal, vec3 viewDir, vec3 baseDiffuse, vec3 baseSpecular, float shininess)
+vec3 CalcDirLight(vec3 dir, vec3 col, vec3 normal, vec3 viewDir, vec3 baseDiffuse, float baseSpecular, float shininess)
 {
     vec3 lightDir = normalize(-dir);
 
@@ -76,7 +76,7 @@ vec3 CalcDirLight(vec3 dir, vec3 col, vec3 normal, vec3 viewDir, vec3 baseDiffus
     return (ambient + diffuse + specular);
 }  
 
-vec3 CommonPhongLighting(vec3 baseDiffuse, vec3 baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
+vec3 CommonPhongLighting(vec3 baseDiffuse, float baseSpecular, float gloss, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // apply global ambient light color
     vec3 returncol = baseDiffuse * g_vAmbientLightingColor.rgb;
 
