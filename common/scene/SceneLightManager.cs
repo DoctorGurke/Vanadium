@@ -7,12 +7,15 @@ public class SceneLightManager
 	private Color AmbientLightColor;
 	private int NumPointLights;
 	private int NumSpotLights;
+	private int NumDirLights;
 	private readonly PointLight[] PointLights;
 	private readonly SpotLight[] SpotLights;
+	private readonly DirLight[] DirLights;
 
 	// Values need to match common.glsl
 	public static int MaxPointLights => 128;
-	public static int MaxSpotLights => 128;
+	public static int MaxSpotLights => 64;
+	public static int MaxDirLights => 16;
 
 	public struct PointLight
 	{
@@ -30,10 +33,17 @@ public class SceneLightManager
 		public Vector4 Params; // inner angle, outer angle
 	}
 
+	public struct DirLight
+	{
+		public Vector4 Direction;
+		public Vector4 Color;
+	}
+
 	public SceneLightManager()
 	{
 		PointLights = new PointLight[MaxPointLights];
 		SpotLights = new SpotLight[MaxSpotLights];
+		DirLights = new DirLight[MaxDirLights];
 	}
 
 	public void SetAmbientLightColor( Color col )
@@ -115,5 +125,35 @@ public class SceneLightManager
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdateSpotlights( SpotLights, NumSpotLights );
+	}
+
+	public void AddDirLight( Rotation rotation )
+	{
+		AddDirLight( rotation, Color.White );
+	}
+
+	public void AddDirLight( Rotation rotation, Color color )
+	{
+		var light = NumDirLights; // current number is index for new light (ie, 0 lights means insert at index 0)
+		if ( light >= MaxDirLights )
+		{
+			Log.Info( $"UNABLE TO ADD MORE DIRECTIONAL LIGHTS {MaxDirLights}" );
+			return;
+		}
+
+		Log.Info( $"new dirlight {light} {rotation.Forward} {color}" );
+		var lightmodel = new SceneObject
+		{
+			Model = Model.Primitives.ForwardCone,
+			Scale = 0.1f,
+			Position = Vector3.Zero,
+			Rotation = rotation
+		};
+		lightmodel.RenderColor = color;
+
+		DirLights[light].Direction = new Vector4( rotation.Forward );
+		DirLights[light].Color = color;
+		NumDirLights++;
+		UniformBufferManager.Current?.UpdateDirlights( DirLights, NumDirLights );
 	}
 }

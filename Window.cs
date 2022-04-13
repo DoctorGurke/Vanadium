@@ -225,7 +225,6 @@ public class Window : GameWindow
 				};
 				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
 
-				//SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
 				//DebugDraw.Sphere( cam.Position + cam.Rotation.Forward * 5, 0.2f, Color.Red, 100, false );
@@ -234,9 +233,18 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Right ) )
 			{
-				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 10, Color.Random, 1, false );
-				SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random );
-				//SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
+				if ( Input.IsDown( Keys.LeftAlt ) )
+				{
+					SceneLight.AddDirLight( cam.Rotation, Color.Random );
+				}
+				else if ( Input.IsDown( Keys.LeftShift ) )
+				{
+					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.Random, 30, 35, 0, 0, 1 );
+				}
+				else
+				{
+					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1 );
+				}
 			}
 
 			WasUiMode = false;

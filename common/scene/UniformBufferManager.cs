@@ -30,9 +30,10 @@ public class UniformBufferManager
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 		var perviewlightingbuffersize = 0;
 		perviewlightingbuffersize += Marshal.SizeOf( typeof( Vector4 ) );
-		perviewlightingbuffersize += sizeof( int );
+		perviewlightingbuffersize += sizeof( int ) * 4;
 		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
+		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.DirLight ) ) * SceneLightManager.MaxDirLights;
 		perviewlightingbuffersize = perviewlightingbuffersize.RoundUpToMultipleOf( 16 );
 		GL.BufferData( BufferTarget.UniformBuffer, perviewlightingbuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBuffer( BufferTarget.UniformBuffer, 1 );
@@ -46,8 +47,8 @@ public class UniformBufferManager
 		// prepare data
 		var perviewuniformbuffer = new PerViewUniformBuffer
 		{
-			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? Matrix4.CreatePerspectiveFieldOfView(0, 0, 0, 0),
-			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? Matrix4.LookAt(new Vector3(), new Vector3(), new Vector3()),
+			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? Matrix4.CreatePerspectiveFieldOfView( 0, 0, 0, 0 ),
+			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? Matrix4.LookAt( new Vector3(), new Vector3(), new Vector3() ),
 			g_vCameraPositionWs = Camera.ActiveCamera?.Position ?? new Vector3(),
 			g_vCameraDirWs = Camera.ActiveCamera?.Rotation.Forward ?? new Vector3(),
 			g_vCameraUpDirWs = Camera.ActiveCamera?.Rotation.Up ?? new Vector3(),
@@ -86,10 +87,25 @@ public class UniformBufferManager
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ), sizeof( int ), ref num );
 		var offset = 0;
 		offset += Marshal.SizeOf( typeof( Vector4 ) );
-		offset += sizeof( int ) * 4;
+		offset += sizeof( int ) * 4; // number of lights (+ pad)
 		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		var size = Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr) offset, size, lights );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)offset, size, lights );
+	}
+
+	public void UpdateDirlights( SceneLightManager.DirLight[] lights, int num )
+	{
+		// update light uniform buffer
+		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
+
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 2, sizeof( int ), ref num );
+		var offset = 0;
+		offset += Marshal.SizeOf( typeof( Vector4 ) );
+		offset += sizeof( int ) * 4; // number of lights (+ pad)
+		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
+		offset += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
+		var size = Marshal.SizeOf( typeof( SceneLightManager.DirLight ) ) * SceneLightManager.MaxDirLights;
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)offset, size, lights );
 	}
 
 	public struct PerViewUniformBuffer
@@ -112,6 +128,6 @@ public class UniformBufferManager
 		public float g_flTime;                  // 4
 		public float g_flNearPlane;             // 4
 		public float g_flFarPlane;              // 4
-		public float g_flGamma;					// 4
+		public float g_flGamma;                 // 4
 	}
 }

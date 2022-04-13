@@ -25,15 +25,23 @@ struct SpotLight {
     vec4 Params; // inner angle, out angle
 };
 
+struct DirLight {
+    vec4 Direction;
+    vec4 Color;
+};
+
 #define MAX_POINT_LIGHTS 128
-#define MAX_SPOT_LIGHTS 128
+#define MAX_SPOT_LIGHTS 64
+#define MAX_DIR_LIGHTS 16
 
 layout (std140) uniform PerViewLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
     int g_nNumSpotlights;
+    int g_nNumDirlights;
     PointLight[MAX_POINT_LIGHTS] g_PointLights;
     SpotLight[MAX_SPOT_LIGHTS] g_SpotLights;
+    DirLight[MAX_DIR_LIGHTS] g_DirLights;
 };
 
 struct Material {
