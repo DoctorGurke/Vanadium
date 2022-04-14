@@ -52,3 +52,11 @@ struct Material {
     float Metallic;
     float AmbientOcclusion;
 };
+
+struct BasicMaterial {
+    vec3 Diffuse;
+    float Opacity;
+    vec3 Normal;
+    float Specular;
+    float Gloss;
+};

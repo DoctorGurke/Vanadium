@@ -45,8 +45,10 @@ void main() {
     // view dir to fragment
     vec3 viewDir = normalize(g_vCameraPositionWs - fs_in.vPositionWs);
 
+    BasicMaterial material = BasicMaterial(diff, alpha, normal, spec, gloss);
+
     // get lighting results
-    vec3 col = CommonPhongLighting(diff, spec, gloss, normal, fs_in.vPositionWs, viewDir);
+    vec3 col = CommonPhongLighting(material, fs_in.vPositionWs, viewDir);
 
     // env map sampling
     vec3 reflect = reflect(-viewDir, normal);
