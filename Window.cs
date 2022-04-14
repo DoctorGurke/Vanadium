@@ -74,7 +74,7 @@ public class Window : GameWindow
 			Position = Vector3.Down,
 			Scale = 0.5f
 		};
-		//floor.SetMaterialOverride( "materials/pbrtest/planks.vanmat" );
+		floor.SetMaterialOverride( "materials/pbrtest/wood.vanmat" );
 
 		_ = new SceneObject
 		{
