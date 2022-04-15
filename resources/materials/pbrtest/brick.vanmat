@@ -1,5 +1,5 @@
 ﻿{
-	"shader": "shaders/pbr",
+	"shader": "shaders/pbr_generic",
 	"albedo": "textures/pbrtest/brick/brick_color.png",
 	"normal": "textures/pbrtest/brick/brick_normal.png",
 	"roughness": "textures/pbrtest/brick/brick_rough.png",

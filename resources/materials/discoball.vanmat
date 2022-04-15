@@ -1,5 +1,5 @@
 ﻿{
-	"shader": "shaders/pbr",
+	"shader": "shaders/pbr_generic",
 	"albedo": "textures/discoball/discoball_color.png",
 	"normal": "textures/discoball/discoball_normal.png",
 	"roughness": "textures/discoball/discoball_rough.png",
