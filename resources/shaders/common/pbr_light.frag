@@ -48,7 +48,15 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-vec3 CalcLight(vec3 radiance, Material material, vec3 viewDir, vec3 F0, vec3 L, vec3 H) {
+vec3 Reflectance(Material mat) 
+{
+    vec3 F0 = vec3(0.04);
+    F0 = mix(F0, mat.Albedo, mat.Metallic);
+    return F0;
+}
+
+vec3 CalcLight(vec3 radiance, Material material, vec3 viewDir, vec3 F0, vec3 L, vec3 H) 
+{
     // cook-torrance brdf
     float NDF = DistributionGGX(material.Normal, H, material.Roughness);        
     float G   = GeometrySmith(material.Normal, viewDir, L, material.Roughness);      
@@ -69,8 +77,7 @@ vec3 CalcLight(vec3 radiance, Material material, vec3 viewDir, vec3 F0, vec3 L, 
 
 vec3 CalcPointLight(PointLight light, Material material, vec3 fragPos, vec3 viewDir)
 {
-    vec3 F0 = vec3(0.04);
-    F0 = mix(F0, material.Albedo, material.Metallic);
+    vec3 F0 = Reflectance(material);
 
     // calculate per-light radiance
     vec3 L = normalize(light.Position.xyz - fragPos);
@@ -84,9 +91,9 @@ vec3 CalcPointLight(PointLight light, Material material, vec3 fragPos, vec3 view
     return CalcLight(radiance, material, viewDir, F0, L, H);
 }
 
-vec3 CalcSpotLight(SpotLight light, Material material, vec3 fragPos, vec3 viewDir) {
-    vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, material.Albedo, material.Metallic);
+vec3 CalcSpotLight(SpotLight light, Material material, vec3 fragPos, vec3 viewDir) 
+{
+    vec3 F0 = Reflectance(material);
 
     // calculate per-light radiance
     vec3 L = normalize(light.Position.xyz - fragPos);
@@ -116,13 +123,15 @@ vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
     vec3 Lo = vec3(0.0);
 
     // calc point lights
-    for(int i = 0; i <= g_nNumPointlights - 1; i++) {
+    for(int i = 0; i <= g_nNumPointlights - 1; i++) 
+    {
         PointLight pLight  = g_PointLights[i];
         Lo.rgb += CalcPointLight(pLight, material, fs_in.vPositionWs, viewDir) * pLight.Attenuation.w;
     }
 
     // calc spot lights
-    for(int i = 0; i <= g_nNumSpotlights - 1; i++) {
+    for(int i = 0; i <= g_nNumSpotlights - 1; i++) 
+    {
         SpotLight sLight  = g_SpotLights[i];
         Lo.rgb += CalcSpotLight(sLight, material, fs_in.vPositionWs, viewDir) * sLight.Attenuation.w;
     }
