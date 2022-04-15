@@ -12,21 +12,21 @@
 };
 
 struct PointLight {
-    vec4 Position;
+    vec3 Position;
     vec4 Color;
-    vec4 Attenuation;
+    vec3 Attenuation;
 };
 
 struct SpotLight {
-    vec4 Position;
-    vec4 Direction;
+    vec3 Position;
+    vec3 Direction;
     vec4 Color;
-    vec4 Attenuation;
-    vec4 Params; // inner angle, out angle
+    vec3 Attenuation;
+    vec2 Params; // inner angle, out angle
 };
 
 struct DirLight {
-    vec4 Direction;
+    vec3 Direction;
     vec4 Color;
 };
 

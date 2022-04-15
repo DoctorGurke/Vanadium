@@ -74,8 +74,10 @@ public class UniformBufferManager
 	{
 		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
-
+		
+		// point lights num
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ), sizeof( int ), ref num );
+		// light array data
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights, lights );
 	}
 
@@ -84,12 +86,15 @@ public class UniformBufferManager
 		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
+		// spot lights num
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ), sizeof( int ), ref num );
+		
 		var offset = 0;
 		offset += Marshal.SizeOf( typeof( Vector4 ) );
 		offset += sizeof( int ) * 4; // number of lights (+ pad)
 		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		var size = Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
+		// lights array data
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)offset, size, lights );
 	}
 
@@ -98,13 +103,16 @@ public class UniformBufferManager
 		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
+		// dir lights num
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 2, sizeof( int ), ref num );
+		
 		var offset = 0;
 		offset += Marshal.SizeOf( typeof( Vector4 ) );
 		offset += sizeof( int ) * 4; // number of lights (+ pad)
 		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		offset += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
 		var size = Marshal.SizeOf( typeof( SceneLightManager.DirLight ) ) * SceneLightManager.MaxDirLights;
+		// lights array data
 		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)offset, size, lights );
 	}
 
