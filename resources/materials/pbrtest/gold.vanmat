@@ -1,0 +1,9 @@
+﻿{
+	"shader": "shaders/pbr",
+	"albedo": "textures/pbrtest/gold/gold_color.png",
+	"normal": "textures/pbrtest/gold/gold_normal.png",
+	"roughness": "textures/pbrtest/gold/gold_rough.png",
+	"metallic": "textures/pbrtest/gold/gold_metal.png",
+	"ao": "textures/core/default_0.png",
+	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+}
