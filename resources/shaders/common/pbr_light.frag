@@ -85,7 +85,7 @@ vec3 CalcPointLight(PointLight light, Material material, vec3 fragPos, vec3 view
 
     float distance    = length(light.Position.xyz - fragPos);
     float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Attenuation.w, 0, 1); // brightness
+    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
     vec3 radiance = light.Color.rgb * attenuation;
     
     return CalcLight(radiance, material, viewDir, F0, L, H);
@@ -101,7 +101,7 @@ vec3 CalcSpotLight(SpotLight light, Material material, vec3 fragPos, vec3 viewDi
 
     float distance    = length(light.Position.xyz - fragPos);
     float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Attenuation.w, 0, 1); // brightness
+    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
 
     float innerangle = cos(light.Params.x);
     float outerangle = cos(light.Params.y);
@@ -138,21 +138,21 @@ vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
     for(int i = 0; i <= g_nNumDirlights - 1; i++) 
     {
         DirLight dLight  = g_DirLights[i];
-        Lo.rgb += CalcDirLight(dLight, material, fs_in.vPositionWs, viewDir);
+        Lo.rgb += CalcDirLight(dLight, material, fs_in.vPositionWs, viewDir) * dLight.Color.a;
     }
 
     // calc point lights
     for(int i = 0; i <= g_nNumPointlights - 1; i++) 
     {
         PointLight pLight  = g_PointLights[i];
-        Lo.rgb += CalcPointLight(pLight, material, fs_in.vPositionWs, viewDir) * pLight.Attenuation.w;
+        Lo.rgb += CalcPointLight(pLight, material, fs_in.vPositionWs, viewDir) * pLight.Color.a;
     }
 
     // calc spot lights
     for(int i = 0; i <= g_nNumSpotlights - 1; i++) 
     {
         SpotLight sLight  = g_SpotLights[i];
-        Lo.rgb += CalcSpotLight(sLight, material, fs_in.vPositionWs, viewDir) * sLight.Attenuation.w;
+        Lo.rgb += CalcSpotLight(sLight, material, fs_in.vPositionWs, viewDir) * sLight.Color.a;
     }
 
     // apply ao

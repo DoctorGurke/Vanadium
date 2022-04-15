@@ -15,7 +15,7 @@ vec3 CalcPointLight(PointLight light, BasicMaterial mat, vec3 fragPos, vec3 view
 
     float distance = length(light.Position.xyz - fragPos);
     float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Attenuation.w, 0, 1); // brightness
+    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
 
     vec3 ambient = light.Color.rgb * mat.Diffuse;
     vec3 diffuse = light.Color.rgb * diff * mat.Diffuse;
@@ -39,7 +39,7 @@ vec3 CalcSpotLight(SpotLight light, BasicMaterial mat, vec3 fragPos, vec3 viewDi
 
     float distance = length(light.Position.xyz - fragPos);
     float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Attenuation.w, 0, 1); // brightness
+    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
 
     float innerangle = cos(light.Params.x);
     float outerangle = cos(light.Params.y);
