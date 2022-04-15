@@ -244,7 +244,7 @@ public class Window : GameWindow
 				}
 				else
 				{
-					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.White, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
+					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
 				}
 			}
 
