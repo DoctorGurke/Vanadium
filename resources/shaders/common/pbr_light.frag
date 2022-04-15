@@ -116,11 +116,30 @@ vec3 CalcSpotLight(SpotLight light, Material material, vec3 fragPos, vec3 viewDi
     return CalcLight(radiance, material, viewDir, F0, L, H);
 }
 
+vec3 CalcDirLight(DirLight light, Material material, vec3 fragPos, vec3 viewDir) 
+{
+    vec3 F0 = Reflectance(material);
+
+    // calculate per-light radiance
+    vec3 L = -light.Direction.xyz;
+    vec3 H = normalize(viewDir + L);
+    vec3 radiance = light.Color.rgb;
+    
+    return CalcLight(radiance, material, viewDir, F0, L, H);
+}
+
 
 vec3 CommonPbrLighting(Material material, vec3 fragPos, vec3 viewDir)
 {
     // reflectance equation
     vec3 Lo = vec3(0.0);
+
+    // calc point lights
+    for(int i = 0; i <= g_nNumDirlights - 1; i++) 
+    {
+        DirLight dLight  = g_DirLights[i];
+        Lo.rgb += CalcDirLight(dLight, material, fs_in.vPositionWs, viewDir);
+    }
 
     // calc point lights
     for(int i = 0; i <= g_nNumPointlights - 1; i++) 
