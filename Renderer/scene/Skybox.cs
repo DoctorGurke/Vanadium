@@ -13,11 +13,11 @@ public class Skybox
 		ActiveSkybox = skybox;
 	}
 
-	private Model? Model;
+	private Model Model;
 
 	public void Setup( string path )
 	{
-		Model = Model.Primitives.InvertedCube;
+		Model = ModelPrimitives.InvertedCube;
 		Model.SetMaterialOverride( path );
 	}
 
@@ -25,7 +25,7 @@ public class Skybox
 	{
 		GL.DepthFunc( DepthFunction.Lequal );
 
-		Model?.Draw();
+		Model.Draw();
 
 		GL.DepthFunc( DepthFunction.Less );
 	}
