@@ -14,8 +14,8 @@ vec3 CalcPointLight(PointLight light, BasicMaterial mat, vec3 fragPos, vec3 view
     float spec = pow(max(dot(mat.Normal, halfwayDir), 0.0), mat.Gloss);
 
     float distance = length(light.Position.xyz - fragPos);
-    float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
+    float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
+    attenuation = clamp(attenuation * light.Brightness, 0, 1); // brightness
 
     vec3 ambient = light.Color.rgb * mat.Diffuse;
     vec3 diffuse = light.Color.rgb * diff * mat.Diffuse;
@@ -38,11 +38,11 @@ vec3 CalcSpotLight(SpotLight light, BasicMaterial mat, vec3 fragPos, vec3 viewDi
     float spec = pow(max(dot(mat.Normal, halfwayDir), 0.0), mat.Gloss);
 
     float distance = length(light.Position.xyz - fragPos);
-    float attenuation = 1.0 / (light.Attenuation.x + light.Attenuation.y * distance + light.Attenuation.z * (distance * distance));
-    attenuation = clamp(attenuation * light.Color.a, 0, 1); // brightness
+    float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
+    attenuation = clamp(attenuation * light.Brightness, 0, 1); // brightness
 
-    float innerangle = cos(light.Params.x);
-    float outerangle = cos(light.Params.y);
+    float innerangle = cos(light.InnerAngle);
+    float outerangle = cos(light.OuterAngle);
 
     float theta = dot(lightDir, normalize(-light.Direction.xyz));
     float epsilon = innerangle - outerangle;

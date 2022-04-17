@@ -14,29 +14,44 @@ public class SceneLightManager
 
 	// Values need to match common.glsl
 	public static int MaxPointLights => 128;
-	public static int MaxSpotLights => 64;
+	public static int MaxSpotLights => 128;
 	public static int MaxDirLights => 16;
 
+	// 48 bytes
 	public struct PointLight
 	{
-		public Vector4 Position;
-		public Vector4 Color;
-		public Vector4 Attenuation; // constant, linear, quadratic
+		public Vector3 Position;
+		public float Constant;
+		public Vector3 Color;
+		public float Linear;
+		public float Quadratic;
+		public float Brightness;
+		public float Pad;
+		public float Pad1;
 	}
 
+	// 64 bytes
 	public struct SpotLight
 	{
-		public Vector4 Position;
-		public Vector4 Direction;
-		public Vector4 Color;
-		public Vector4 Attenuation; // constant, linear, quadratic, brightness mul
-		public Vector4 Params; // inner angle, outer angle
+		public Vector3 Position;
+		public float Constant;
+		public Vector3 Direction;
+		public float Linear;
+		public Vector3 Color;
+		public float Quadratic;
+		public float Brightness;
+		public float InnerAngle;
+		public float OuterAngle;
+		public float Pad;
 	}
 
+	// 32 bytes
 	public struct DirLight
 	{
-		public Vector4 Direction;
-		public Vector4 Color;
+		public Vector3 Direction;
+		public float Brightness;
+		public Vector3 Color;
+		public float Pad;
 	}
 
 	public SceneLightManager()
@@ -75,9 +90,12 @@ public class SceneLightManager
 		};
 		lightmodel.RenderColor = color;
 
-		PointLights[light].Position = new Vector4( position );
-		PointLights[light].Color = color.WithAlpha( brightness );
-		PointLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
+		PointLights[light].Position = position;
+		PointLights[light].Color = new Vector3( color.r, color.g, color.b );
+		PointLights[light].Constant = constant;
+		PointLights[light].Linear = linear;
+		PointLights[light].Quadratic = quadratic;
+		PointLights[light].Brightness = brightness;
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdatePointlights( PointLights, NumPointLights );
@@ -112,11 +130,15 @@ public class SceneLightManager
 		};
 		lightmodel.RenderColor = color;
 
-		SpotLights[light].Position = new Vector4( position );
-		SpotLights[light].Direction = new Vector4( rotation.Forward );
-		SpotLights[light].Color = color.WithAlpha( brightness );
-		SpotLights[light].Attenuation = new Vector4( constant, linear, quadratic, 0.0f );
-		SpotLights[light].Params = new Vector4( innerangle.DegreeToRadian(), outerangle.DegreeToRadian(), 0.0f, 0.0f );
+		SpotLights[light].Position = position;
+		SpotLights[light].Direction = rotation.Forward;
+		SpotLights[light].Color = new Vector3( color.r, color.g, color.b );
+		SpotLights[light].Constant = constant;
+		SpotLights[light].Linear = linear;
+		SpotLights[light].Quadratic = quadratic;
+		SpotLights[light].Brightness = brightness;
+		SpotLights[light].InnerAngle = innerangle.DegreeToRadian();
+		SpotLights[light].OuterAngle = outerangle.DegreeToRadian();
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdateSpotlights( SpotLights, NumSpotLights );
@@ -146,8 +168,9 @@ public class SceneLightManager
 		};
 		lightmodel.RenderColor = color;
 
-		DirLights[light].Direction = new Vector4( rotation.Forward );
-		DirLights[light].Color = color.WithAlpha( brightness );
+		DirLights[light].Direction = rotation.Forward;
+		DirLights[light].Color = new Vector3( color.r, color.g, color.b );
+		DirLights[light].Brightness = brightness;
 		NumDirLights++;
 		UniformBufferManager.Current?.UpdateDirlights( DirLights, NumDirLights );
 	}
