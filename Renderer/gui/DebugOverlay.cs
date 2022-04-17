@@ -1,6 +1,6 @@
 ﻿using ImGuiNET;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.Gui;
 
 public class DebugOverlay
 {

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData.Camera;
 
 public abstract class Camera
 {

@@ -6,7 +6,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Runtime.CompilerServices;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.Gui;
 
 public class ImGuiController : IDisposable
 {
