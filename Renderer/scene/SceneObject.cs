@@ -3,6 +3,16 @@
 public class SceneObject
 {
 	private Model _model;
+	public Material? MaterialOverride;
+	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
+	public Color RenderColor = Color.White;
+	public float TintAmount = 1.0f;
+
+	public void SetMaterialOverride( string path )
+	{
+		MaterialOverride = Material.Load( path );
+	}
+
 	public Model Model
 	{
 		get
@@ -27,9 +37,6 @@ public class SceneObject
 	}
 
 	public bool Transparent { get; private set; }
-
-	public Color RenderColor = Color.White;
-	public float TintAmount = 1.0f;
 
 	public Vector3 Position
 	{
@@ -65,7 +72,6 @@ public class SceneObject
 		}
 	}
 	public Transform LocalTransform;
-	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 
 	private SceneObject? _parent;
 	public SceneObject? Parent

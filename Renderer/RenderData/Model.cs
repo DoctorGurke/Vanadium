@@ -20,19 +20,6 @@ public struct Model
 		RenderBounds = GenerateRenderBounds( meshes );
 	}
 
-	public void SetMaterialOverride( string mat )
-	{
-		SetMaterialOverride( Material.Load( mat ) );
-	}
-
-	public void SetMaterialOverride( Material mat )
-	{
-		foreach ( var mesh in Meshes )
-		{
-			mesh.Material = mat;
-		}
-	}
-
 	public static void Precache( string path )
 	{
 		_ = Load( path );
@@ -43,8 +30,21 @@ public struct Model
 		Draw( null );
 	}
 
+	public void Draw( DrawCommand cmd )
+	{
+		foreach ( var mesh in Meshes )
+		{
+			mesh.Draw( cmd );
+		}
+	}
+
 	public void Draw( SceneObject? obj )
 	{
+		if ( obj is not null )
+		{
+			Draw( DrawCommand.FromSceneObject( obj ) );
+			return;
+		}
 		foreach ( var mesh in Meshes )
 		{
 			mesh.Draw( obj );

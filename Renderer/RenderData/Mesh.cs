@@ -119,24 +119,35 @@ public class Mesh : IDisposable
 		GL.VertexAttribPointer( 8, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "color" ) );
 	}
 
+	public void Draw( DrawCommand cmd )
+	{
+		var mat = cmd.MaterialOverride ?? Material;
+
+		mat.Use();
+
+		mat.Set( "transform", cmd.Transform );
+		mat.Set( "renderColor", cmd.RenderColor );
+		mat.Set( "tintAmount", cmd.TintAmount );
+
+		GL.BindVertexArray( vao );
+		GL.DrawElements( PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0 );
+	}
+
 	public void Draw( SceneObject? sceneobject )
 	{
-		Material.Use();
+		var mat = sceneobject?.MaterialOverride ?? Material;
+
+		mat.Use();
 
 		OpenTKMath.Matrix4 transform = OpenTKMath.Matrix4.Identity;
 		if ( sceneobject is not null )
 		{
 			transform = sceneobject.GlobalTransform;
-			Material.Set( "renderColor", sceneobject.RenderColor );
-			Material.Set( "tintAmount", sceneobject.TintAmount );
+			mat.Set( "renderColor", sceneobject.RenderColor );
+			mat.Set( "tintAmount", sceneobject.TintAmount );
 		}
 
-		Draw( transform );
-	}
-
-	private void Draw( OpenTKMath.Matrix4 transform )
-	{
-		Material.Set( "transform", transform );
+		mat.Set( "transform", transform );
 
 		GL.BindVertexArray( vao );
 		GL.DrawElements( PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0 );

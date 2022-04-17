@@ -72,7 +72,7 @@ public class Window : GameWindow
 			Position = Vector3.Down,
 			Scale = 0.5f
 		};
-		floor.Model.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
+		floor.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
 
 		_ = new SceneObject
 		{
@@ -215,14 +215,14 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				_ = new SceneObject
+				var sphere = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
-					Model = Model.Load( "models/cannon.fbx" ),
+					Model = ModelPrimitives.Sphere
 					//Scale = 0.3f
 				};
-				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
+				sphere.SetMaterialOverride( "materials/discoball.vanmat" );
 
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );

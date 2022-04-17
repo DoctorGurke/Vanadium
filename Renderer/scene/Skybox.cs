@@ -8,24 +8,24 @@ public class Skybox
 
 	public static void Load( string path )
 	{
-		var skybox = new Skybox();
-		skybox.Setup( path );
+		var skybox = new Skybox( path );
 		ActiveSkybox = skybox;
 	}
 
-	private Model Model;
-
-	public void Setup( string path )
+	private Skybox( string path )
 	{
 		Model = ModelPrimitives.InvertedCube;
-		Model.SetMaterialOverride( path );
+		Material = Material.Load( path );
 	}
+
+	private readonly Model Model;
+	private readonly Material Material;
 
 	public void Draw()
 	{
 		GL.DepthFunc( DepthFunction.Lequal );
 
-		Model.Draw();
+		Model.Draw( DrawCommand.FromMaterialOverride( Material ) );
 
 		GL.DepthFunc( DepthFunction.Less );
 	}
