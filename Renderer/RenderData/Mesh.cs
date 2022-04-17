@@ -39,6 +39,7 @@ public class Mesh : IDisposable
 		Vertices = vertices;
 		Indices = indices;
 		Material = Material.Load( $"{material}.vanmat" );
+		SetupMesh();
 	}
 
 	private int vao, vbo, ebo;
@@ -56,7 +57,6 @@ public class Mesh : IDisposable
 			if ( _material is not null && _material.Equals( value ) ) return;
 
 			_material = value;
-			SetupMesh( value );
 		}
 	}
 
@@ -71,89 +71,6 @@ public class Mesh : IDisposable
 
 	public void SetupMesh()
 	{
-		SetupMesh( Material );
-	}
-
-	private void SetupRenderAttributes( Material mat )
-	{
-		// vertex positions
-		var vertexPositionLocation = mat.GetAttribLocation( "vPosition" );
-		if ( vertexPositionLocation >= 0 )
-		{
-			GL.EnableVertexAttribArray( vertexPositionLocation );
-			GL.VertexAttribPointer( vertexPositionLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), 0 );
-		}
-
-		// vertex normal
-		var vertexNormalLocation = mat.GetAttribLocation( "vNormal" );
-		if ( vertexNormalLocation >= 0 )
-		{
-			GL.EnableVertexAttribArray( vertexNormalLocation );
-			GL.VertexAttribPointer( vertexNormalLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "normal" ) );
-		}
-
-		// vertex tangent
-		var vertexTangentLocation = mat.GetAttribLocation( "vTangent" );
-		if ( vertexTangentLocation >= 0 )
-		{
-			GL.EnableVertexAttribArray( vertexTangentLocation );
-			GL.VertexAttribPointer( vertexTangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "tangent" ) );
-		}
-
-		// vertex bitangent
-		var vertexBitangentLocation = mat.GetAttribLocation( "vBitangent" );
-		if ( vertexBitangentLocation >= 0 )
-		{
-			GL.EnableVertexAttribArray( vertexBitangentLocation );
-			GL.VertexAttribPointer( vertexBitangentLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "bitangent" ) );
-		}
-
-		// uv0
-		var uv0Location = mat.GetAttribLocation( "vTexCoord0" );
-		if ( uv0Location >= 0 )
-		{
-			GL.EnableVertexAttribArray( uv0Location );
-			GL.VertexAttribPointer( uv0Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv0" ) );
-		}
-
-		// uv1
-		var uv1Location = mat.GetAttribLocation( "vTexCoord1" );
-		if ( uv1Location >= 0 )
-		{
-			GL.EnableVertexAttribArray( uv1Location );
-			GL.VertexAttribPointer( uv1Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv1" ) );
-		}
-
-		// uv2
-		var uv2Location = mat.GetAttribLocation( "vTexCoord2" );
-		if ( uv2Location >= 0 )
-		{
-			GL.EnableVertexAttribArray( uv2Location );
-			GL.VertexAttribPointer( uv2Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv2" ) );
-		}
-
-		// uv3
-		var uv3Location = mat.GetAttribLocation( "vTexCoord3" );
-		if ( uv3Location >= 0 )
-		{
-			GL.EnableVertexAttribArray( uv3Location );
-			GL.VertexAttribPointer( uv3Location, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv3" ) );
-		}
-
-		// vertex color
-		var vertexColorLocation = mat.GetAttribLocation( "vColor" );
-		if ( vertexColorLocation >= 0 )
-		{
-			GL.EnableVertexAttribArray( vertexColorLocation );
-			GL.VertexAttribPointer( vertexColorLocation, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "color" ) );
-		}
-	}
-
-	public void SetupMesh( Material mat )
-	{
-		// use shader first to get attributes
-		mat.Use();
-
 		// create, bind and populate vbo
 		GLUtil.CreateBuffer( "Mesh VBO", out vbo );
 		GL.BindBuffer( BufferTarget.ArrayBuffer, vbo );
@@ -162,7 +79,7 @@ public class Mesh : IDisposable
 		GLUtil.CreateVertexArray( "Mesh VAO", out vao );
 		GL.BindVertexArray( vao );
 
-		SetupRenderAttributes( mat );
+		SetupRenderAttributes();
 
 		// create, bind and populate ebo
 		GLUtil.CreateBuffer( "Mesh EBO", out ebo );
@@ -170,6 +87,36 @@ public class Mesh : IDisposable
 		GL.BufferData( BufferTarget.ElementArrayBuffer, Indices.Length * sizeof( uint ), Indices, BufferUsageHint.StaticDraw );
 
 		GL.BindVertexArray( 0 );
+	}
+
+	private static void SetupRenderAttributes()
+	{
+		GL.EnableVertexAttribArray( 0 );
+		GL.VertexAttribPointer( 0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), 0 );
+
+		GL.EnableVertexAttribArray( 1 );
+		GL.VertexAttribPointer( 1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "normal" ) );
+
+		GL.EnableVertexAttribArray( 2 );
+		GL.VertexAttribPointer( 2, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "tangent" ) );
+
+		GL.EnableVertexAttribArray( 3 );
+		GL.VertexAttribPointer( 3, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "bitangent" ) );
+
+		GL.EnableVertexAttribArray( 4 );
+		GL.VertexAttribPointer( 4, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv0" ) );
+
+		GL.EnableVertexAttribArray( 5 );
+		GL.VertexAttribPointer( 5, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv1" ) );
+
+		GL.EnableVertexAttribArray( 6 );
+		GL.VertexAttribPointer( 6, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv2" ) );
+
+		GL.EnableVertexAttribArray( 7 );
+		GL.VertexAttribPointer( 7, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "uv3" ) );
+
+		GL.EnableVertexAttribArray( 8 );
+		GL.VertexAttribPointer( 8, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf( typeof( Vertex ) ), Marshal.OffsetOf( typeof( Vertex ), "color" ) );
 	}
 
 	public void Draw( SceneObject? sceneobject )

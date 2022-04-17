@@ -1,14 +1,14 @@
 ﻿#include shaders/common/common.glsl
 
-in vec3 vPosition;
-in vec3 vNormal;
-in vec3 vTangent;
-in vec3 vBitangent;
-in vec2 vTexCoord0;
-in vec2 vTexCoord1;
-in vec2 vTexCoord2;
-in vec2 vTexCoord3;
-in vec3 vColor;
+layout(location = 0)in vec3 vPosition;
+layout(location = 1)in vec3 vNormal;
+layout(location = 2)in vec3 vTangent;
+layout(location = 3)in vec3 vBitangent;
+layout(location = 4)in vec2 vTexCoord0;
+layout(location = 5)in vec2 vTexCoord1;
+layout(location = 6)in vec2 vTexCoord2;
+layout(location = 7)in vec2 vTexCoord3;
+layout(location = 8)in vec3 vColor;
 
 out VS_OUT {
 	vec3 vPositionWs;
