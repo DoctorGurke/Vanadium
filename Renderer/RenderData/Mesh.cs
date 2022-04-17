@@ -169,14 +169,7 @@ public class Mesh : IDisposable
 
 	public void Draw( SceneObject? sceneobject )
 	{
-		if ( sceneobject is not null && sceneobject.MaterialOverride is not null )
-		{
-			sceneobject.MaterialOverride.Use();
-		}
-		else
-		{
-			Material.Use();
-		}
+		Material.Use();
 
 		OpenTKMath.Matrix4 transform = OpenTKMath.Matrix4.Identity;
 		if ( sceneobject is not null )

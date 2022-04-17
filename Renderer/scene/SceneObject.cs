@@ -2,42 +2,17 @@
 
 public class SceneObject
 {
-	private Model? _model;
-	public Model? Model
+	private Model _model;
+	public Model Model
 	{
 		get
 		{
-			return _model ?? Model.Primitives.Error;
+			return _model.IsError ? ModelPrimitives.Error : _model;
 		}
 		set
 		{
 			_model = value;
 			PostModelSet();
-		}
-	}
-
-	public void SetMaterialOverride( string path )
-	{
-		MaterialOverride = Material.Load( path );
-	}
-
-	private Material? _materialoverride;
-	public Material? MaterialOverride
-	{
-		get
-		{ 
-			return _materialoverride; 
-		}
-		set
-		{
-			if ( Model is null ) return;
-			if ( value is null )
-			{
-				Model.SetupMeshes();
-				return;
-			}
-			Model.SetMeshMaterials( value );
-			_materialoverride = value;
 		}
 	}
 
@@ -126,7 +101,6 @@ public class SceneObject
 
 	private void PostModelSet()
 	{
-		if ( Model is null ) return;
 		var transparent = false;
 
 		if ( Model.Meshes is not null )
@@ -155,7 +129,7 @@ public class SceneObject
 
 	public void Draw()
 	{
-		Model?.Draw( this );
+		Model.Draw( this );
 		OnRender();
 	}
 
