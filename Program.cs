@@ -3,6 +3,16 @@ global using System.Collections.Generic;
 global using System.Linq;
 global using System.Diagnostics;
 
+global using Vanadium.Common;
+global using Vanadium.Common.Mathematics;
+global using Vanadium.Renderer.Gui;
+global using Vanadium.Renderer.RenderData.View;
+global using Vanadium.Renderer.RenderData;
+global using Vanadium.Renderer.Scene;
+global using Vanadium.Renderer.Util;
+
+global using OpenTKMath = OpenTK.Mathematics;
+
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
 using OpenTK.Mathematics;
@@ -12,7 +22,7 @@ namespace Vanadium;
 
 public class Program
 {
-	public static void Main( string[] args )
+	public static void Main()
 	{
 		Assert.ResourcePresent( Shader.Error );
 		Assert.ResourcePresent( Material.Error );
@@ -33,11 +43,9 @@ public class Program
 		GLFW.WindowHint( WindowHintBool.SrgbCapable, true );
 
 		// init and run our window type
-		using ( var window = new Window( GameWindowSettings.Default, nativeWindowSettings ) )
-		{
-			window.CenterWindow();
-			window.VSync = VSyncMode.On;
-			window.Run();
-		}
+		using var window = new Window( GameWindowSettings.Default, nativeWindowSettings );
+		window.CenterWindow();
+		window.VSync = VSyncMode.On;
+		window.Run();
 	}
 }

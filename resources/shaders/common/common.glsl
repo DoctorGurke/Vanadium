@@ -13,25 +13,33 @@
 
 struct PointLight {
     vec3 Position;
-    vec4 Color;
-    vec3 Attenuation;
+    float Constant;
+    vec3 Color;
+    float Linear;
+    float Quadratic;
+    float Brightness;
 };
 
 struct SpotLight {
     vec3 Position;
+    float Constant;
     vec3 Direction;
-    vec4 Color;
-    vec3 Attenuation;
-    vec2 Params; // inner angle, out angle
+    float Linear;
+    vec3 Color;
+    float Quadratic;
+    float Brightness;
+    float InnerAngle;
+    float OuterAngle;
 };
 
 struct DirLight {
     vec3 Direction;
-    vec4 Color;
+    float Brightness;
+    vec3 Color;
 };
 
 #define MAX_POINT_LIGHTS 128
-#define MAX_SPOT_LIGHTS 64
+#define MAX_SPOT_LIGHTS 128
 #define MAX_DIR_LIGHTS 16
 
 #include shaders/common/material.glsl

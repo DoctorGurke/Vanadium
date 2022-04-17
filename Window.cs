@@ -1,10 +1,8 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Runtime.InteropServices;
-using ImGuiNET;
 
 namespace Vanadium;
 
@@ -74,11 +72,11 @@ public class Window : GameWindow
 			Position = Vector3.Down,
 			Scale = 0.5f
 		};
-		floor.SetMaterialOverride( "materials/pbrtest/gold.vanmat" );
+		floor.Model.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
 
 		_ = new SceneObject
 		{
-			Model = Model.Primitives.Axis
+			Model = ModelPrimitives.Axis
 		};
 
 		// init camera
@@ -217,7 +215,7 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				var sphere = new SceneObject
+				_ = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
