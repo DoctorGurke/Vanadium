@@ -1,8 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using System.Reflection;
-using System.Text.Json;
 
 namespace Vanadium;
 
@@ -43,6 +39,7 @@ public class Material : IDisposable, IEquatable<Material>
 	public void Dispose()
 	{
 		Shader.Dispose();
+		GC.SuppressFinalize( this );
 	}
 
 	/// <summary>
@@ -184,7 +181,7 @@ public class Material : IDisposable, IEquatable<Material>
 					case MaterialParamType.Vector2:
 						Log.Info( $"parsing vec2 material data {name} {value}" );
 						// TODO make wrapper for vec2 and add TryParse directly to type
-						if ( Parse.TryParse( value, out Vector2 vec2data ) )
+						if ( Parse.TryParse( value, out OpenTKMath.Vector2 vec2data ) )
 						{
 							yield return new Vector2Uniform( name, vec2data );
 						}
@@ -199,7 +196,7 @@ public class Material : IDisposable, IEquatable<Material>
 					case MaterialParamType.Vector4:
 						Log.Info( $"parsing vec4 material data {name} {value}" );
 						// TODO make wrapper for vec4 and add TryParse directly to type
-						if ( Parse.TryParse( value, out Vector4 vec4data ) )
+						if ( Parse.TryParse( value, out OpenTKMath.Vector4 vec4data ) )
 						{
 							yield return new Vector4Uniform( name, vec4data );
 						}
@@ -207,7 +204,7 @@ public class Material : IDisposable, IEquatable<Material>
 					case MaterialParamType.Matrix4:
 						Log.Info( $"parsing mat4 material data {name} {value}" );
 						// TODO make wrapper for mat4 and add TryParse directly to type (?)
-						if ( Parse.TryParse( value, out Matrix4 mat4data ) )
+						if ( Parse.TryParse( value, out OpenTKMath.Matrix4 mat4data ) )
 						{
 							yield return new Matrix4Uniform( name, mat4data );
 						}
@@ -297,7 +294,7 @@ public class Material : IDisposable, IEquatable<Material>
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void Set( string name, Vector2 data )
+	public void Set( string name, OpenTKMath.Vector2 data )
 	{
 		if ( IsError )
 			ErrorMaterial.Shader.Set( name, data );
@@ -323,7 +320,7 @@ public class Material : IDisposable, IEquatable<Material>
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void Set( string name, Vector4 data )
+	public void Set( string name, OpenTKMath.Vector4 data )
 	{
 		if ( IsError )
 			ErrorMaterial.Shader.Set( name, data );
@@ -341,7 +338,7 @@ public class Material : IDisposable, IEquatable<Material>
 	///   The matrix is transposed before being sent to the shader.
 	///   </para>
 	/// </remarks>
-	public void Set( string name, Matrix4 data )
+	public void Set( string name, OpenTKMath.Matrix4 data )
 	{
 		if ( IsError )
 			ErrorMaterial.Shader.Set( name, data );

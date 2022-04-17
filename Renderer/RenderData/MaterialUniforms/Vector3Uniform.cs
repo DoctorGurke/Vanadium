@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace Vanadium;
+﻿namespace Vanadium;
 
 public class Vector3Uniform : MaterialUniform<Vector3>
 {

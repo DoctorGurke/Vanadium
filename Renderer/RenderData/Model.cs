@@ -1,6 +1,5 @@
 ﻿using Assimp;
 using Assimp.Configs;
-using OpenTK.Mathematics;
 using System.Reflection;
 
 namespace Vanadium;
@@ -149,10 +148,10 @@ public class Model : IDisposable
 		for ( int v = 0; v < mesh.VertexCount; v++ )
 		{
 			Mesh.Vertex vertex;
-			Vector2 uv0 = new();
-			Vector2 uv1 = new();
-			Vector2 uv2 = new();
-			Vector2 uv3 = new();
+			OpenTKMath.Vector2 uv0 = new();
+			OpenTKMath.Vector2 uv1 = new();
+			OpenTKMath.Vector2 uv2 = new();
+			OpenTKMath.Vector2 uv3 = new();
 
 			if ( mesh.TextureCoordinateChannelCount > 0 )
 			{

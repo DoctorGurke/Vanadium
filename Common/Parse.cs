@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Vanadium;
+namespace Vanadium.Common;
 
 public static class Parse
 {

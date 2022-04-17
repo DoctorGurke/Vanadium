@@ -1,6 +1,4 @@
-﻿using OpenTK.Mathematics;
-
-namespace Vanadium;
+﻿namespace Vanadium;
 
 public class SceneObject
 {
@@ -92,7 +90,7 @@ public class SceneObject
 		}
 	}
 	public Transform LocalTransform;
-	public Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
+	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 
 	private SceneObject? _parent;
 	public SceneObject? Parent

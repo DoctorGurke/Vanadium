@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
 namespace Vanadium;
@@ -29,7 +28,7 @@ public class UniformBufferManager
 		GLUtil.CreateBuffer( "PerViewLightingUniformBuffer", out PerViewLightingUniformBufferHandle );
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 		var perviewlightingbuffersize = 0;
-		perviewlightingbuffersize += Marshal.SizeOf( typeof( Vector4 ) );
+		perviewlightingbuffersize += Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) );
 		perviewlightingbuffersize += sizeof( int ) * 4;
 		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		perviewlightingbuffersize += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
@@ -47,8 +46,8 @@ public class UniformBufferManager
 		// prepare data
 		var perviewuniformbuffer = new PerViewUniformBuffer
 		{
-			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? Matrix4.CreatePerspectiveFieldOfView( 0, 0, 0, 0 ),
-			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? Matrix4.LookAt( new Vector3(), new Vector3(), new Vector3() ),
+			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? OpenTKMath.Matrix4.CreatePerspectiveFieldOfView( 0, 0, 0, 0 ),
+			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? OpenTKMath.Matrix4.LookAt( new Vector3(), new Vector3(), new Vector3() ),
 			g_vCameraPositionWs = Camera.ActiveCamera?.Position ?? new Vector3(),
 			g_vCameraDirWs = Camera.ActiveCamera?.Rotation.Forward ?? new Vector3(),
 			g_vCameraUpDirWs = Camera.ActiveCamera?.Rotation.Up ?? new Vector3(),
@@ -67,7 +66,7 @@ public class UniformBufferManager
 		// update light uniform buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
-		GL.BufferSubData( BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf( typeof( Vector4 ) ), ref col );
+		GL.BufferSubData( BufferTarget.UniformBuffer, IntPtr.Zero, Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) ), ref col );
 	}
 
 	public void UpdatePointlights( SceneLightManager.PointLight[] lights, int num )
@@ -76,9 +75,9 @@ public class UniformBufferManager
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 		
 		// point lights num
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ), sizeof( int ), ref num );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) ), sizeof( int ), ref num );
 		// light array data
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights, lights );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)(Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) ) + sizeof( int ) * 4), Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights, lights );
 	}
 
 	public void UpdateSpotlights( SceneLightManager.SpotLight[] lights, int num )
@@ -87,10 +86,10 @@ public class UniformBufferManager
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
 		// spot lights num
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ), sizeof( int ), ref num );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) ) + sizeof( int ), sizeof( int ), ref num );
 		
 		var offset = 0;
-		offset += Marshal.SizeOf( typeof( Vector4 ) );
+		offset += Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) );
 		offset += sizeof( int ) * 4; // number of lights (+ pad)
 		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		var size = Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
@@ -104,10 +103,10 @@ public class UniformBufferManager
 		GL.BindBuffer( BufferTarget.UniformBuffer, PerViewLightingUniformBufferHandle );
 
 		// dir lights num
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( Vector4 ) ) + sizeof( int ) * 2, sizeof( int ), ref num );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) ) + sizeof( int ) * 2, sizeof( int ), ref num );
 		
 		var offset = 0;
-		offset += Marshal.SizeOf( typeof( Vector4 ) );
+		offset += Marshal.SizeOf( typeof( OpenTKMath.Vector4 ) );
 		offset += sizeof( int ) * 4; // number of lights (+ pad)
 		offset += Marshal.SizeOf( typeof( SceneLightManager.PointLight ) ) * SceneLightManager.MaxPointLights;
 		offset += Marshal.SizeOf( typeof( SceneLightManager.SpotLight ) ) * SceneLightManager.MaxSpotLights;
@@ -118,11 +117,11 @@ public class UniformBufferManager
 
 	public struct PerViewUniformBuffer
 	{
-		public Matrix4 g_matWorldToProjection;  // 16	(col0)
+		public OpenTKMath.Matrix4 g_matWorldToProjection;  // 16	(col0)
 												// 16	(col1)
 												// 16	(col2)
 												// 16	(col3)
-		public Matrix4 g_matWorldToView;        // 16	(col0)
+		public OpenTKMath.Matrix4 g_matWorldToView;        // 16	(col0)
 												// 16	(col1)
 												// 16	(col2)
 												// 16	(col3)
@@ -132,7 +131,7 @@ public class UniformBufferManager
 		public float pad2;                      // 4	(padding)
 		public Vector3 g_vCameraUpDirWs;        // 12
 		public float pad3;                      // 4	(padding)
-		public Vector2 g_vViewportSize;         // 8
+		public OpenTKMath.Vector2 g_vViewportSize;         // 8
 		public float g_flTime;                  // 4
 		public float g_flNearPlane;             // 4
 		public float g_flFarPlane;              // 4

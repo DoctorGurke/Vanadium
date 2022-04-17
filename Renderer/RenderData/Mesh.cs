@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Runtime.InteropServices;
 
 namespace Vanadium;
@@ -15,13 +14,13 @@ public class Mesh : IDisposable
 		public Vector3 normal;
 		public Vector3 tangent;
 		public Vector3 bitangent;
-		public Vector2 uv0;
-		public Vector2 uv1;
-		public Vector2 uv2;
-		public Vector2 uv3;
+		public OpenTKMath.Vector2 uv0;
+		public OpenTKMath.Vector2 uv1;
+		public OpenTKMath.Vector2 uv2;
+		public OpenTKMath.Vector2 uv3;
 		public Vector3 color;
 
-		public Vertex( Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 uv0, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector3 color )
+		public Vertex( Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, OpenTKMath.Vector2 uv0, OpenTKMath.Vector2 uv1, OpenTKMath.Vector2 uv2, OpenTKMath.Vector2 uv3, Vector3 color )
 		{
 			this.position = position;
 			this.normal = normal;
@@ -179,7 +178,7 @@ public class Mesh : IDisposable
 			Material.Use();
 		}
 
-		Matrix4 transform = Matrix4.Identity;
+		OpenTKMath.Matrix4 transform = OpenTKMath.Matrix4.Identity;
 		if ( sceneobject is not null )
 		{
 			transform = sceneobject.GlobalTransform;
@@ -190,7 +189,7 @@ public class Mesh : IDisposable
 		Draw( transform );
 	}
 
-	private void Draw( Matrix4 transform )
+	private void Draw( OpenTKMath.Matrix4 transform )
 	{
 		Material.Set( "transform", transform );
 

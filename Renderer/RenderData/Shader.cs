@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -390,7 +389,7 @@ public class Shader : IDisposable
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void Set( string name, Vector2 data )
+	public void Set( string name, OpenTKMath.Vector2 data )
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
@@ -422,7 +421,7 @@ public class Shader : IDisposable
 	/// </summary>
 	/// <param name="name">The name of the uniform</param>
 	/// <param name="data">The data to set</param>
-	public void Set( string name, Vector4 data )
+	public void Set( string name, OpenTKMath.Vector4 data )
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{
@@ -443,7 +442,7 @@ public class Shader : IDisposable
 	///   The matrix is transposed before being sent to the shader.
 	///   </para>
 	/// </remarks>
-	public void Set( string name, Matrix4 data )
+	public void Set( string name, OpenTKMath.Matrix4 data )
 	{
 		if ( UniformLocations.TryGetValue( name, out var location ) )
 		{

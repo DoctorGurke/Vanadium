@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common.Mathematics;
 
 /// <summary>
 /// Utility class for math float extensions.
@@ -38,9 +38,7 @@ public static class MathX
 	{
 		if ( !(a <= b) )
 		{
-			float num = a;
-			a = b;
-			b = num;
+			(b, a) = (a, b);
 		}
 	}
 

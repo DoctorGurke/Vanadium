@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Vanadium;
+namespace Vanadium.Common;
 
 // generic json utils specifically for our folder structure
 public static class Json

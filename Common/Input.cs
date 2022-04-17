@@ -1,6 +1,6 @@
 ﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Vanadium;
+namespace Vanadium.Common;
 
 public static class Input
 {

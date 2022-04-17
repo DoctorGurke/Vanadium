@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common.Mathematics;
 
 /// <summary>
 /// Represents a simple Plane in 3D space

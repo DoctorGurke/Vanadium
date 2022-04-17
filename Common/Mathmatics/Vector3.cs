@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Vanadium;
+namespace Vanadium.Common.Mathematics;
 
 public struct Vector3 : IEquatable<Vector3>
 {

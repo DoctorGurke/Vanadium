@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common.Mathematics;
 
 public static class Time
 {

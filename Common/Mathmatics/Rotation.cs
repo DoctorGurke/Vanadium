@@ -1,12 +1,12 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Vanadium;
+namespace Vanadium.Common.Mathematics;
 
 public struct Rotation : IEquatable<Rotation>
 {
 	internal Quaternion _quat;
 
-	public static readonly Rotation Identity = new Rotation
+	public static readonly Rotation Identity = new()
 	{
 		_quat = Quaternion.Identity
 	};
@@ -106,7 +106,7 @@ public struct Rotation : IEquatable<Rotation>
 	}
 	public static implicit operator Rotation( Quaternion value )
 	{
-		Rotation result = default( Rotation );
+		Rotation result = default;
 		result._quat = value;
 		return result;
 	}

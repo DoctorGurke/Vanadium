@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
@@ -64,6 +63,6 @@ public abstract class Camera
 
 	public virtual void BuildInput( KeyboardState keyboard, MouseState mouse ) { }
 
-	public Matrix4 ViewMatrix => Matrix4.LookAt( Position, Position + Rotation.Forward, Rotation.Up );
-	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView( FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar );
+	public OpenTKMath.Matrix4 ViewMatrix => OpenTKMath.Matrix4.LookAt( Position, Position + Rotation.Forward, Rotation.Up );
+	public OpenTKMath.Matrix4 ProjectionMatrix => OpenTKMath.Matrix4.CreatePerspectiveFieldOfView( FieldOfView.DegreeToRadian(), Screen.AspectRatio, ZNear, ZFar );
 }

@@ -1,5 +1,4 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -217,7 +216,7 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				var sphere = new SceneObject
+				_ = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,

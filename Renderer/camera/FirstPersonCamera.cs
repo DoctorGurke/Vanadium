@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+﻿using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Vanadium;
 
@@ -8,7 +7,7 @@ public class FirstPersonCamera : Camera
 
 	private bool _firstMove = true;
 
-	private Vector2 _lastPos;
+	private OpenTKMath.Vector2 _lastPos;
 	private float targetPitch = 0;
 	private float targetYaw = 0;
 
@@ -19,7 +18,7 @@ public class FirstPersonCamera : Camera
 		FieldOfView = TargetFOV;
 	}
 
-	public void ResetLastPosition( Vector2 lastpos )
+	public void ResetLastPosition( OpenTKMath.Vector2 lastpos )
 	{
 		_lastPos = lastpos;
 	}
@@ -77,7 +76,7 @@ public class FirstPersonCamera : Camera
 
 		if ( _firstMove )
 		{
-			_lastPos = new Vector2( mouse.X, mouse.Y );
+			_lastPos = new OpenTKMath.Vector2( mouse.X, mouse.Y );
 			_firstMove = false;
 		}
 		else
@@ -85,7 +84,7 @@ public class FirstPersonCamera : Camera
 			// calculate the mouse delta
 			var deltaX = mouse.X - _lastPos.X;
 			var deltaY = mouse.Y - _lastPos.Y;
-			_lastPos = new Vector2( mouse.X, mouse.Y );
+			_lastPos = new OpenTKMath.Vector2( mouse.X, mouse.Y );
 
 			targetYaw -= deltaX * cameraSensitivity;
 			targetPitch -= deltaY * cameraSensitivity;

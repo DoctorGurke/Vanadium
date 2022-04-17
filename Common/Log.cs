@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common;
 
 public static class Log
 {

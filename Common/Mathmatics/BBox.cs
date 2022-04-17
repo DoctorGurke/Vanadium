@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common.Mathematics;
 
 public struct BBox : IEquatable<BBox>
 {

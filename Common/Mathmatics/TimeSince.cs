@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Common.Mathematics;
 
 public struct TimeSince : IEquatable<TimeSince>
 {
@@ -15,7 +15,7 @@ public struct TimeSince : IEquatable<TimeSince>
 
 	public static implicit operator TimeSince( float ts )
 	{
-		TimeSince result = default( TimeSince );
+		TimeSince result = default;
 		result.time = Time.Now - ts;
 		return result;
 	}
@@ -37,10 +37,9 @@ public struct TimeSince : IEquatable<TimeSince>
 
 	public override bool Equals( object? obj )
 	{
-		if ( obj is TimeSince )
+		if ( obj is TimeSince ts )
 		{
-			TimeSince o = (TimeSince)obj;
-			return Equals( o );
+			return Equals( ts );
 		}
 
 		return false;
