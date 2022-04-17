@@ -1,5 +1,4 @@
 ﻿using Assimp;
-using Assimp.Configs;
 using System.Reflection;
 
 namespace Vanadium.Renderer.RenderData;
@@ -82,7 +81,7 @@ public class Model : IDisposable
 
 		AssimpContext importer = new();
 
-		Scene? scene;
+		Assimp.Scene? scene;
 		try
 		{
 			scene = importer.ImportFile( fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate | PostProcessSteps.CalculateTangentSpace );
@@ -126,7 +125,7 @@ public class Model : IDisposable
 		}
 	}
 
-	private void ProcessNode( Node node, Scene scene )
+	private void ProcessNode( Node node, Assimp.Scene scene )
 	{
 		if ( Meshes is null ) return;
 		foreach ( int index in node.MeshIndices )
@@ -140,7 +139,7 @@ public class Model : IDisposable
 		}
 	}
 
-	private static Mesh ProcessMesh( Assimp.Mesh mesh, Scene scene )
+	private static Mesh ProcessMesh( Assimp.Mesh mesh, Assimp.Scene scene )
 	{
 		Mesh.Vertex[] vertices = new Mesh.Vertex[mesh.VertexCount];
 		int[] indices = new int[mesh.FaceCount * 3];

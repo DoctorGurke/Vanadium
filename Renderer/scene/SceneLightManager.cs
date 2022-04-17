@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Renderer.Scene;
 
 public class SceneLightManager
 {

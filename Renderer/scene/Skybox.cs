@@ -1,7 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.Scene;
 
 public class Skybox
 {
