@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public enum TextureCoordinate
 {

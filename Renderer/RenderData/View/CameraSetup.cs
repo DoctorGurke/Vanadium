@@ -1,4 +1,4 @@
-﻿namespace Vanadium.Renderer.RenderData.Camera;
+﻿namespace Vanadium.Renderer.RenderData.View;
 
 public struct CameraSetup
 {

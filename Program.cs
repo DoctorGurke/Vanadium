@@ -6,7 +6,8 @@ global using System.Diagnostics;
 global using Vanadium.Common;
 global using Vanadium.Common.Mathematics;
 global using Vanadium.Renderer.Gui;
-global using Vanadium.Renderer.RenderData.Camera;
+global using Vanadium.Renderer.RenderData.View;
+global using Vanadium.Renderer.RenderData;
 
 global using OpenTKMath = OpenTK.Mathematics;
 

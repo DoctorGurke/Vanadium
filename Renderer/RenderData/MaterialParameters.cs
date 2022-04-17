@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
+using Vanadium.Renderer.RenderData.MaterialUniforms;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public class MaterialParameters : IRenderSetting
 {

@@ -2,7 +2,7 @@
 using Assimp.Configs;
 using System.Reflection;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public class Model : IDisposable
 {

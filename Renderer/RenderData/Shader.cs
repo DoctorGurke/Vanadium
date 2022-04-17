@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 // A simple class meant to help create shaders
 public class Shader : IDisposable

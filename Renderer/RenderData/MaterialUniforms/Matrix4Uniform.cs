@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData.MaterialUniforms;
 
 public class Matrix4Uniform : MaterialUniform<Matrix4>
 {

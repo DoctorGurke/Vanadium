@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System.Runtime.InteropServices;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public class Mesh : IDisposable
 {

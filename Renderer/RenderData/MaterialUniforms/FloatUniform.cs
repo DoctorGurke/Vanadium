@@ -1,4 +1,4 @@
-﻿namespace Vanadium;
+﻿namespace Vanadium.Renderer.RenderData.MaterialUniforms;
 
 public class FloatUniform : MaterialUniform<float>
 {

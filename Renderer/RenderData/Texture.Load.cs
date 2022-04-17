@@ -2,7 +2,7 @@
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 using StbImageSharp;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public partial class Texture
 {

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using Vanadium.Renderer.RenderData.MaterialUniforms;
 
-namespace Vanadium;
+namespace Vanadium.Renderer.RenderData;
 
 public class Material : IDisposable, IEquatable<Material>
 {
