@@ -9,6 +9,7 @@ global using Vanadium.Renderer.Gui;
 global using Vanadium.Renderer.RenderData.View;
 global using Vanadium.Renderer.RenderData;
 global using Vanadium.Renderer.Scene;
+global using Vanadium.Renderer.Util;
 
 global using OpenTKMath = OpenTK.Mathematics;
 
