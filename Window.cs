@@ -215,14 +215,14 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				var sphere = new SceneObject
+				_ = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
-					Model = ModelPrimitives.Sphere,//Model.Load( "models/cannon.fbx" ),
+					Model = Model.Load( "models/cannon.fbx" ),
 					//Scale = 0.3f
 				};
-				sphere.Model.SetMaterialOverride( "materials/discoball.vanmat" );
+				//sphere.SetMaterialOverride( "materials/discoball.vanmat" );
 
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );
