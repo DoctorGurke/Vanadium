@@ -74,11 +74,8 @@ public class Mesh : IDisposable
 		SetupMesh( Material );
 	}
 
-	public void SetupRenderAttributes( Material mat )
+	private void SetupRenderAttributes( Material mat )
 	{
-		// enable again in case we called this from outside of setupmesh
-		GL.BindVertexArray( vao );
-
 		// vertex positions
 		var vertexPositionLocation = mat.GetAttribLocation( "vPosition" );
 		if ( vertexPositionLocation >= 0 )
