@@ -25,29 +25,11 @@ public struct Model
 		_ = Load( path );
 	}
 
-	public void Draw()
-	{
-		Draw( null );
-	}
-
 	public void Draw( DrawCommand cmd )
 	{
 		foreach ( var mesh in Meshes )
 		{
 			mesh.Draw( cmd );
-		}
-	}
-
-	public void Draw( SceneObject? obj )
-	{
-		if ( obj is not null )
-		{
-			Draw( DrawCommand.FromSceneObject( obj ) );
-			return;
-		}
-		foreach ( var mesh in Meshes )
-		{
-			mesh.Draw( obj );
 		}
 	}
 

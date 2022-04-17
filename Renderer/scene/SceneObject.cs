@@ -135,7 +135,7 @@ public class SceneObject
 
 	public void Draw()
 	{
-		Model.Draw( this );
+		Model.Draw( DrawCommand.FromSceneObject( this ) );
 		OnRender();
 	}
 

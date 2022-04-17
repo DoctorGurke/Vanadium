@@ -132,24 +132,4 @@ public class Mesh : IDisposable
 		GL.BindVertexArray( vao );
 		GL.DrawElements( PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0 );
 	}
-
-	public void Draw( SceneObject? sceneobject )
-	{
-		var mat = sceneobject?.MaterialOverride ?? Material;
-
-		mat.Use();
-
-		OpenTKMath.Matrix4 transform = OpenTKMath.Matrix4.Identity;
-		if ( sceneobject is not null )
-		{
-			transform = sceneobject.GlobalTransform;
-			mat.Set( "renderColor", sceneobject.RenderColor );
-			mat.Set( "tintAmount", sceneobject.TintAmount );
-		}
-
-		mat.Set( "transform", transform );
-
-		GL.BindVertexArray( vao );
-		GL.DrawElements( PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0 );
-	}
 }
