@@ -66,8 +66,8 @@ public struct Model
 
 	private static BBox GenerateRenderBounds( Mesh[] meshes )
 	{
-		Vector3 mins = meshes[0].Vertices[0].position;
-		Vector3 maxs = meshes[0].Vertices[0].position;
+		Vector3 mins = default;
+		Vector3 maxs = default;
 
 		foreach ( var mesh in meshes )
 		{
