@@ -236,15 +236,15 @@ public class Window : GameWindow
 			{
 				if ( Input.IsDown( Keys.LeftAlt ) )
 				{
-					SceneLight.AddDirLight( cam.Rotation );
+					SceneLight.AddDirLight( cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, DebugOverlay.LightBrightnessMultiplier );
 				}
 				else if ( Input.IsDown( Keys.LeftShift ) )
 				{
-					SceneLight.AddSpotlight( cam.Position, cam.Rotation, Color.White, 30, 35, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
+					SceneLight.AddSpotlight( cam.Position, cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 30, 35, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
 				}
 				else
 				{
-					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, Color.Random, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
+					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
 				}
 			}
 
