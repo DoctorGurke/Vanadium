@@ -1,9 +1,6 @@
-﻿using Assimp;
-using System.Reflection;
+﻿namespace Vanadium.Renderer.RenderData;
 
-namespace Vanadium.Renderer.RenderData;
-
-public struct Model
+public class Model : IDisposable
 {
 	public Mesh[] Meshes;
 	public bool IsError => Name == Error;
@@ -35,7 +32,7 @@ public struct Model
 
 	public static Model Load( string path )
 	{
-		if ( _cache.TryGetValue( path, out Model cachedmodel ) )
+		if ( _cache.TryGetValue( path, out var cachedmodel ) )
 		{
 			return cachedmodel;
 		}
@@ -75,14 +72,23 @@ public struct Model
 
 		return new BBox( mins, maxs );
 	}
-}
 
-public static class ModelPrimitives
-{
-	public static Model Axis => Model.Load( "models/primitives/axis.fbx" );
-	public static Model Error => Model.Load( "models/primitives/error.fbx" );
-	public static Model Cube => Model.Load( "models/primitives/cube.fbx" );
-	public static Model InvertedCube => Model.Load( "models/primitives/cube_inv.fbx" );
-	public static Model Sphere => Model.Load( "models/primitives/sphere.fbx" );
-	public static Model ForwardCone => Model.Load( "models/primitives/cone_forward.fbx" );
+	public void Dispose()
+	{
+		foreach ( var mesh in Meshes )
+		{
+			mesh.Dispose();
+		}
+		GC.SuppressFinalize( this );
+	}
+
+	public static class Primitives
+	{
+		public static Model Axis => Model.Load( "models/primitives/axis.fbx" );
+		public static Model Error => Model.Load( "models/primitives/error.fbx" );
+		public static Model Cube => Model.Load( "models/primitives/cube.fbx" );
+		public static Model InvertedCube => Model.Load( "models/primitives/cube_inv.fbx" );
+		public static Model Sphere => Model.Load( "models/primitives/sphere.fbx" );
+		public static Model ForwardCone => Model.Load( "models/primitives/cone_forward.fbx" );
+	}
 }

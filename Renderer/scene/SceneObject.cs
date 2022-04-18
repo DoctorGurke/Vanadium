@@ -2,7 +2,7 @@
 
 public class SceneObject
 {
-	private Model _model;
+	
 	public Material? MaterialOverride;
 	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 	public Color RenderColor = Color.White;
@@ -13,11 +13,12 @@ public class SceneObject
 		MaterialOverride = Material.Load( path );
 	}
 
+	private Model? _model;
 	public Model Model
 	{
 		get
 		{
-			return _model.IsError ? ModelPrimitives.Error : _model;
+			return _model is null || _model.IsError ? Model.Primitives.Error : _model;
 		}
 		set
 		{

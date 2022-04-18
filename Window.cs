@@ -78,7 +78,7 @@ public class Window : GameWindow
 
 		_ = new SceneObject
 		{
-			Model = ModelPrimitives.Axis
+			Model = Model.Primitives.Axis
 		};
 
 		// init camera
@@ -221,7 +221,7 @@ public class Window : GameWindow
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
-					Model = ModelPrimitives.Sphere
+					Model = Model.Primitives.Sphere
 					//Scale = 0.3f
 				};
 				sphere.SetMaterialOverride( "materials/discoball.vanmat" );

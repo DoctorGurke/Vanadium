@@ -14,7 +14,7 @@ public class Skybox
 
 	private Skybox( string path )
 	{
-		Model = ModelPrimitives.InvertedCube;
+		Model = Model.Primitives.InvertedCube;
 		Material = Material.Load( path );
 	}
 

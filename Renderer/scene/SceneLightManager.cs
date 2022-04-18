@@ -82,7 +82,7 @@ public class SceneLightManager
 		Log.Info( $"new pointlight {light} {position} {color} {constant} {linear} {quadratic}" );
 		var lightmodel = new SceneObject
 		{
-			Model = ModelPrimitives.Sphere,
+			Model = Model.Primitives.Sphere,
 			Scale = 0.1f,
 			Position = position
 		};
@@ -121,7 +121,7 @@ public class SceneLightManager
 		Log.Info( $"new spotlight {light} {position} {rotation.Forward} {color} {innerangle} {outerangle} {constant} {linear} {quadratic}" );
 		var lightmodel = new SceneObject
 		{
-			Model = ModelPrimitives.ForwardCone,
+			Model = Model.Primitives.ForwardCone,
 			Scale = 0.1f,
 			Position = position,
 			Rotation = rotation
@@ -159,7 +159,7 @@ public class SceneLightManager
 		Log.Info( $"new dirlight {light} {rotation.Forward} {color}" );
 		var lightmodel = new SceneObject
 		{
-			Model = ModelPrimitives.ForwardCone,
+			Model = Model.Primitives.ForwardCone,
 			Scale = 0.1f,
 			Position = Vector3.Zero,
 			Rotation = rotation
