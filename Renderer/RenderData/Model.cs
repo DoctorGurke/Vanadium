@@ -84,11 +84,11 @@ public class Model : IDisposable
 
 	public static class Primitives
 	{
-		public static Model Axis => Model.Load( "models/primitives/axis.fbx" );
-		public static Model Error => Model.Load( "models/primitives/error.fbx" );
-		public static Model Cube => Model.Load( "models/primitives/cube.fbx" );
-		public static Model InvertedCube => Model.Load( "models/primitives/cube_inv.fbx" );
-		public static Model Sphere => Model.Load( "models/primitives/sphere.fbx" );
-		public static Model ForwardCone => Model.Load( "models/primitives/cone_forward.fbx" );
+		public static Model Axis => Load( "models/primitives/axis.fbx" );
+		public static Model Error => Load( "models/primitives/error.fbx" );
+		public static Model Cube => Load( "models/primitives/cube.fbx" );
+		public static Model InvertedCube => Load( "models/primitives/cube_inv.fbx" );
+		public static Model Sphere => Load( "models/primitives/sphere.fbx" );
+		public static Model ForwardCone => Load( "models/primitives/cone_forward.fbx" );
 	}
 }
