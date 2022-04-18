@@ -5,15 +5,29 @@ public class SceneWorld
 	/// <summary>
 	/// An Enumerable of all SceneObjects in the Scene.
 	/// </summary>
-	public static IEnumerable<SceneObject> SceneObjects => OpaqueObjects.Concat( TransparentObjects );
-	private static List<SceneObject> OpaqueObjects { get; set; } = new();
-	private static List<SceneObject> TransparentObjects { get; set; } = new();
+	public IEnumerable<SceneObject> SceneObjects => OpaqueObjects.Concat( TransparentObjects );
+	private List<SceneObject> OpaqueObjects { get; set; } = new();
+	private List<SceneObject> TransparentObjects { get; set; } = new();
+
+	public static SceneWorld? Main { get; private set; }
+	public static readonly List<SceneWorld> All = new();
+
+	public string Name { get; private set; }
+
+	public SceneWorld() : this( $"SceneWorld{All.Count + 1}" ) { }
+
+	public SceneWorld( string name )
+	{
+		if ( Main is null ) Main = this;
+		Name = name;
+		All.Add( this );
+	}
 
 	/// <summary>
 	/// Add a SceneObject to the Scene as an Opaque Renderable.
 	/// </summary>
 	/// <param name="obj">The SceneObject to add.</param>
-	public static void AddOpaque( SceneObject obj )
+	public void AddOpaque( SceneObject obj )
 	{
 		TransparentObjects.Remove( obj );
 		OpaqueObjects.Add( obj );
@@ -23,7 +37,7 @@ public class SceneWorld
 	/// Add a SceneObject to the Scene as a Transparent Renderable.
 	/// </summary>
 	/// <param name="obj">The SceneObject to add.</param>
-	public static void AddTransparent( SceneObject obj )
+	public void AddTransparent( SceneObject obj )
 	{
 		OpaqueObjects.Remove( obj );
 		TransparentObjects.Add( obj );
@@ -33,7 +47,7 @@ public class SceneWorld
 	/// Remove a SceenObject from the Scene.
 	/// </summary>
 	/// <param name="obj">The SceneObject to remove.</param>
-	public static void Remove(SceneObject obj)
+	public void Remove( SceneObject obj )
 	{
 		OpaqueObjects.Remove( obj );
 		TransparentObjects.Remove( obj );
@@ -42,7 +56,7 @@ public class SceneWorld
 	/// <summary>
 	/// Draw all Opaque SceneObjects in the Scene.
 	/// </summary>
-	public static void DrawOpaques()
+	public void DrawOpaques()
 	{
 		foreach ( var opaque in OpaqueObjects )
 		{
@@ -53,7 +67,7 @@ public class SceneWorld
 	/// <summary>
 	/// Draw all Transparent SceneObjects in the Scene, back to front.
 	/// </summary>
-	public static void DrawTransparents()
+	public void DrawTransparents()
 	{
 		var campos = Camera.ActiveCamera?.Position ?? Vector3.Zero;
 

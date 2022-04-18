@@ -123,11 +123,11 @@ public class SceneObject
 
 		if ( transparent )
 		{
-			SceneWorld.AddTransparent( this );
+			SceneWorld.Main?.AddTransparent( this );
 		}
 		else
 		{
-			SceneWorld.AddOpaque( this );
+			SceneWorld.Main?.AddOpaque( this );
 		}
 	}
 

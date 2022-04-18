@@ -49,6 +49,8 @@ public class Window : GameWindow
 
 		GL.Enable( EnableCap.TextureCubeMapSeamless );
 
+		_ = new SceneWorld( "Main SceneWorld" );
+
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
@@ -118,7 +120,7 @@ public class Window : GameWindow
 		// drawing the scene
 
 		// draw opaques first
-		SceneWorld.DrawOpaques();
+		SceneWorld.Main?.DrawOpaques();
 
 		// draw skybox after opaques
 		Skybox.ActiveSkybox?.Draw();
@@ -132,7 +134,7 @@ public class Window : GameWindow
 		DebugDraw.DrawDepthLines();
 
 		// draw transparents last
-		SceneWorld.DrawTransparents();
+		SceneWorld.Main?.DrawTransparents();
 
 		// draw lines without depth after everything
 		DebugDraw.DrawNoDepthLines();
