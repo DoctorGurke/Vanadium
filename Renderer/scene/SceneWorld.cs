@@ -19,6 +19,12 @@ public class SceneWorld
 		TransparentObjects.Add( obj );
 	}
 
+	public static void Remove(SceneObject obj)
+	{
+		OpaqueObjects.Remove( obj );
+		TransparentObjects.Remove( obj );
+	}
+
 	public static void DrawOpaques()
 	{
 		foreach ( var opaque in OpaqueObjects )
