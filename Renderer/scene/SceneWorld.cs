@@ -1,4 +1,6 @@
-﻿namespace Vanadium.Renderer.Scene;
+﻿using OpenTK.Graphics.OpenGL4;
+
+namespace Vanadium.Renderer.Scene;
 
 public class SceneWorld
 {
@@ -72,9 +74,12 @@ public class SceneWorld
 		var campos = Camera.ActiveCamera?.Position ?? Vector3.Zero;
 
 		var SortedTransparents = TransparentObjects.OrderBy( x => -(x.Position - campos).Length ).ToList();
+
+		GL.DepthMask( false );
 		foreach ( var transparent in SortedTransparents )
 		{
 			transparent.Draw();
 		}
+		GL.DepthMask( true );
 	}
 }
