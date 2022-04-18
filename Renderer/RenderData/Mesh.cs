@@ -20,12 +20,12 @@ public class Mesh : IDisposable
 		public OpenTKMath.Vector2 uv3;
 		public Vector3 color;
 
-		public Vertex( Vector3 position, Vector3 normal, Vector3 tangent, Vector3 bitangent, OpenTKMath.Vector2 uv0, OpenTKMath.Vector2 uv1, OpenTKMath.Vector2 uv2, OpenTKMath.Vector2 uv3, Vector3 color )
+		public Vertex( Vector3 position, Vector3 normal, Vector3 tangent, OpenTKMath.Vector2 uv0, OpenTKMath.Vector2 uv1, OpenTKMath.Vector2 uv2, OpenTKMath.Vector2 uv3, Vector3 color )
 		{
 			this.position = position;
 			this.normal = normal;
 			this.tangent = tangent;
-			this.bitangent = bitangent;
+			this.bitangent = normal.Cross(tangent);
 			this.uv0 = uv0;
 			this.uv1 = uv1;
 			this.uv2 = uv2;

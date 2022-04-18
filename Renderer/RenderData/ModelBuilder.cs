@@ -125,11 +125,9 @@ namespace Vanadium.Renderer.RenderData
 				}
 
 				Vector3 tangent = new();
-				Vector3 bitangent = new();
 				if ( mesh.HasTangentBasis )
 				{
 					tangent = mesh.Tangents[v];
-					bitangent = mesh.BiTangents[v];
 				}
 
 				Vector3 color = new();
@@ -140,7 +138,7 @@ namespace Vanadium.Renderer.RenderData
 					color.z = mesh.VertexColorChannels[0][v].B;
 				}
 
-				vertex = new Mesh.Vertex( mesh.Vertices[v], normal, tangent, bitangent, uv0, uv1, uv2, uv3, color );
+				vertex = new Mesh.Vertex( mesh.Vertices[v], normal, tangent, uv0, uv1, uv2, uv3, color );
 				vertices[v] = vertex;
 			}
 
