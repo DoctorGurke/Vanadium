@@ -7,13 +7,20 @@ namespace Vanadium.Renderer.RenderData;
 public partial class Texture
 {
 	private static readonly Dictionary<string, ImageResult> ImageData = new();
-	private static readonly Dictionary<string, Texture> TextureData = new();
 
 	public static string Error => "textures/core/error.png";
 	public static Texture ErrorTexture => Load2D( Error );
 
+	/// <summary>
+	/// Load image data from a filepath.
+	/// This caches data for repeated use.
+	/// </summary>
+	/// <param name="path">The image filepath, relative to the resource directory.</param>
+	/// <returns>The ImageResult of the image file.</returns>
 	private static ImageResult LoadImageData( string path )
 	{
+		path = $"resources/{path}";
+
 		if ( ImageData.TryGetValue( path, out var result ) )
 		{
 			return result;
@@ -26,12 +33,18 @@ public partial class Texture
 			Log.Info( $"Loading image data for: {path}" );
 			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
 		}
-		catch ( FileNotFoundException )
+		catch ( Exception ex )
 		{
-			// bail with error texture
-			using var stream = File.OpenRead( $"resources/{Error}" );
-			Log.Info( $"Error loading image data for: {path}, File not found!" );
-			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
+			if(ex is FileNotFoundException || ex is DirectoryNotFoundException )
+			{
+				// bail with error texture
+				using var stream = File.OpenRead( $"resources/{Error}" );
+				Log.Info( $"Error loading image data for: {path}, File not found!" );
+				image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
+			} else
+			{
+				throw;
+			}
 		}
 		ImageData.Add( path, image );
 		return image;
@@ -53,13 +66,6 @@ public partial class Texture
 
 	public static Texture Load2D( string path, bool genmips = true, bool srgb = false )
 	{
-		path = $"resources/{path}";
-
-		if ( TextureData.TryGetValue( path, out var texture ) )
-		{
-			return texture;
-		}
-
 		// Generate handle
 		GLUtil.CreateTexture( TextureTarget.Texture2D, Path.GetFileName( path ), out int handle );
 
@@ -87,7 +93,6 @@ public partial class Texture
 			GL.GenerateMipmap( GenerateMipmapTarget.Texture2D );
 
 		var tex = new Texture( handle, TextureTarget.Texture2D, width, height );
-		TextureData.Add( path, tex );
 		return tex;
 	}
 
@@ -112,12 +117,6 @@ public partial class Texture
 	public static Texture LoadCube( string path, bool srgb = false )
 	{
 		var sides = new List<string>();
-		var oldpath = path;
-
-		if(TextureData.TryGetValue( oldpath, out var texture ) )
-		{
-			return texture;
-		}
 
 		var ext = Path.GetExtension( path );
 		path = path.Replace( ext, "" );
@@ -140,12 +139,10 @@ public partial class Texture
 
 		for ( int i = 0; i < sides.Count; i++ )
 		{
-			var cubepath = $"resources/{sides[i]}";
-
 			var flip = targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY;
 			StbImage.stbi_set_flip_vertically_on_load( flip ? 1 : 0 );
 
-			ImageResult image = LoadImageData( cubepath );
+			ImageResult image = LoadImageData( sides[i] );
 
 			width = image.Width;
 			height = image.Height;
@@ -163,7 +160,6 @@ public partial class Texture
 		}
 
 		var tex = new Texture( handle, TextureTarget.TextureCubeMap, width, height );
-		TextureData.Add( oldpath, tex );
 		return tex;
 	}
 }

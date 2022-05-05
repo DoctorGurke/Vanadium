@@ -213,14 +213,14 @@ public class Material : IDisposable, IEquatable<Material>
 					case MaterialParamType.Sampler2D:
 						Log.Info( $"parsing sampler2D material data {name} {value}" );
 						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						var srgb = name == "diffuse" || name == "albedo";
+						var srgb = name == "diffuse" || name == "albedo";// hacky way to get color textures as srgb
 						Log.Info( $"tex {name} {value} srgb: {srgb}" );
-						yield return new TextureUniform( name, value, srgb ); // hacky way to get color textures as srgb
+						yield return new TextureUniform( name, Texture.Load2D( value, true, srgb ) );
 						break;
 					case MaterialParamType.SamplerCube:
 						Log.Info( $"parsing samplerCube material data {name} {value}" );
 						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						yield return new TextureCubeUniform( name, value );
+						yield return new TextureCubeUniform( name, Texture.LoadCube( value, true ) );
 						break;
 					default:
 						throw new NotImplementedException();
