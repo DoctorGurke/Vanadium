@@ -6,13 +6,19 @@ namespace Vanadium.Renderer.RenderData
 	public class ModelBuilder
 	{
 		private string? name;
-		private Mesh[]? meshes;
+		private readonly List<Mesh> meshes = new();
 		private Material? materialoverride;
 
 		public ModelBuilder FromFile( string path )
 		{
 			name = path;
 			InitMeshesFromFile( path );
+			return this;
+		}
+
+		public ModelBuilder AddMesh(Mesh mesh)
+		{
+			meshes.Add( mesh );
 			return this;
 		}
 
@@ -35,14 +41,14 @@ namespace Vanadium.Renderer.RenderData
 		public Model Build()
 		{
 			// apply materialoverride, if any
-			if ( meshes is not null && materialoverride is not null )
+			if (materialoverride is not null )
 			{
 				foreach ( var mesh in meshes )
 				{
 					mesh.Material = materialoverride;
 				}
 			}
-			return new Model( name ?? Model.Error, meshes ?? Array.Empty<Mesh>() );
+			return new Model( name ?? Model.Error, meshes.ToArray() );
 		}
 
 		private void InitMeshesFromFile( string path )
@@ -60,7 +66,6 @@ namespace Vanadium.Renderer.RenderData
 			catch ( FileNotFoundException ex )
 			{
 				Log.Info( $"ERROR IMPORTING MODEL {fileName} ({ex})" );
-				meshes = null;
 				return;
 			}
 
@@ -70,7 +75,6 @@ namespace Vanadium.Renderer.RenderData
 				return;
 			}
 
-			meshes = new Mesh[scene.MeshCount];
 			ProcessNode( scene.RootNode, scene );
 		}
 
@@ -80,7 +84,7 @@ namespace Vanadium.Renderer.RenderData
 			foreach ( int index in node.MeshIndices )
 			{
 				Assimp.Mesh mesh = scene.Meshes[index];
-				meshes[index] = ProcessMesh( mesh, scene );
+				meshes.Add(ProcessMesh( mesh, scene ));
 			}
 			for ( int i = 0; i < node.ChildCount; i++ )
 			{
