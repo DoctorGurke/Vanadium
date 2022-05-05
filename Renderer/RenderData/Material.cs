@@ -18,7 +18,8 @@ public class Material : IDisposable, IEquatable<Material>
 		Vector4,
 		Matrix4,
 		Sampler2D,
-		SamplerCube
+		SamplerCube,
+		SamplerHDR
 	}
 
 	// the shader of the material (ie. pbr generic, unlit, vertex color generic, etc
@@ -212,15 +213,17 @@ public class Material : IDisposable, IEquatable<Material>
 						break;
 					case MaterialParamType.Sampler2D:
 						Log.Info( $"parsing sampler2D material data {name} {value}" );
-						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
-						var srgb = name == "diffuse" || name == "albedo";// hacky way to get color textures as srgb
+						var srgb = name == "diffuse" || name == "albedo";// hacky way to get color textures as srgb, the shader should define this for its texture sampler
 						Log.Info( $"tex {name} {value} srgb: {srgb}" );
 						yield return new TextureUniform( name, Texture.Load2D( value, true, srgb ) );
 						break;
 					case MaterialParamType.SamplerCube:
 						Log.Info( $"parsing samplerCube material data {name} {value}" );
-						// just directly add the string in the material. If it's not valid, we fall back to error texture anyways
 						yield return new TextureCubeUniform( name, Texture.LoadCube( value, true ) );
+						break;
+					case MaterialParamType.SamplerHDR:
+						Log.Info( $"parsing samplerHDR material data {name} {value}" );
+						yield return new TextureCubeUniform( name, Texture.LoadHDR( value ) );
 						break;
 					default:
 						throw new NotImplementedException();
@@ -378,6 +381,7 @@ public class Material : IDisposable, IEquatable<Material>
 			"double" => MaterialParamType.Double,
 			"sampler2D" => MaterialParamType.Sampler2D,
 			"samplerCube" => MaterialParamType.SamplerCube,
+			"samplerHDR" => MaterialParamType.SamplerHDR,
 			"vec2" => MaterialParamType.Vector2,
 			"vec3" => MaterialParamType.Vector3,
 			"vec4" => MaterialParamType.Vector4,

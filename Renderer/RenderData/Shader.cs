@@ -258,7 +258,7 @@ public class Shader : IDisposable
 		Log.Info( $"handling material for {path}" );
 
 		// scan data for any #material macros
-		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|samplerCube|vec2|vec3|vec4|mat4)\W*[\s](.+)";
+		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|samplerCube|samplerHDR|vec2|vec3|vec4|mat4)\W*[\s](.+)";
 		var includeMatches = Regex.Matches( data, regex );
 
 		foreach ( Match match in includeMatches )
@@ -266,6 +266,8 @@ public class Shader : IDisposable
 			var matchstring = $"{match}".Clean();
 			var type = $"{match.Groups[1]}".Clean();
 			var name = $"{match.Groups[2]}".Clean();
+
+			if ( type == "samplerHDR" ) type = "sampler2D"; // hack for HDR cubemaps
 
 			var field = $"uniform {type} {name};";
 

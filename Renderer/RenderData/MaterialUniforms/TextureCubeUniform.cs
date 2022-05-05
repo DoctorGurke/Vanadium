@@ -1,6 +1,4 @@
-﻿using OpenTK.Graphics.OpenGL4;
-
-namespace Vanadium.Renderer.RenderData.MaterialUniforms;
+﻿namespace Vanadium.Renderer.RenderData.MaterialUniforms;
 
 public class TextureCubeUniform : TextureUniform
 {

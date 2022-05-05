@@ -7,6 +7,7 @@ namespace Vanadium.Renderer.RenderData;
 public partial class Texture
 {
 	private static readonly Dictionary<string, ImageResult> ImageData = new();
+	private static readonly Dictionary<string, ImageResultFloat> ImageDataFloat = new();
 
 	public static string Error => "textures/core/error.png";
 	public static Texture ErrorTexture => Load2D( Error );
@@ -17,7 +18,7 @@ public partial class Texture
 	/// </summary>
 	/// <param name="path">The image filepath, relative to the resource directory.</param>
 	/// <returns>The ImageResult of the image file.</returns>
-	private static ImageResult LoadImageData( string path )
+	private static ImageResult LoadImageData( string path, ColorComponents components = ColorComponents.RedGreenBlueAlpha )
 	{
 		path = $"resources/{path}";
 
@@ -31,22 +32,57 @@ public partial class Texture
 		{
 			using var stream = File.OpenRead( path );
 			Log.Info( $"Loading image data for: {path}" );
-			image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
+			image = ImageResult.FromStream( stream, components );
 		}
 		catch ( Exception ex )
 		{
-			if(ex is FileNotFoundException || ex is DirectoryNotFoundException )
+			if ( ex is FileNotFoundException || ex is DirectoryNotFoundException )
 			{
 				// bail with error texture
 				using var stream = File.OpenRead( $"resources/{Error}" );
 				Log.Info( $"Error loading image data for: {path}, File not found!" );
-				image = ImageResult.FromStream( stream, ColorComponents.RedGreenBlueAlpha );
-			} else
+				image = ImageResult.FromStream( stream, components );
+			}
+			else
 			{
 				throw;
 			}
 		}
 		ImageData.Add( path, image );
+		return image;
+	}
+
+	private static ImageResultFloat LoadFloatImageData( string path )
+	{
+		path = $"resources/{path}";
+
+		if ( ImageDataFloat.TryGetValue( path, out var result ) )
+		{
+			return result;
+		}
+
+		ImageResultFloat image;
+		try
+		{
+			using var stream = File.OpenRead( path );
+			Log.Info( $"Loading image data for: {path}" );
+			image = ImageResultFloat.FromStream( stream, ColorComponents.RedGreenBlue );
+		}
+		catch ( Exception ex )
+		{
+			if ( ex is FileNotFoundException || ex is DirectoryNotFoundException )
+			{
+				// bail with error texture
+				using var stream = File.OpenRead( $"resources/{Error}" );
+				Log.Info( $"Error loading image data for: {path}, File not found!" );
+				image = ImageResultFloat.FromStream( stream, ColorComponents.RedGreenBlue );
+			}
+			else
+			{
+				throw;
+			}
+		}
+		ImageDataFloat.Add( path, image );
 		return image;
 	}
 
@@ -73,12 +109,12 @@ public partial class Texture
 		GL.ActiveTexture( TextureUnit.Texture0 );
 		GL.BindTexture( TextureTarget.Texture2D, handle );
 
-		ImageResult image = LoadImageData( path );
+		ImageResult image = LoadImageData( path, ColorComponents.RedGreenBlue );
 
 		var width = image.Width;
 		var height = image.Height;
 
-		GL.TexImage2D( TextureTarget.Texture2D, 0, srgb ? PixelInternalFormat.Srgb8Alpha8 : PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data );
+		GL.TexImage2D( TextureTarget.Texture2D, 0, srgb ? PixelInternalFormat.Srgb8 : PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, image.Data );
 
 		// texture filtering
 		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, genmips ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear );
@@ -160,6 +196,34 @@ public partial class Texture
 		}
 
 		var tex = new Texture( handle, TextureTarget.TextureCubeMap, width, height );
+		return tex;
+	}
+
+	public static Texture LoadHDR( string path )
+	{
+		// Generate handle
+		GLUtil.CreateTexture( TextureTarget.Texture2D, Path.GetFileName( path ), out int handle );
+
+		// Bind the handle
+		GL.ActiveTexture( TextureUnit.Texture0 );
+		GL.BindTexture( TextureTarget.Texture2D, handle );
+
+		ImageResultFloat image = LoadFloatImageData( path );
+
+		var width = image.Width;
+		var height = image.Height;
+
+		GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb16f, width, height, 0, PixelFormat.Rgb, PixelType.Float, image.Data );
+
+		// texture filtering
+		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
+		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear );
+
+		// texture wrap
+		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat );
+		GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat );
+
+		var tex = new Texture( handle, TextureTarget.Texture2D, width, height );
 		return tex;
 	}
 }

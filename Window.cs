@@ -66,7 +66,7 @@ public class Window : GameWindow
 		Model.Precache( Model.Error );
 
 		// set skybox
-		Skybox.Load( "materials/skybox/skybox03.vanmat" );
+		Skybox.Load( "materials/skybox/skybox01_hdr.vanmat" );
 
 		var floor = new SceneObject
 		{
