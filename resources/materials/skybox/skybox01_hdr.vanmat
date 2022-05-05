@@ -1,4 +1,4 @@
 ﻿{
 	"shader": "shaders/skybox_hdr",
-	"skybox": "textures/skybox/skybox01.hdr"
+	"skybox": "textures/skybox/skybox01_4k.hdr"
 }
