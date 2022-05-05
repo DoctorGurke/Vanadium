@@ -87,7 +87,7 @@ public class Window : GameWindow
 			Position = Vector3.Backward * 3 + Vector3.Up + Vector3.Right
 		};
 
-		CursorGrabbed = true;
+		CursorState = CursorState.Grabbed;
 
 		Log.Debug( $"Load took: {Timer.ElapsedMilliseconds}ms" );
 
@@ -199,11 +199,11 @@ public class Window : GameWindow
 			}
 
 			WasUiMode = true;
-			CursorGrabbed = false;
+			CursorState = CursorState.Normal;
 		}
 		else
 		{
-			CursorGrabbed = true;
+			CursorState = CursorState.Grabbed;
 
 			var cam = Camera.ActiveCamera;
 			// no cam initialized
