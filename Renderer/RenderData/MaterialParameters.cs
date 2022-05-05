@@ -25,11 +25,6 @@ public class MaterialParameters : IRenderSetting
 				tex.SetTexture( shader, TexCount );
 				TexCount++;
 			}
-			else if ( setting is TextureCubeUniform texcube)
-			{
-				texcube.SetTexture( shader, TexCount );
-				TexCount++;
-			}
 			else
 			{
 				setting.Set( shader );
