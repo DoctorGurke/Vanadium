@@ -36,11 +36,9 @@ public class Program
 			Title = "Vanadium",
 			WindowState = WindowState.Normal,
 			StartFocused = true,
-			NumberOfSamples = 4
+			NumberOfSamples = 4,
+			SrgbCapable = true
 		};
-
-
-		GLFW.WindowHint( WindowHintBool.SrgbCapable, true );
 
 		// init and run our window type
 		using var window = new Window( GameWindowSettings.Default, nativeWindowSettings );
