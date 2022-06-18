@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System.Runtime.InteropServices;
 
-namespace Vanadium.Renderer.RenderData;
+namespace Vanadium.Renderer.RenderData.Buffers;
 
 public class UniformBufferManager
 {
