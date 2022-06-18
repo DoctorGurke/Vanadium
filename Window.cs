@@ -115,7 +115,7 @@ public class Window : GameWindow
 		GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
 		// update per view buffer
-		UniformBufferManager.UpdatePerViewUniformBuffer();
+		UniformBufferManager.UpdateSceneUniformBuffer();
 
 		// drawing the scene
 

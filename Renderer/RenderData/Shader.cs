@@ -1,7 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Vanadium.Renderer.RenderData;
 
@@ -17,7 +16,7 @@ public class Shader : IDisposable
 
 	public Shader( string path, Material material )
 	{
-		Name = Path.GetFileName(path);
+		Name = Path.GetFileName( path );
 		var container = LoadContainer( path );
 
 		if ( !container.IsValid ) throw new Exception( "Shader missing either Vertex or Fragment components!" );
@@ -87,14 +86,14 @@ public class Shader : IDisposable
 		GL.GetProgram( Handle, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms );
 
 		// bind per view uniform buffer
-		var matricesblockindex = GL.GetUniformBlockIndex( Handle, "PerViewUniformBuffer" );
+		var matricesblockindex = GL.GetUniformBlockIndex( Handle, "SceneUniformBuffer" );
 		if ( matricesblockindex >= 0 )
 		{
 			GL.UniformBlockBinding( Handle, matricesblockindex, 0 );
 		}
 
 		// bind per view uniform light buffer
-		var lightblockindex = GL.GetUniformBlockIndex( Handle, "PerViewLightingUniformBuffer" );
+		var lightblockindex = GL.GetUniformBlockIndex( Handle, "SceneLightingUniformBuffer" );
 		if ( lightblockindex >= 0 )
 		{
 			GL.UniformBlockBinding( Handle, lightblockindex, 1 );

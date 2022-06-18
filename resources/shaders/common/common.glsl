@@ -1,4 +1,4 @@
-﻿layout (std140) uniform PerViewUniformBuffer {
+﻿layout (std140) uniform SceneUniformBuffer {
     layout(row_major) mat4 g_matWorldToProjection;
     layout(row_major) mat4 g_matWorldToView;
     vec3 g_vCameraPositionWs;
@@ -44,7 +44,7 @@ struct DirLight {
 
 #include shaders/common/material.glsl
 
-layout (std140) uniform PerViewLightingUniformBuffer {
+layout (std140) uniform SceneLightingUniformBuffer {
     vec4 g_vAmbientLightingColor;
     int g_nNumPointlights;
     int g_nNumSpotlights;
