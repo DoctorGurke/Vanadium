@@ -25,9 +25,6 @@ public class UniformBufferBuilder
 	/// <exception cref="BufferFieldFormatException"></exception>
 	public UniformBufferBuilder AddField<T>( string identifier, int postpad = 0 )
 	{
-		if ( typeof( T ).IsArray )
-			throw new BufferFieldFormatException( "Unable to add Array type as BufferData, use AddArrayField<T> instead." );
-
 		if ( string.IsNullOrWhiteSpace( identifier ) )
 			throw new BufferFieldFormatException( "BufferData name cannot be empty.", nameof( identifier ) );
 
@@ -54,9 +51,6 @@ public class UniformBufferBuilder
 	/// <exception cref="BufferFieldFormatException"></exception>
 	public UniformBufferBuilder AddArrayField<T>( string identifier, int length, int postpad = 0 )
 	{
-		if ( !typeof( T ).IsArray )
-			throw new BufferFieldFormatException( "Unable to add non-Array type as BufferData, use AddField<T> instead." );
-
 		if ( string.IsNullOrWhiteSpace( identifier ) )
 			throw new BufferFieldFormatException( "BufferArrayData name cannot be empty.", nameof( identifier ) );
 
@@ -66,7 +60,7 @@ public class UniformBufferBuilder
 		if ( postpad < 0 )
 			throw new BufferFieldFormatException( "BufferArrayData postpad cannot be smaller than 0.", nameof( postpad ) );
 
-		var size = Marshal.SizeOf( typeof( T ).GetElementType() ) * length;
+		var size = Marshal.SizeOf( typeof( T ) ) * length;
 
 		// increment with data size and pad
 		BufferData.Add( identifier, new BufferArrayData<T>( identifier, Count, size, length ) );
