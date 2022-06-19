@@ -1,15 +1,93 @@
-﻿namespace Vanadium.Renderer.RenderData.Buffers;
+﻿using Vanadium.Renderer.RenderData.Buffers.BufferData;
 
-public class UniformBuffer
+namespace Vanadium.Renderer.RenderData.Buffers;
+
+public partial class UniformBuffer : Buffer
 {
-	public readonly int Handle;
-	public readonly string Name;
-
 	public static HashSet<UniformBuffer> All = new HashSet<UniformBuffer>();
 
-	public UniformBuffer( int handle, string name )	{
-		Handle = handle;
-		Name = name;
+	public IReadOnlyDictionary<string, IBufferSetting> BufferData => InternalBufferData;
+	private Dictionary<string, IBufferSetting> InternalBufferData = new();
+
+	public UniformBuffer( int handle, string name, Dictionary<string, IBufferSetting> bufferdata ) : base( handle, name )
+	{
+		InternalBufferData = bufferdata;
+	}
+
+	/// <summary>
+	/// Try to set the data of a BufferData entry.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="name">The name of the BufferData entry.</param>
+	/// <param name="data">The data to set.</param>
+	/// <returns>True if the entry was found and set, false otherwise.</returns>
+	public bool TrySet<T>( string name, T data )
+	{
+		if ( !InternalBufferData.ContainsKey( name ) )
+			return false;
+
+		var entry = InternalBufferData[name];
+
+		if ( entry is not BufferData<T> bufferdata )
+			return false;
+
+		bufferdata.Value = data;
+
+		return true;
+	}
+
+	/// <summary>
+	/// Try to set the data of a BufferArrayData entry.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="name">The name of the BufferArrayData entry.</param>
+	/// <param name="data">The data to set.</param>
+	/// <returns>True if the entry was found and set, false otherwise.</returns>
+	public bool TrySet<T>( string name, T[] data )
+	{
+		if ( !InternalBufferData.ContainsKey( name ) )
+			return false;
+
+		var entry = InternalBufferData[name];
+
+		if ( entry is not BufferArrayData<T> bufferdata )
+			return false;
+
+		bufferdata.Value = data;
+
+		return true;
+	}
+
+	/// <summary>
+	/// Set the data of a BufferData entry.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="name">The name of the BufferData entry.</param>
+	/// <param name="data">The data to set.</param>
+	/// <remarks>Will throw if setting the data was not possible due to invalid name key or data type.</remarks>
+	/// <exception cref="KeyNotFoundException"></exception>
+	/// <exception cref="ArgumentException"></exception>
+	public void Set<T>( string name, T data )
+	{
+		if ( InternalBufferData[name] is not BufferData<T> entry )
+			throw new ArgumentException( $"Invalid type for BufferData entry at {name}." );
+		entry.Value = data;
+	}
+
+	/// <summary>
+	/// Set the data of a BufferArrayData entry.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="name">The name of the BufferArrayData entry.</param>
+	/// <param name="data">The data to set.</param>
+	/// <remarks>Will throw if setting the data was not possible due to invalid name key or data type.</remarks>
+	/// <exception cref="KeyNotFoundException"></exception>
+	/// <exception cref="ArgumentException"></exception>
+	public void Set<T>( string name, T[] data )
+	{
+		if ( InternalBufferData[name] is not BufferArrayData<T> entry )
+			throw new ArgumentException( $"Invalid type for BufferData entry at {name}." );
+		entry.Value = data;
 	}
 
 	/// <summary>

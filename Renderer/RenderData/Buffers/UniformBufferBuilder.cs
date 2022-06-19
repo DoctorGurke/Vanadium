@@ -1,16 +1,39 @@
-﻿namespace Vanadium.Renderer.RenderData.Buffers;
+﻿using System.Runtime.InteropServices;
+using Vanadium.Renderer.RenderData.Buffers.BufferData;
+
+namespace Vanadium.Renderer.RenderData.Buffers;
 
 public class UniformBufferBuilder
 {
 	private readonly string Name;
+	private Dictionary<string, IBufferSetting> BufferData = new();
+	private int Count;
 
 	public UniformBufferBuilder( string name )
 	{
 		Name = name;
+		Count = default;
 	}
 
-	public UniformBufferBuilder AddField<T>( string identifier )
+	public UniformBufferBuilder AddField<T>( string identifier, int postpad = 0 )
 	{
+		if ( typeof( T ).IsArray )
+			throw new ArgumentException( "Unable to add Array type as BufferData, use AddArrayField<T> instead." );
+
+		var size = Marshal.SizeOf( typeof( T ) );
+
+		// increment with data size and pad
+		Count += size + postpad;
+		BufferData.Add( identifier, new BufferData<T>( identifier, Count, size ) );
+
+		return this;
+	}
+
+	public UniformBufferBuilder AddArrayField<T>( string identifier, int length, int postpad = 0 )
+	{
+		if ( !typeof( T ).IsArray )
+			throw new ArgumentException( "Unable to add non-Array type as BufferData, use AddField<T> instead." );
+
 		return this;
 	}
 
