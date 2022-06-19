@@ -5,7 +5,7 @@ namespace Vanadium.Renderer.RenderData.Buffers;
 
 public partial class UniformBuffer : Buffer
 {
-	public static HashSet<UniformBuffer> All = new HashSet<UniformBuffer>();
+	public static Dictionary<string, UniformBuffer> All = new Dictionary<string, UniformBuffer>();
 
 	public IReadOnlyDictionary<string, IBufferSetting> BufferData => InternalBufferData;
 	private Dictionary<string, IBufferSetting> InternalBufferData = new();
@@ -98,6 +98,9 @@ public partial class UniformBuffer : Buffer
 	/// <returns>A UniformBufferBuilder instance, used to construct the UniformBuffer object.</returns>
 	public static UniformBufferBuilder DeclareBuffer( string name )
 	{
+		if ( string.IsNullOrWhiteSpace( name ) )
+			throw new ArgumentException( "Buffer name cannot be empty.", nameof( name ) );
+
 		UniformBufferBuilder builder = new UniformBufferBuilder( name );
 		return builder;
 	}
@@ -113,6 +116,28 @@ public partial class UniformBuffer : Buffer
 		GL.BufferData( BufferTarget.UniformBuffer, size, IntPtr.Zero, BufferUsageHint.StaticDraw );
 		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, Handle, IntPtr.Zero, size );
 
+		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
+	}
+
+	public static void UpdateAll()
+	{
+		foreach ( var buffer in All )
+		{
+			buffer.Value.Update();
+		}
+	}
+
+	/// <summary>
+	/// Updates the buffer based on its IBufferSettings.
+	/// </summary>
+	public void Update()
+	{
+		GL.BindBuffer( BufferTarget.UniformBuffer, Handle );
+		foreach ( var entry in BufferData.Where( x => x.Value.IsDirty ) )
+		{
+			// set data on the buffer
+			entry.Value.Set( this );
+		}
 		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 	}
 }

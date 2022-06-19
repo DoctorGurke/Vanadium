@@ -5,7 +5,6 @@ namespace Vanadium.Renderer.RenderData.Buffers;
 
 public class UniformBufferManager
 {
-	public int SceneUniformBufferHandle;
 	public int SceneLightingUniformBufferHandle;
 	public static UniformBufferManager? Current { get; private set; }
 
@@ -16,14 +15,6 @@ public class UniformBufferManager
 
 	public void Init()
 	{
-		// setup per view uniform buffer
-		GLUtil.CreateBuffer( "SceneUniformBuffer", out SceneUniformBufferHandle );
-		GL.BindBuffer( BufferTarget.UniformBuffer, SceneUniformBufferHandle );
-		var scenebuffersize = Marshal.SizeOf( typeof( SceneUniformBuffer ) ).RoundUpToMultipleOf( 16 );
-		GL.BufferData( BufferTarget.UniformBuffer, scenebuffersize, IntPtr.Zero, BufferUsageHint.StaticDraw );
-		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
-		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, SceneUniformBufferHandle, IntPtr.Zero, scenebuffersize );
-
 		// setup per view lighting uniform buffer
 		GLUtil.CreateBuffer( "SceneLightingUniformBuffer", out SceneLightingUniformBufferHandle );
 		GL.BindBuffer( BufferTarget.UniformBuffer, SceneLightingUniformBufferHandle );
@@ -41,24 +32,41 @@ public class UniformBufferManager
 
 	public void UpdateSceneUniformBuffer()
 	{
-		// update per view uniform buffer
-		GL.BindBuffer( BufferTarget.UniformBuffer, SceneUniformBufferHandle );
-		// prepare data
-		var sceneuniformbuffer = new SceneUniformBuffer
+		if ( UniformBuffer.All.TryGetValue( "SceneUniformBuffer", out var buffer ) )
 		{
-			g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? OpenTKMath.Matrix4.CreatePerspectiveFieldOfView( 0, 0, 0, 0 ),
-			g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? OpenTKMath.Matrix4.LookAt( new Vector3(), new Vector3(), new Vector3() ),
-			g_vCameraPositionWs = Camera.ActiveCamera?.Position ?? new Vector3(),
-			g_vCameraDirWs = Camera.ActiveCamera?.Rotation.Forward ?? new Vector3(),
-			g_vCameraUpDirWs = Camera.ActiveCamera?.Rotation.Up ?? new Vector3(),
-			g_flTime = Time.Now,
-			g_flNearPlane = Camera.ActiveCamera?.ZNear ?? 0.0f,
-			g_flFarPlane = Camera.ActiveCamera?.ZFar ?? 0.0f,
-			g_vViewportSize = Screen.Size,
-			g_flGamma = DebugOverlay.Gamma
-		};
-		// put data in buffer
-		GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( sceneuniformbuffer ).RoundUpToMultipleOf( 16 ), ref sceneuniformbuffer, BufferUsageHint.StaticDraw );
+			buffer.Set( "g_matWorldToProjection", Camera.ActiveCamera?.ProjectionMatrix ?? default );
+			buffer.Set( "g_matWorldToView", Camera.ActiveCamera?.ViewMatrix ?? default );
+
+			buffer.Set( "g_vCameraPositionWs", Camera.ActiveCamera?.Position ?? default );
+			buffer.Set( "g_vCameraDirWs", Camera.ActiveCamera?.Rotation.Forward ?? default );
+			buffer.Set( "g_vCameraUpDirWs", Camera.ActiveCamera?.Rotation.Up ?? default );
+
+			buffer.Set( "g_vViewportSize", Screen.Size );
+
+			buffer.Set( "g_flTime", Time.Now );
+			buffer.Set( "g_flNearPlane", Camera.ActiveCamera?.ZNear ?? default );
+			buffer.Set( "g_flFarPlane", Camera.ActiveCamera?.ZFar ?? default );
+			buffer.Set( "g_flGamma", DebugOverlay.Gamma );
+			buffer.Update();
+		}
+		//// update per view uniform buffer
+		//GL.BindBuffer( BufferTarget.UniformBuffer, SceneUniformBufferHandle );
+		//// prepare data
+		//var sceneuniformbuffer = new SceneUniformBuffer
+		//{
+		//	g_matWorldToProjection = Camera.ActiveCamera?.ProjectionMatrix ?? OpenTKMath.Matrix4.CreatePerspectiveFieldOfView( 0, 0, 0, 0 ),
+		//	g_matWorldToView = Camera.ActiveCamera?.ViewMatrix ?? OpenTKMath.Matrix4.LookAt( new Vector3(), new Vector3(), new Vector3() ),
+		//	g_vCameraPositionWs = Camera.ActiveCamera?.Position ?? new Vector3(),
+		//	g_vCameraDirWs = Camera.ActiveCamera?.Rotation.Forward ?? new Vector3(),
+		//	g_vCameraUpDirWs = Camera.ActiveCamera?.Rotation.Up ?? new Vector3(),
+		//	g_flTime = Time.Now,
+		//	g_flNearPlane = Camera.ActiveCamera?.ZNear ?? 0.0f,
+		//	g_flFarPlane = Camera.ActiveCamera?.ZFar ?? 0.0f,
+		//	g_vViewportSize = Screen.Size,
+		//	g_flGamma = DebugOverlay.Gamma
+		//};
+		//// put data in buffer
+		//GL.BufferData( BufferTarget.UniformBuffer, Marshal.SizeOf( sceneuniformbuffer ).RoundUpToMultipleOf( 16 ), ref sceneuniformbuffer, BufferUsageHint.StaticDraw );
 	}
 
 	public void UpdateAmbientLightColor( Color col )

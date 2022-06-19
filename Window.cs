@@ -55,6 +55,22 @@ public class Window : GameWindow
 		// setup uniform buffers
 		UniformBufferManager.Init();
 
+		UniformBuffer.DeclareBuffer( "SceneUniformBuffer" )
+			.AddField<OpenTKMath.Matrix4>( "g_matWorldToProjection" )
+			.AddField<OpenTKMath.Matrix4>( "g_matWorldToView" )
+
+			.AddField<Vector3>( "g_vCameraPositionWs", 4 )
+			.AddField<Vector3>( "g_vCameraDirWs", 4 )
+			.AddField<Vector3>( "g_vCameraUpDirWs", 4 )
+
+			.AddField<OpenTKMath.Vector2i>( "g_vViewportSize" )
+
+			.AddField<float>( "g_flTime" )
+			.AddField<float>( "g_flNearPlane" )
+			.AddField<float>( "g_flFarPlane" )
+			.AddField<float>( "g_flGamma" )
+			.Build();
+
 		SceneLight.SetAmbientLightColor( new Color( 36.0f / 255.0f, 60.0f / 255.0f, 102.0f / 255.0f ) );
 
 		// init debug line buffers

@@ -49,18 +49,15 @@ public class BufferArrayData<T> : IBufferSetting
 
 	public void Set( Buffer buffer )
 	{
-		GL.BindBuffer( BufferTarget.UniformBuffer, buffer.Handle );
-
 		// get IntPtr from data
 		var handle = GCHandle.Alloc( Value, GCHandleType.Pinned );
 		var data = handle.AddrOfPinnedObject();
 
 		// push data to buffer
-		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Offset, sizeof( int ), data );
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Offset, Size, data );
 
 		// free handle
 		handle.Free();
-		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 
 		_IsDirty = false;
 	}
