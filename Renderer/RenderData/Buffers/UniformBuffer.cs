@@ -23,9 +23,12 @@ public partial class UniformBuffer : Buffer
 			.AddField<OpenTKMath.Matrix4>( "g_matWorldToProjection" )
 			.AddField<OpenTKMath.Matrix4>( "g_matWorldToView" )
 			// camera
-			.AddField<Vector3>( "g_vCameraPositionWs", 4 )
-			.AddField<Vector3>( "g_vCameraDirWs", 4 )
-			.AddField<Vector3>( "g_vCameraUpDirWs", 4 )
+			.AddField<Vector3>( "g_vCameraPositionWs" )
+			.AddPadding()
+			.AddField<Vector3>( "g_vCameraDirWs" )
+			.AddPadding()
+			.AddField<Vector3>( "g_vCameraUpDirWs" )
+			.AddPadding()
 			// viewport
 			.AddField<OpenTKMath.Vector2i>( "g_vViewportSize" )
 			// float vars
@@ -39,10 +42,11 @@ public partial class UniformBuffer : Buffer
 		DeclareBuffer( "SceneLightingUniformBuffer" )
 			// ambient color
 			.AddField<Color>( "g_vAmbientLightingColor" )
-			// light humbers
+			// light numbers
 			.AddField<int>( "g_nNumPointlights" )
 			.AddField<int>( "g_nNumSpotlights" )
-			.AddField<int>( "g_nNumDirlights", 4 )
+			.AddField<int>( "g_nNumDirlights" )
+			.AddPadding()
 			// lights
 			.AddArrayField<SceneLightManager.PointLight>( "g_PointLights", SceneLightManager.MaxPointLights )
 			.AddArrayField<SceneLightManager.SpotLight>( "g_SpotLights", SceneLightManager.MaxSpotLights )
