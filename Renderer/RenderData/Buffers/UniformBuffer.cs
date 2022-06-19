@@ -42,7 +42,7 @@ public partial class UniformBuffer : Buffer
 			// light humbers
 			.AddField<int>( "g_nNumPointlights" )
 			.AddField<int>( "g_nNumSpotlights" )
-			.AddField<int>( "g_nNumDirlights" )
+			.AddField<int>( "g_nNumDirlights", 4 )
 			// lights
 			.AddArrayField<SceneLightManager.PointLight>( "g_PointLights", SceneLightManager.MaxPointLights )
 			.AddArrayField<SceneLightManager.SpotLight>( "g_SpotLights", SceneLightManager.MaxSpotLights )
