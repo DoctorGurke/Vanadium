@@ -34,6 +34,12 @@ public class UniformBufferBuilder
 		if ( !typeof( T ).IsArray )
 			throw new ArgumentException( "Unable to add non-Array type as BufferData, use AddField<T> instead." );
 
+		var size = Marshal.SizeOf( typeof( T ) ) * length;
+
+		// increment with data size and pad
+		Count += size + postpad;
+		BufferData.Add( identifier, new BufferData<T>( identifier, Count, size ) );
+
 		return this;
 	}
 
@@ -45,7 +51,7 @@ public class UniformBufferBuilder
 	{
 		// create empty buffer handle
 		GLUtil.CreateBuffer( Name, out var handle );
-		var buffer = new UniformBuffer( handle, Name );
+		var buffer = new UniformBuffer( handle, Name, BufferData );
 
 		// add to static hashset so we can keep track of it
 		UniformBuffer.All.Add( buffer );
