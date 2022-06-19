@@ -15,6 +15,41 @@ public partial class UniformBuffer : Buffer
 		InternalBufferData = bufferdata;
 	}
 
+	public static void InitCore()
+	{
+		// init scene uniform buffer for general rendering
+		DeclareBuffer( "SceneUniformBuffer" )
+			// matrices
+			.AddField<OpenTKMath.Matrix4>( "g_matWorldToProjection" )
+			.AddField<OpenTKMath.Matrix4>( "g_matWorldToView" )
+			// camera
+			.AddField<Vector3>( "g_vCameraPositionWs", 4 )
+			.AddField<Vector3>( "g_vCameraDirWs", 4 )
+			.AddField<Vector3>( "g_vCameraUpDirWs", 4 )
+			// viewport
+			.AddField<OpenTKMath.Vector2i>( "g_vViewportSize" )
+			// float vars
+			.AddField<float>( "g_flTime" )
+			.AddField<float>( "g_flNearPlane" )
+			.AddField<float>( "g_flFarPlane" )
+			.AddField<float>( "g_flGamma" )
+			.Build();
+
+		// init scene lighting buffer
+		DeclareBuffer( "SceneLightingUniformBuffer" )
+			// ambient color
+			.AddField<Color>( "g_vAmbientLightingColor" )
+			// light humbers
+			.AddField<int>( "g_nNumPointlights" )
+			.AddField<int>( "g_nNumSpotlights" )
+			.AddField<int>( "g_nNumDirlights" )
+			// lights
+			.AddArrayField<SceneLightManager.PointLight[]>( "g_PointLights", SceneLightManager.MaxPointLights )
+			.AddArrayField<SceneLightManager.SpotLight[]>( "g_SpotLights", SceneLightManager.MaxSpotLights )
+			.AddArrayField<SceneLightManager.DirLight[]>( "g_DirLights", SceneLightManager.MaxDirLights )
+			.Build();
+	}
+
 	/// <summary>
 	/// Try to set the data of a BufferData entry.
 	/// </summary>
@@ -87,7 +122,7 @@ public partial class UniformBuffer : Buffer
 	public void Set<T>( string name, T[] data )
 	{
 		if ( InternalBufferData[name] is not BufferArrayData<T> entry )
-			throw new ArgumentException( $"Invalid type for BufferData entry at {name}." );
+			throw new ArgumentException( $"Invalid type for BufferArrayData entry at {name}." );
 		entry.Value = data;
 	}
 
@@ -114,9 +149,9 @@ public partial class UniformBuffer : Buffer
 		GL.BindBuffer( BufferTarget.UniformBuffer, Handle );
 		var size = Size.RoundUpToMultipleOf( 16 );
 		GL.BufferData( BufferTarget.UniformBuffer, size, IntPtr.Zero, BufferUsageHint.StaticDraw );
-		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, Handle, IntPtr.Zero, size );
+		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, All.Count - 1, Handle, IntPtr.Zero, size );
 
-		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
+		Log.Info( $"Initialized buffer {Name} : {Handle}" );
 	}
 
 	public static void UpdateAll()
@@ -138,6 +173,5 @@ public partial class UniformBuffer : Buffer
 			// set data on the buffer
 			entry.Value.Set( this );
 		}
-		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 	}
 }

@@ -66,10 +66,10 @@ public class UniformBufferBuilder
 		if ( postpad < 0 )
 			throw new BufferFieldFormatException( "BufferArrayData postpad cannot be smaller than 0.", nameof( postpad ) );
 
-		var size = Marshal.SizeOf( typeof( T ) ) * length;
+		var size = Marshal.SizeOf( typeof( T ).GetElementType() ) * length;
 
 		// increment with data size and pad
-		BufferData.Add( identifier, new BufferData<T>( identifier, Count, size ) );
+		BufferData.Add( identifier, new BufferArrayData<T>( identifier, Count, size, length ) );
 		Count += size + postpad;
 
 		return this;
@@ -98,6 +98,7 @@ public class UniformBufferBuilder
 
 		// add to static hashset so we can keep track of it
 		UniformBuffer.All.Add( Name, buffer );
+		Log.Info( $"built buffer {Name} : {handle} and size {Count}" );
 		// init buffer
 		buffer.Initialize();
 		return buffer;

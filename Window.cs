@@ -50,41 +50,31 @@ public class Window : GameWindow
 
 		GL.Enable( EnableCap.TextureCubeMapSeamless );
 
+		Log.Info( "---===Initializing Main Scene World===---" );
 		_ = new SceneWorld( "Main SceneWorld" );
 
-		// setup uniform buffers
-		UniformBufferManager.Init();
-
-		UniformBuffer.DeclareBuffer( "SceneUniformBuffer" )
-			.AddField<OpenTKMath.Matrix4>( "g_matWorldToProjection" )
-			.AddField<OpenTKMath.Matrix4>( "g_matWorldToView" )
-
-			.AddField<Vector3>( "g_vCameraPositionWs", 4 )
-			.AddField<Vector3>( "g_vCameraDirWs", 4 )
-			.AddField<Vector3>( "g_vCameraUpDirWs", 4 )
-
-			.AddField<OpenTKMath.Vector2i>( "g_vViewportSize" )
-
-			.AddField<float>( "g_flTime" )
-			.AddField<float>( "g_flNearPlane" )
-			.AddField<float>( "g_flFarPlane" )
-			.AddField<float>( "g_flGamma" )
-			.Build();
+		// setup core uniform buffers
+		Log.Info( "\n---===Initializing Uniform Buffers===---" );
+		UniformBuffer.InitCore();
 
 		SceneLight.SetAmbientLightColor( new Color( 36.0f / 255.0f, 60.0f / 255.0f, 102.0f / 255.0f ) );
 
 		// init debug line buffers
+		Log.Info( "\n---===Initializing Debug Draw===---" );
 		DebugDraw.Init();
 
 		// init ui
 		_guicontroller = new ImGuiController( ClientSize );
 
 		// precache error model
+		Log.Info( "\n---===Precaching Error Model===---" );
 		Model.Precache( Model.Error );
 
 		// set skybox
+		Log.Info( "\n---===Initializing Skybox===---" );
 		Skybox.Load( "materials/skybox/skybox01_hdr.vanmat" );
 
+		Log.Info( "\n---===Initializing Floor===---" );
 		var floor = new SceneObject
 		{
 			Model = Model.Load( "models/brickwall.fbx" ),
@@ -93,6 +83,7 @@ public class Window : GameWindow
 		};
 		floor.SetMaterialOverride( "materials/pbrtest/tiles.vanmat" );
 
+		Log.Info( "\n---===Initializing Axis===---" );
 		_ = new SceneObject
 		{
 			Model = Model.Primitives.Axis
@@ -109,6 +100,8 @@ public class Window : GameWindow
 		Log.Debug( $"Load took: {Timer.ElapsedMilliseconds}ms" );
 
 		Timer.Restart();
+
+		Log.Info( "---===Initialization done===---" );
 	}
 
 	protected override void OnRenderFrame( FrameEventArgs e )
