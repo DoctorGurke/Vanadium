@@ -1,4 +1,5 @@
-﻿using Vanadium.Renderer.RenderData.Buffers.BufferData;
+﻿using OpenTK.Graphics.OpenGL4;
+using Vanadium.Renderer.RenderData.Buffers.BufferData;
 
 namespace Vanadium.Renderer.RenderData.Buffers;
 
@@ -9,7 +10,7 @@ public partial class UniformBuffer : Buffer
 	public IReadOnlyDictionary<string, IBufferSetting> BufferData => InternalBufferData;
 	private Dictionary<string, IBufferSetting> InternalBufferData = new();
 
-	public UniformBuffer( int handle, string name, Dictionary<string, IBufferSetting> bufferdata ) : base( handle, name )
+	public UniformBuffer( int handle, string name, int size, Dictionary<string, IBufferSetting> bufferdata ) : base( handle, name, size )
 	{
 		InternalBufferData = bufferdata;
 	}
@@ -102,11 +103,16 @@ public partial class UniformBuffer : Buffer
 	}
 
 	/// <summary>
-	/// Initializes the buffer's data.
+	/// Initializes the buffer's structure.
 	/// </summary>
 	/// <exception cref="NotImplementedException"></exception>
 	public void Initialize()
 	{
-		throw new NotImplementedException();
+		GL.BindBuffer( BufferTarget.UniformBuffer, Handle );
+		var size = Size.RoundUpToMultipleOf( 16 );
+		GL.BufferData( BufferTarget.UniformBuffer, size, IntPtr.Zero, BufferUsageHint.StaticDraw );
+		GL.BindBufferRange( BufferRangeTarget.UniformBuffer, 0, Handle, IntPtr.Zero, size );
+
+		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
 	}
 }

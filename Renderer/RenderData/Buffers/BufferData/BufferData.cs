@@ -1,4 +1,7 @@
-﻿namespace Vanadium.Renderer.RenderData.Buffers.BufferData;
+﻿using OpenTK.Graphics.OpenGL4;
+using System.Runtime.InteropServices;
+
+namespace Vanadium.Renderer.RenderData.Buffers.BufferData;
 
 public class BufferData<T> : IBufferSetting
 {
@@ -41,5 +44,19 @@ public class BufferData<T> : IBufferSetting
 
 	public void Set( Buffer buffer )
 	{
+		GL.BindBuffer( BufferTarget.UniformBuffer, buffer.Handle );
+
+		// get IntPtr from data
+		var handle = GCHandle.Alloc( Value, GCHandleType.Pinned );
+		var data = handle.AddrOfPinnedObject();
+
+		// push data to buffer
+		GL.BufferSubData( BufferTarget.UniformBuffer, (IntPtr)Offset, sizeof( int ), data );
+
+		// free handle
+		handle.Free();
+		GL.BindBuffer( BufferTarget.UniformBuffer, 0 );
+
+		_IsDirty = false;
 	}
 }

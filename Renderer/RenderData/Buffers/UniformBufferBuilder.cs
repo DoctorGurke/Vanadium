@@ -51,7 +51,7 @@ public class UniformBufferBuilder
 	{
 		// create empty buffer handle
 		GLUtil.CreateBuffer( Name, out var handle );
-		var buffer = new UniformBuffer( handle, Name, BufferData );
+		var buffer = new UniformBuffer( handle, Name, Count, BufferData );
 
 		// add to static hashset so we can keep track of it
 		UniformBuffer.All.Add( buffer );
