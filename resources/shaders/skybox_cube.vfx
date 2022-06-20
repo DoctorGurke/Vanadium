@@ -25,5 +25,5 @@ in vec3 CubeCoords;
 
 void main()
 {   
-    vColor = vec4(texture(skybox, CubeCoords.xyz), 1.0);
+    vColor = vec4(texture(skybox, CubeCoords.xyz).rgb, 1.0);
 }

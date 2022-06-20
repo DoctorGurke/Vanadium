@@ -1,4 +1,4 @@
 ﻿{
-	"shader": "shaders/skybox_cube",
-	"skybox": "textures/skybox/skybox01/skybox01.png"
+    "shader": "shaders/skybox_cube",
+    "skybox": "textures/skybox/skybox01_cube/skybox01.png"
 }

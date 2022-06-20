@@ -69,7 +69,7 @@ public class Window : GameWindow
 
 		// set skybox
 		Log.Info( "\n---===Initializing Skybox===---" );
-		_ = new SceneSkyBox( Material.Load( "materials/skybox/skybox01_hdr.vanmat" ) );
+		_ = new SceneSkyBox( Material.Load( "materials/skybox/skybox03.vanmat" ) );
 
 		Log.Info( "\n---===Initializing Floor===---" );
 		var floor = new SceneObject
