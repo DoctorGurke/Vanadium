@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 using StbImageSharp;
+using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace Vanadium.Renderer.RenderData;
 
@@ -175,9 +175,6 @@ public partial class Texture
 
 		for ( int i = 0; i < sides.Count; i++ )
 		{
-			var flip = targets[i] == TextureTarget.TextureCubeMapPositiveY || targets[i] == TextureTarget.TextureCubeMapNegativeY;
-			StbImage.stbi_set_flip_vertically_on_load( flip ? 1 : 0 );
-
 			ImageResult image = LoadImageData( sides[i] );
 
 			width = image.Width;
