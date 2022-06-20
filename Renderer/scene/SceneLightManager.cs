@@ -12,7 +12,7 @@ public class SceneLightManager
 	private readonly List<SpotLight> SpotLights = new();
 	private readonly List<DirLight> DirLights = new();
 
-	// Values need to match common.glsl
+	// Values need to match common.glsl, used for uniform buffer declaration
 	public static int MaxPointLights => 128;
 	public static int MaxSpotLights => 128;
 	public static int MaxDirLights => 16;
@@ -68,11 +68,6 @@ public class SceneLightManager
 	public void AddPointlight( Vector3 position, Color color, float constant = 0.0f, float linear = 0.0f, float quadratic = 1.0f, float brightness = 1.0f )
 	{
 		var index = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
-		if ( index >= MaxPointLights )
-		{
-			Log.Info( $"UNABLE TO ADD MORE POINT LIGHTS {MaxPointLights}" );
-			return;
-		}
 
 		Log.Info( $"new pointlight {index} {position} {color} {constant} {linear} {quadratic}" );
 		var lightmodel = new SceneObject
@@ -111,11 +106,6 @@ public class SceneLightManager
 	public void AddSpotlight( Vector3 position, Rotation rotation, Color color, float innerangle, float outerangle, float constant = 0.0f, float linear = 0.0f, float quadratic = 1.0f, float brightness = 1.0f )
 	{
 		var index = NumSpotLights; // current number is index for new light (ie, 0 lights means insert at index 0)
-		if ( index >= MaxSpotLights )
-		{
-			Log.Info( $"UNABLE TO ADD MORE POINT LIGHTS {MaxSpotLights}" );
-			return;
-		}
 
 		Log.Info( $"new spotlight {index} {position} {rotation.Forward} {color} {innerangle} {outerangle} {constant} {linear} {quadratic}" );
 		var lightmodel = new SceneObject
@@ -153,11 +143,6 @@ public class SceneLightManager
 	public void AddDirLight( Rotation rotation, Color color, float brightness = 1.0f )
 	{
 		var index = NumDirLights; // current number is index for new light (ie, 0 lights means insert at index 0)
-		if ( index >= MaxDirLights )
-		{
-			Log.Info( $"UNABLE TO ADD MORE DIRECTIONAL LIGHTS {MaxDirLights}" );
-			return;
-		}
 
 		Log.Info( $"new dirlight {index} {rotation.Forward} {color}" );
 		var lightmodel = new SceneObject
