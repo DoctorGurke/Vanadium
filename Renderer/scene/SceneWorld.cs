@@ -36,7 +36,7 @@ public class SceneWorld
 	/// <summary>
 	/// Draw all Opaque SceneObjects in the Scene.
 	/// </summary>
-	public void DrawOpaques()
+	public void DrawOpaqueLayer()
 	{
 		foreach ( var opaque in SceneObjects.Where( x => x.Flags.IsOpaque ) )
 		{
@@ -47,7 +47,7 @@ public class SceneWorld
 	/// <summary>
 	/// Draw all Translucent SceneObjects in the Scene, back to front.
 	/// </summary>
-	public void DrawTranslucents()
+	public void DrawTranslucentLayer()
 	{
 		var campos = Camera.ActiveCamera?.Position ?? Vector3.Zero;
 
@@ -59,5 +59,16 @@ public class SceneWorld
 			translucent.Draw();
 		}
 		GL.DepthMask( true );
+	}
+
+	/// <summary>
+	/// Draw all Skybox SceneObjects in the Scene.
+	/// </summary>
+	public void DrawSkyboxLayer()
+	{
+		foreach ( var skybox in SceneObjects.Where( x => x.Flags.IsSkybox ) )
+		{
+			skybox.Draw();
+		}
 	}
 }

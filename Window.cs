@@ -130,7 +130,7 @@ public class Window : GameWindow
 		// drawing the scene
 
 		// draw opaques first
-		SceneWorld.Main?.DrawOpaques();
+		SceneWorld.Main?.DrawOpaqueLayer();
 
 		// draw skybox after opaques
 		Skybox.ActiveSkybox?.Draw();
@@ -144,7 +144,7 @@ public class Window : GameWindow
 		DebugDraw.DrawDepthLines();
 
 		// draw translucents last
-		SceneWorld.Main?.DrawTranslucents();
+		SceneWorld.Main?.DrawTranslucentLayer();
 
 		// draw lines without depth after everything
 		DebugDraw.DrawNoDepthLines();
