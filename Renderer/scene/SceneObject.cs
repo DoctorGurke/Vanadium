@@ -144,6 +144,12 @@ public class SceneObject
 	}
 	public List<SceneObject> Children = new();
 
+	public void AddChild( SceneObject child )
+	{
+		child.Parent = this;
+		Children.Add( child );
+	}
+
 	public SceneObject()
 	{
 		Position = Vector3.Zero;
