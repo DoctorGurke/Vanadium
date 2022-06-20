@@ -150,38 +150,33 @@ public class SceneObject
 		Children.Add( child );
 	}
 
-	public SceneObject()
+	public SceneObject( SceneWorld? world = null )
 	{
 		Position = Vector3.Zero;
 		Rotation = Rotation.Identity;
 		Scale = 1.0f;
+
+		if ( world is null )
+			SceneWorld.Main?.AddSceneObject( this );
+		else
+			world?.AddSceneObject( this );
 
 		OnSpawn();
 	}
 
 	private void PostModelSet()
 	{
-		var transparent = false;
-
 		if ( Model.Meshes is not null )
 		{
 			foreach ( var mesh in Model.Meshes )
 			{
 				if ( mesh.Material.Transparent )
 				{
-					transparent = true;
+					Transparent = true;
 					break;
 				}
+				Transparent = false;
 			}
-		}
-
-		if ( transparent )
-		{
-			SceneWorld.Main?.AddTransparent( this );
-		}
-		else
-		{
-			SceneWorld.Main?.AddOpaque( this );
 		}
 	}
 
