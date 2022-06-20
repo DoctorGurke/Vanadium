@@ -2,6 +2,47 @@
 
 public class SceneObject
 {
+	public class SceneObjectFlags
+	{
+
+		private SceneObjectRenderLayer Layer = SceneObjectRenderLayer.Opaque;
+
+		public bool IsOpaque
+		{
+			get { return Layer.HasFlag( SceneObjectRenderLayer.Opaque ); }
+			set { SetFlag( SceneObjectRenderLayer.Opaque, value ); }
+		}
+
+		public bool IsTranslucent
+		{
+			get { return Layer.HasFlag( SceneObjectRenderLayer.Translucent ); }
+			set { SetFlag( SceneObjectRenderLayer.Translucent, value ); }
+		}
+
+		public bool IsSkybox
+		{
+			get { return Layer.HasFlag( SceneObjectRenderLayer.Skybox ); }
+			set { SetFlag( SceneObjectRenderLayer.Skybox, value ); }
+		}
+
+		[Flags]
+		private enum SceneObjectRenderLayer
+		{
+			Opaque = 1 << 0,
+			Translucent = 1 << 1,
+			Skybox = 1 << 2
+		}
+
+		private void SetFlag( SceneObjectRenderLayer flag, bool value )
+		{
+			if ( value )
+				Layer |= flag;
+			else
+				Layer &= ~flag;
+		}
+	}
+
+	public SceneObjectFlags Flags { get; private set; } = new();
 
 	public Material? MaterialOverride;
 	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
@@ -11,6 +52,9 @@ public class SceneObject
 	public void SetMaterialOverride( string path )
 	{
 		MaterialOverride = Material.Load( path );
+
+		// check for transparency
+		PostMaterialSet( MaterialOverride );
 	}
 
 	private Model? _model;
@@ -36,8 +80,6 @@ public class SceneObject
 	{
 		Model = Model.Load( path );
 	}
-
-	public bool Transparent { get; private set; }
 
 	public Vector3 LocalPosition
 	{
@@ -166,16 +208,42 @@ public class SceneObject
 
 	private void PostModelSet()
 	{
-		if ( Model.Meshes is not null )
+		if ( Model.Meshes is null )
+			return;
+
+		PostMaterialSet( null );
+	}
+
+	private void PostMaterialSet( Material? material )
+	{
+		if ( material is null )
 		{
+			if ( Model.Meshes is null )
+				return;
+
 			foreach ( var mesh in Model.Meshes )
 			{
-				if ( mesh.Material.Transparent )
+				if ( mesh.Material.Translucent )
 				{
-					Transparent = true;
-					break;
+					Flags.IsTranslucent = true;
+					Flags.IsOpaque = false;
+					return;
 				}
-				Transparent = false;
+			}
+			Flags.IsTranslucent = false;
+			Flags.IsOpaque = true;
+		}
+		else
+		{
+			if ( material.Translucent )
+			{
+				Flags.IsOpaque = false;
+				Flags.IsTranslucent = true;
+			}
+			else
+			{
+				Flags.IsOpaque = true;
+				Flags.IsTranslucent = false;
 			}
 		}
 	}

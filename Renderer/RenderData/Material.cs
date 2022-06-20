@@ -62,7 +62,7 @@ public class Material : IDisposable, IEquatable<Material>
 	public static Material ErrorMaterial => Load( Error );
 	public bool IsError { get; private set; } = false;
 	private MaterialParameters? Parameters;
-	public bool Transparent { get; private set; } = false;
+	public bool Translucent { get; private set; } = false;
 
 	public bool Equals( Material? other )
 	{
@@ -127,12 +127,12 @@ public class Material : IDisposable, IEquatable<Material>
 			var name = param.Name;
 			var value = $"{param.Value}";
 
-			// check for global transparent property
-			if ( bool.TryParse( value, out var transparent ) )
+			// check for global translucent property
+			if ( bool.TryParse( value, out var translucent ) )
 			{
-				if ( name == "transparent" && transparent )
+				if ( name == "translucent" && translucent )
 				{
-					Transparent = true;
+					Translucent = true;
 					continue;
 				}
 			}

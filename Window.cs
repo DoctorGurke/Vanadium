@@ -143,8 +143,8 @@ public class Window : GameWindow
 		// draw lines with depth first
 		DebugDraw.DrawDepthLines();
 
-		// draw transparents last
-		SceneWorld.Main?.DrawTransparents();
+		// draw translucents last
+		SceneWorld.Main?.DrawTranslucents();
 
 		// draw lines without depth after everything
 		DebugDraw.DrawNoDepthLines();

@@ -12,8 +12,6 @@ public class SceneWorld
 	public static SceneWorld? Main { get; private set; }
 	public static readonly List<SceneWorld> All = new();
 
-	public bool Transparent { get; set; }
-
 	public string Name { get; private set; }
 
 	public SceneWorld() : this( $"SceneWorld{All.Count + 1}" ) { }
@@ -40,25 +38,25 @@ public class SceneWorld
 	/// </summary>
 	public void DrawOpaques()
 	{
-		foreach ( var opaque in SceneObjects.Where( x => !x.Transparent ) )
+		foreach ( var opaque in SceneObjects.Where( x => x.Flags.IsOpaque ) )
 		{
 			opaque.Draw();
 		}
 	}
 
 	/// <summary>
-	/// Draw all Transparent SceneObjects in the Scene, back to front.
+	/// Draw all Translucent SceneObjects in the Scene, back to front.
 	/// </summary>
-	public void DrawTransparents()
+	public void DrawTranslucents()
 	{
 		var campos = Camera.ActiveCamera?.Position ?? Vector3.Zero;
 
-		var SortedTransparents = SceneObjects.Where( x => x.Transparent ).OrderBy( x => -(x.Position - campos).Length ).ToList();
+		var SortedTranslucents = SceneObjects.Where( x => x.Flags.IsTranslucent ).OrderBy( x => -(x.Position - campos).Length ).ToList();
 
 		GL.DepthMask( false );
-		foreach ( var transparent in SortedTransparents )
+		foreach ( var translucent in SortedTranslucents )
 		{
-			transparent.Draw();
+			translucent.Draw();
 		}
 		GL.DepthMask( true );
 	}
