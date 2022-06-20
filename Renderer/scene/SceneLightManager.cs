@@ -90,7 +90,7 @@ public class SceneLightManager
 
 		NumPointLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current?.UpdatePointlights( PointLights.ToArray(), NumPointLights );
+		UniformBufferManager.Current?.UpdatePointlights( PointLights.OrderByDescending( x => -x.Position.Distance( Camera.ActiveCamera?.Position ?? default ) ).ToArray(), NumPointLights );
 	}
 
 	public void AddSpotlight( Vector3 position, Rotation rotation )
@@ -132,7 +132,7 @@ public class SceneLightManager
 
 		NumSpotLights++;
 		// update whole buffer for now, this should use sub data later on
-		UniformBufferManager.Current?.UpdateSpotlights( SpotLights.ToArray(), NumSpotLights );
+		UniformBufferManager.Current?.UpdateSpotlights( SpotLights.OrderByDescending( x => -x.Position.Distance( Camera.ActiveCamera?.Position ?? default ) ).ToArray(), NumSpotLights );
 	}
 
 	public void AddDirLight( Rotation rotation )
