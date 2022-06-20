@@ -2,26 +2,18 @@
 
 namespace Vanadium.Renderer.Scene;
 
-public class Skybox
+public class SceneSkyBox : SceneObject
 {
-	public static Skybox? ActiveSkybox { get; private set; }
-
-	public static void Load( string path )
-	{
-		var skybox = new Skybox( path );
-		ActiveSkybox = skybox;
-	}
-
-	private Skybox( string path )
+	public SceneSkyBox( Material material ) : this( null, material ) { }
+	public SceneSkyBox( SceneWorld? world, Material material ) : base( world )
 	{
 		Model = Model.Primitives.InvertedCube;
-		Material = Material.Load( path );
+		Material = material;
 	}
 
-	private readonly Model Model;
 	private readonly Material Material;
 
-	public void Draw()
+	public override void Draw()
 	{
 		GL.DepthFunc( DepthFunction.Lequal );
 

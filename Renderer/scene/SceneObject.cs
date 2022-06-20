@@ -250,15 +250,8 @@ public class SceneObject
 
 	public virtual void OnSpawn() { }
 
-	public void Draw()
+	public virtual void Draw()
 	{
 		Model.Draw( DrawCommand.FromSceneObject( this ) );
-		OnRender();
-	}
-
-	protected virtual void OnRender()
-	{
-		//if ( Model is not null )
-		//DebugDraw.Box( Vector3.Zero * GlobalTransform, Model.RenderBounds, Color.Green );
 	}
 }

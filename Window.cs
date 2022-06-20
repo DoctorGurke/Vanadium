@@ -72,7 +72,7 @@ public class Window : GameWindow
 
 		// set skybox
 		Log.Info( "\n---===Initializing Skybox===---" );
-		Skybox.Load( "materials/skybox/skybox01_hdr.vanmat" );
+		_ = new SceneSkyBox( Material.Load( "materials/skybox/skybox01_hdr.vanmat" ) );
 
 		Log.Info( "\n---===Initializing Floor===---" );
 		var floor = new SceneObject
@@ -133,7 +133,7 @@ public class Window : GameWindow
 		SceneWorld.Main?.DrawOpaqueLayer();
 
 		// draw skybox after opaques
-		Skybox.ActiveSkybox?.Draw();
+		SceneWorld.Main?.DrawSkyboxLayer();
 
 		DebugDraw.Line( Vector3.Zero, Vector3.Up * 10, Color.Red );
 
