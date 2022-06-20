@@ -7,7 +7,7 @@ public class SceneWorld
 	/// <summary>
 	/// An Enumerable of all SceneObjects in the Scene.
 	/// </summary>
-	public readonly List<SceneObject> SceneObjects = new();
+	public readonly HashSet<SceneObject> SceneObjects = new();
 
 	public static readonly List<SceneWorld> All = new();
 	public static SceneWorld Main { get; private set; } = new();
