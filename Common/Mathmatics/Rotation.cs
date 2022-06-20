@@ -11,50 +11,10 @@ public struct Rotation : IEquatable<Rotation>
 		_quat = Quaternion.Identity
 	};
 
-	public float x
-	{
-		get
-		{
-			return _quat.X;
-		}
-		set
-		{
-			_quat.X = value;
-		}
-	}
-	public float y
-	{
-		get
-		{
-			return _quat.Y;
-		}
-		set
-		{
-			_quat.Y = value;
-		}
-	}
-	public float z
-	{
-		get
-		{
-			return _quat.Z;
-		}
-		set
-		{
-			_quat.Z = value;
-		}
-	}
-	public float w
-	{
-		get
-		{
-			return _quat.W;
-		}
-		set
-		{
-			_quat.W = value;
-		}
-	}
+	public float x { get => _quat.X; set => _quat.X = value; }
+	public float y { get => _quat.Y; set => _quat.Y = value; }
+	public float z { get => _quat.Z; set => _quat.Z = value; }
+	public float w { get => _quat.W; set => _quat.W = value; }
 
 	public Vector3 Forward => Vector3.Forward * this;
 	public Vector3 Backward => Vector3.Backward * this;

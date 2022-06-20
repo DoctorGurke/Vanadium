@@ -6,39 +6,9 @@ public struct Vector3 : IEquatable<Vector3>
 {
 	internal OpenTK.Mathematics.Vector3 _vec;
 
-	public float x
-	{
-		readonly get
-		{
-			return _vec.X;
-		}
-		set
-		{
-			_vec.X = value;
-		}
-	}
-	public float y
-	{
-		readonly get
-		{
-			return _vec.Y;
-		}
-		set
-		{
-			_vec.Y = value;
-		}
-	}
-	public float z
-	{
-		readonly get
-		{
-			return _vec.Z;
-		}
-		set
-		{
-			_vec.Z = value;
-		}
-	}
+	public float x { readonly get => _vec.X; set => _vec.X = value; }
+	public float y { readonly get => _vec.Y; set => _vec.Y = value; }
+	public float z { readonly get => _vec.Z; set => _vec.Z = value; }
 
 	public static readonly Vector3 One = new( 1f );
 
