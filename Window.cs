@@ -168,6 +168,8 @@ public class Window : GameWindow
 
 	public bool WasUiMode = false;
 
+	SceneObject? spheretest;
+
 	protected override void OnUpdateFrame( FrameEventArgs e )
 	{
 		base.OnUpdateFrame( e );
@@ -200,6 +202,9 @@ public class Window : GameWindow
 			UiMode = !UiMode;
 		}
 
+		if ( spheretest is not null )
+			spheretest.Rotation = spheretest.Rotation.RotateAroundAxis( Vector3.Up, Time.Delta * 35.0f );
+
 		if ( UiMode )
 		{
 			// ui was just opened, reset mouse
@@ -227,14 +232,26 @@ public class Window : GameWindow
 
 			if ( Input.IsPressed( MouseButton.Left ) )
 			{
-				var sphere = new SceneObject
+				spheretest = new SceneObject
 				{
 					Position = cam.Position + cam.Rotation.Forward * 3,
 					//Rotation = cam.Rotation,
-					Model = Model.Primitives.Sphere
-					//Scale = 0.3f
+					Model = Model.Primitives.Sphere,
+					Scale = 0.5f
 				};
-				sphere.SetMaterialOverride( "materials/discoball.vanmat" );
+				spheretest.SetMaterialOverride( "materials/discoball.vanmat" );
+
+				for ( int i = 0; i < 5; i++ )
+				{
+					var child = new SceneObject
+					{
+						Position = Vector3.Up + Vector3.Right * (float)Math.Sin( (360.0f / 5 * i).DegreeToRadian() ) + Vector3.Forward * (float)Math.Cos( (360.0f / 5 * i).DegreeToRadian() ),
+						Model = Model.Primitives.Sphere,
+						Scale = 0.5f
+					};
+					child.SetMaterialOverride( "materials/discoball.vanmat" );
+					child.Parent = spheretest;
+				}
 
 				//DebugDraw.Box( cam.Position, new Vector3( 0.2f, 0.2f, 0.2f ), -new Vector3( 0.2f, 0.2f, 0.2f ), Color.Green, 100, false );
 				//DebugDraw.Line( cam.Position, cam.Position + cam.Rotation.Forward * 5, Color.White, 100, false );

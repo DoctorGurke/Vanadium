@@ -2,7 +2,7 @@
 
 public class SceneObject
 {
-	
+
 	public Material? MaterialOverride;
 	public OpenTKMath.Matrix4 GlobalTransform => Parent is null ? LocalTransform.TransformMatrix : LocalTransform.TransformMatrix * Parent.GlobalTransform;
 	public Color RenderColor = Color.White;
@@ -39,7 +39,7 @@ public class SceneObject
 
 	public bool Transparent { get; private set; }
 
-	public Vector3 Position
+	public Vector3 LocalPosition
 	{
 		get
 		{
@@ -50,7 +50,23 @@ public class SceneObject
 			LocalTransform.Position = value;
 		}
 	}
-	public Rotation Rotation
+	public Vector3 Position
+	{
+		get
+		{
+			return Parent is null ? LocalPosition : Parent.Position + LocalPosition * Parent.Rotation;
+		}
+		set
+		{
+			if ( Parent is null )
+			{
+				LocalPosition = value;
+				return;
+			}
+			LocalPosition = (Parent.Position - value) * Parent.Rotation.Inverse;
+		}
+	}
+	public Rotation LocalRotation
 	{
 		get
 		{
@@ -58,6 +74,23 @@ public class SceneObject
 		}
 		set
 		{
+			LocalTransform.Rotation = value;
+		}
+	}
+	public Rotation Rotation
+	{
+		get
+		{
+			return Parent is null ? LocalRotation : Parent.Rotation * LocalRotation;
+		}
+		set
+		{
+			if ( Parent is null )
+			{
+				LocalRotation = value;
+				return;
+			}
+			LocalRotation = value.Inverse * Parent.Rotation;
 			LocalTransform.Rotation = value;
 		}
 	}
@@ -72,7 +105,21 @@ public class SceneObject
 			LocalTransform.Scale = value;
 		}
 	}
+
 	public Transform LocalTransform;
+	public Transform Transform
+	{
+		get
+		{
+			return new Transform( LocalTransform.Position, LocalTransform.Rotation, Scale );
+		}
+		set
+		{
+			Position = value.Position;
+			Rotation = value.Rotation;
+			Scale = value.Scale;
+		}
+	}
 
 	private SceneObject? _parent;
 	public SceneObject? Parent
