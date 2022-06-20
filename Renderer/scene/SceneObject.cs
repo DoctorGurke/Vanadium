@@ -199,7 +199,7 @@ public class SceneObject
 		Scale = 1.0f;
 
 		if ( world is null )
-			SceneWorld.Main?.AddSceneObject( this );
+			SceneWorld.Main.AddSceneObject( this );
 		else
 			world?.AddSceneObject( this );
 

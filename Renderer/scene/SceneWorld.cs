@@ -9,17 +9,11 @@ public class SceneWorld
 	/// </summary>
 	public readonly List<SceneObject> SceneObjects = new();
 
-	public static SceneWorld? Main { get; private set; }
 	public static readonly List<SceneWorld> All = new();
+	public static SceneWorld Main { get; private set; } = new();
 
-	public string Name { get; private set; }
-
-	public SceneWorld() : this( $"SceneWorld{All.Count + 1}" ) { }
-
-	public SceneWorld( string name )
+	public SceneWorld()
 	{
-		if ( Main is null ) Main = this;
-		Name = name;
 		All.Add( this );
 	}
 
