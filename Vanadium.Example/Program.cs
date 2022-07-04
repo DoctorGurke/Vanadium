@@ -8,7 +8,7 @@ namespace Vanadium;
 
 public class Program
 {
-	public static void Main( string[] args )
+	public static void Main()
 	{
 		Assert.ResourcePresent( Shader.Error );
 		Assert.ResourcePresent( Material.Error );

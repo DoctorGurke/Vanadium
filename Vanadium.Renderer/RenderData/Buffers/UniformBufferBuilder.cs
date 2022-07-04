@@ -6,7 +6,7 @@ namespace Vanadium.Renderer.RenderData.Buffers;
 public class UniformBufferBuilder
 {
 	private readonly string Name;
-	private Dictionary<string, IBufferSetting> BufferData = new();
+	private readonly Dictionary<string, IBufferSetting> BufferData = new();
 	private int Count;
 
 	public UniformBufferBuilder( string name )

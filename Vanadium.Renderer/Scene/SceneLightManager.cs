@@ -1,6 +1,4 @@
-﻿using Vanadium.Renderer.RenderData.Buffers;
-
-namespace Vanadium.Renderer.Scene;
+﻿namespace Vanadium.Renderer.Scene;
 
 public class SceneLightManager
 {
@@ -70,22 +68,24 @@ public class SceneLightManager
 		var index = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
 		Log.Info( $"new pointlight {index} {position} {color} {constant} {linear} {quadratic}" );
-		var lightmodel = new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Primitives.Sphere,
 			Scale = 0.1f,
-			Position = position
+			Position = position,
+			RenderColor = color
 		};
-		lightmodel.RenderColor = color;
 
 		// init and add light
-		var light = new PointLight();
-		light.Position = position;
-		light.Color = new Vector3( color.r, color.g, color.b );
-		light.Constant = constant;
-		light.Linear = linear;
-		light.Quadratic = quadratic;
-		light.Brightness = brightness;
+		var light = new PointLight
+		{
+			Position = position,
+			Color = new Vector3( color.r, color.g, color.b ),
+			Constant = constant,
+			Linear = linear,
+			Quadratic = quadratic,
+			Brightness = brightness
+		};
 		PointLights.Add( light );
 
 		NumPointLights++;
@@ -108,26 +108,28 @@ public class SceneLightManager
 		var index = NumSpotLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
 		Log.Info( $"new spotlight {index} {position} {rotation.Forward} {color} {innerangle} {outerangle} {constant} {linear} {quadratic}" );
-		var lightmodel = new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Primitives.ForwardCone,
 			Scale = 0.1f,
 			Position = position,
-			Rotation = rotation
+			Rotation = rotation,
+			RenderColor = color
 		};
-		lightmodel.RenderColor = color;
 
 		// init and add light
-		var light = new SpotLight();
-		light.Position = position;
-		light.Direction = rotation.Forward;
-		light.Color = new Vector3( color.r, color.g, color.b );
-		light.Constant = constant;
-		light.Linear = linear;
-		light.Quadratic = quadratic;
-		light.Brightness = brightness;
-		light.InnerAngle = innerangle.DegreeToRadian();
-		light.OuterAngle = outerangle.DegreeToRadian();
+		var light = new SpotLight
+		{
+			Position = position,
+			Direction = rotation.Forward,
+			Color = new Vector3( color.r, color.g, color.b ),
+			Constant = constant,
+			Linear = linear,
+			Quadratic = quadratic,
+			Brightness = brightness,
+			InnerAngle = innerangle.DegreeToRadian(),
+			OuterAngle = outerangle.DegreeToRadian()
+		};
 		SpotLights.Add( light );
 
 		NumSpotLights++;
@@ -145,20 +147,22 @@ public class SceneLightManager
 		var index = NumDirLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
 		Log.Info( $"new dirlight {index} {rotation.Forward} {color}" );
-		var lightmodel = new SceneObject
+		_ = new SceneObject
 		{
 			Model = Model.Primitives.ForwardCone,
 			Scale = 0.1f,
 			Position = Vector3.Zero,
-			Rotation = rotation
+			Rotation = rotation,
+			RenderColor = color
 		};
-		lightmodel.RenderColor = color;
 
 		// init and add light
-		var light = new DirLight();
-		light.Direction = rotation.Forward;
-		light.Color = new Vector3( color.r, color.g, color.b );
-		light.Brightness = brightness;
+		var light = new DirLight
+		{
+			Direction = rotation.Forward,
+			Color = new Vector3( color.r, color.g, color.b ),
+			Brightness = brightness
+		};
 		DirLights.Add( light );
 
 		NumDirLights++;

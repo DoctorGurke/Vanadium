@@ -2,6 +2,7 @@
 
 namespace Vanadium.Renderer.Gui;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2211:Non-constant fields should not be visible", Justification = "this is for debugging, so we're gonna do whatever we want with static stuff" )]
 public class DebugOverlay
 {
 	public static int FPS;
@@ -13,7 +14,6 @@ public class DebugOverlay
 	public static float LightBrightnessMultiplier = 1.0f;
 	public static bool RandomLightColor = false;
 	public static System.Numerics.Vector4 LightColor = Color.White;
-
 
 	public static void Draw( Window window )
 	{
