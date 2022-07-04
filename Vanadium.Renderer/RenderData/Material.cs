@@ -71,7 +71,7 @@ public class Material : IDisposable, IEquatable<Material>
 
 	public static Material Load( string path )
 	{
-		path = $"resources/{path}";
+		path = $"core/{path}";
 
 		if ( PrecachedMaterials.TryGetValue( path, out var material ) )
 		{
@@ -99,7 +99,7 @@ public class Material : IDisposable, IEquatable<Material>
 		try
 		{
 			var shadername = parameters["shader"];
-			var shader = new Shader( $"resources/{shadername}.vfx", mat );
+			var shader = new Shader( $"core/{shadername}.vfx", mat );
 			mat.Shader = shader;
 		}
 		catch ( Exception ex )

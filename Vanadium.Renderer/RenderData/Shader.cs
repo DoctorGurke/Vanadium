@@ -116,7 +116,7 @@ public class Shader : IDisposable
 
 	public static string Load( string path, Material material )
 	{
-		var data = File.ReadAllText( $"resources/{path}" );
+		var data = File.ReadAllText( $"core/{path}" );
 
 		// handle any includes the shader file might have
 		data = HandleIncludes( data, path, material );

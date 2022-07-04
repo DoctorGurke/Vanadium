@@ -16,7 +16,7 @@ namespace Vanadium.Renderer.RenderData
 			return this;
 		}
 
-		public ModelBuilder AddMesh(Mesh mesh)
+		public ModelBuilder AddMesh( Mesh mesh )
 		{
 			meshes.Add( mesh );
 			return this;
@@ -41,7 +41,7 @@ namespace Vanadium.Renderer.RenderData
 		public Model Build()
 		{
 			// apply materialoverride, if any
-			if (materialoverride is not null )
+			if ( materialoverride is not null )
 			{
 				foreach ( var mesh in meshes )
 				{
@@ -54,7 +54,7 @@ namespace Vanadium.Renderer.RenderData
 		private void InitMeshesFromFile( string path )
 		{
 			Log.Info( $"loading model: {path}" );
-			var fileName = Path.Combine( $"{Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )}/resources/{path}" );
+			var fileName = Path.Combine( $"{Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )}/core/{path}" );
 
 			AssimpContext importer = new();
 
@@ -84,7 +84,7 @@ namespace Vanadium.Renderer.RenderData
 			foreach ( int index in node.MeshIndices )
 			{
 				Assimp.Mesh mesh = scene.Meshes[index];
-				meshes.Add(ProcessMesh( mesh, scene ));
+				meshes.Add( ProcessMesh( mesh, scene ) );
 			}
 			for ( int i = 0; i < node.ChildCount; i++ )
 			{

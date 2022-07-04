@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AssimpNet" Version="4.1.0" />
+		<PackageReference Include="ImGui.NET" Version="1.87.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="OpenTK" Version="4.7.4" />
+		<PackageReference Include="StbImageSharp" Version="2.27.8" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Vanadium.Common\Vanadium.Common.csproj" />
+	</ItemGroup>
+
+</Project>

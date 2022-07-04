@@ -20,7 +20,7 @@ public partial class Texture
 	/// <returns>The ImageResult of the image file.</returns>
 	private static ImageResult LoadImageData( string path, ColorComponents components = ColorComponents.RedGreenBlueAlpha )
 	{
-		path = $"resources/{path}";
+		path = $"core/{path}";
 
 		if ( ImageData.TryGetValue( path, out var result ) )
 		{
@@ -39,7 +39,7 @@ public partial class Texture
 			if ( ex is FileNotFoundException || ex is DirectoryNotFoundException )
 			{
 				// bail with error texture
-				using var stream = File.OpenRead( $"resources/{Error}" );
+				using var stream = File.OpenRead( $"core/{Error}" );
 				Log.Info( $"Error loading image data for: {path}, File not found!" );
 				image = ImageResult.FromStream( stream, components );
 			}
@@ -54,7 +54,7 @@ public partial class Texture
 
 	private static ImageResultFloat LoadFloatImageData( string path )
 	{
-		path = $"resources/{path}";
+		path = $"core/{path}";
 
 		if ( ImageDataFloat.TryGetValue( path, out var result ) )
 		{
@@ -73,7 +73,7 @@ public partial class Texture
 			if ( ex is FileNotFoundException || ex is DirectoryNotFoundException )
 			{
 				// bail with error texture
-				using var stream = File.OpenRead( $"resources/{Error}" );
+				using var stream = File.OpenRead( $"core/{Error}" );
 				Log.Info( $"Error loading image data for: {path}, File not found!" );
 				image = ImageResultFloat.FromStream( stream, ColorComponents.RedGreenBlue );
 			}

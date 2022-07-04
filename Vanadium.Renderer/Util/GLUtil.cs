@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Vanadium.Renderer.Util;

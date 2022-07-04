@@ -1,28 +1,14 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.Linq;
-global using System.Diagnostics;
-
-global using Vanadium.Common;
-global using Vanadium.Common.Mathematics;
-global using Vanadium.Renderer.Gui;
-global using Vanadium.Renderer.RenderData.View;
+﻿global using Vanadium.Common;
 global using Vanadium.Renderer.RenderData;
-global using Vanadium.Renderer.Scene;
-global using Vanadium.Renderer.Util;
-
-global using OpenTKMath = OpenTK.Mathematics;
-
-using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.Common;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
 
 namespace Vanadium;
 
 public class Program
 {
-	public static void Main()
+	public static void Main( string[] args )
 	{
 		Assert.ResourcePresent( Shader.Error );
 		Assert.ResourcePresent( Material.Error );
