@@ -16,12 +16,12 @@ void main(void)
 
 #include shaders/common/common.frag
 
-#material sampler2D tex
+#material sampler2D diffuse
 
 void main()
 {
     vec2 uv = fs_in.vTexCoord0;
-    vec4 base = texture(tex, uv).rgba;
+    vec4 base = texture(diffuse, uv).rgba;
     vec4 tint = base * renderColor;
 
     vec4 col = mix(base, tint, tintAmount);

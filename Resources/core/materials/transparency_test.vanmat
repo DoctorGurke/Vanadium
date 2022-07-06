@@ -1,5 +1,5 @@
 ﻿{
     "shader": "shaders/generic",
-    "tex": "textures/transparency_test.png",
+    "diffuse": "textures/transparency_test.png",
     "translucent": "true"
 }
