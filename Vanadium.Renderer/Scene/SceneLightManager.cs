@@ -89,7 +89,6 @@ public class SceneLightManager
 		PointLights.Add( light );
 
 		NumPointLights++;
-		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdatePointlights( PointLights.OrderByDescending( x => -x.Position.Distance( Camera.ActiveCamera?.Position ?? default ) ).ToArray(), NumPointLights );
 	}
 
@@ -133,7 +132,6 @@ public class SceneLightManager
 		SpotLights.Add( light );
 
 		NumSpotLights++;
-		// update whole buffer for now, this should use sub data later on
 		UniformBufferManager.Current?.UpdateSpotlights( SpotLights.OrderByDescending( x => -x.Position.Distance( Camera.ActiveCamera?.Position ?? default ) ).ToArray(), NumSpotLights );
 	}
 
