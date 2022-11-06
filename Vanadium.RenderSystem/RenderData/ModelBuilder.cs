@@ -160,7 +160,6 @@ namespace Vanadium.RenderSystem.RenderData
 				vert.tangent.Normalize();
 			}
 
-			Log.Info( $"new mesh v:{vertices.Length} i:{indices.Length} mat:{scene.Materials[mesh.MaterialIndex].Name}" );
 			Mesh fmesh = new( vertices, indices, scene.Materials[mesh.MaterialIndex].Name );
 			return fmesh;
 		}

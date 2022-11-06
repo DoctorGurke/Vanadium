@@ -3,6 +3,6 @@
 	"diffuse": "textures/core/default_1.png",
 	"specular": "textures/core/default_1.png",
 	"normal": "textures/core/default_normal.png",
-	"envmap": "textures/skybox/skybox03/skybox03.jpg",
+	"envmap": "textures/skybox/skybox03_cube/skybox03.jpg",
 	"gloss": 128
 }

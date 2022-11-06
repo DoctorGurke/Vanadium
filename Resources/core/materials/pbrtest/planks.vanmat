@@ -5,5 +5,5 @@
 	"roughness": "textures/pbrtest/planks/planks_rough.png",
 	"metallic": "textures/pbrtest/planks/planks_metal.png",
 	"ao": "textures/pbrtest/planks/planks_ao.png",
-	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+	"envmap": "textures/skybox/skybox03_cube/skybox03.jpg"
 }

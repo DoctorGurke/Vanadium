@@ -31,7 +31,6 @@ public partial class Texture
 		try
 		{
 			using var stream = File.OpenRead( path );
-			Log.Info( $"Loading image data for: {path}" );
 			image = ImageResult.FromStream( stream, components );
 		}
 		catch ( Exception ex )
@@ -40,7 +39,7 @@ public partial class Texture
 			{
 				// bail with error texture
 				using var stream = File.OpenRead( $"core/{Error}" );
-				Log.Info( $"Error loading image data for: {path}, File not found!" );
+				Log.Warning( $"Error loading image: {path} : File not found" );
 				image = ImageResult.FromStream( stream, components );
 			}
 			else
@@ -159,7 +158,6 @@ public partial class Texture
 		foreach ( var side in cubesides )
 		{
 			var full = $"{path}_{side}{ext}";
-			Log.Info( $"adding cubemap side {full}" );
 			sides.Add( full );
 		}
 

@@ -67,7 +67,7 @@ public class SceneLightManager
 	{
 		var index = NumPointLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
-		Log.Info( $"new pointlight {index} {position} {color} {constant} {linear} {quadratic}" );
+		Log.Highlight( $"new pointlight {index} {position} {color} {constant} {linear} {quadratic}" );
 		_ = new SceneObject
 		{
 			Model = Model.Primitives.Sphere,
@@ -106,7 +106,7 @@ public class SceneLightManager
 	{
 		var index = NumSpotLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
-		Log.Info( $"new spotlight {index} {position} {rotation.Forward} {color} {innerangle} {outerangle} {constant} {linear} {quadratic}" );
+		Log.Highlight( $"new spotlight {index} {position} {rotation.Forward} {color} {innerangle} {outerangle} {constant} {linear} {quadratic}" );
 		_ = new SceneObject
 		{
 			Model = Model.Primitives.ForwardCone,
@@ -144,7 +144,7 @@ public class SceneLightManager
 	{
 		var index = NumDirLights; // current number is index for new light (ie, 0 lights means insert at index 0)
 
-		Log.Info( $"new dirlight {index} {rotation.Forward} {color}" );
+		Log.Highlight( $"new dirlight {index} {rotation.Forward} {color}" );
 		_ = new SceneObject
 		{
 			Model = Model.Primitives.ForwardCone,

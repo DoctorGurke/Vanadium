@@ -5,5 +5,5 @@
 	"roughness": "textures/pbrtest/wood/wood_rough.png",
 	"metallic": "textures/core/default_0.png",
 	"ao": "textures/pbrtest/wood/wood_ao.png",
-	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+	"envmap": "textures/skybox/skybox03_cube/skybox03.jpg"
 }

@@ -5,5 +5,5 @@
 	"roughness": "textures/pbrtest/gold/gold_rough.png",
 	"metallic": "textures/pbrtest/gold/gold_metal.png",
 	"ao": "textures/core/default_0.png",
-	"envmap": "textures/skybox/skybox03/skybox03.jpg"
+	"envmap": "textures/skybox/skybox03_cube/skybox03.jpg"
 }

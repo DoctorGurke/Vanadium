@@ -120,14 +120,12 @@ public class Material : IDisposable, IEquatable<Material>
 	// get enumerable of IRenderSetting according to the types of the data
 	public IEnumerable<IRenderSetting> SerializeMaterialParameters( JObject parameters )
 	{
-		Log.Info( "serializing material" );
 		foreach ( var param in parameters.Properties() )
 		{
-			Log.Info( $"{param.Name} = {param.Value}" );
 			var name = param.Name;
 			var value = $"{param.Value}";
 
-			// check for global translucent property
+			// check for translucent property
 			if ( bool.TryParse( value, out var translucent ) )
 			{
 				if ( name == "translucent" && translucent )
@@ -139,49 +137,41 @@ public class Material : IDisposable, IEquatable<Material>
 
 			if ( MaterialParameters.TryGetValue( name, out var type ) )
 			{
-				Log.Info( $"serializing for {name} {value} {type}" );
-
 				switch ( type )
 				{
 					case MaterialParamType.Unset:
 						throw new NotImplementedException();
 					case MaterialParamType.Boolean:
-						Log.Info( $"parsing bool material data {name} {value}" );
 						if ( bool.TryParse( value, out var bdata ) )
 						{
 							yield return new BoolUniform( name, bdata );
 						}
 						break;
 					case MaterialParamType.Integer:
-						Log.Info( $"parsing int material data {name} {value}" );
 						if ( int.TryParse( value, out var idata ) )
 						{
 							yield return new IntUniform( name, idata );
 						}
 						break;
 					case MaterialParamType.UnsignedInteger:
-						Log.Info( $"parsing uint material data {name} {value}" );
 						if ( uint.TryParse( value, out var uidata ) )
 						{
 							yield return new UIntUniform( name, uidata );
 						}
 						break;
 					case MaterialParamType.Float:
-						Log.Info( $"parsing float material data {name} {value}" );
 						if ( float.TryParse( value, out var fdata ) )
 						{
 							yield return new FloatUniform( name, fdata );
 						}
 						break;
 					case MaterialParamType.Double:
-						Log.Info( $"parsing double material data {name} {value}" );
 						if ( double.TryParse( value, out var ddata ) )
 						{
 							yield return new DoubleUniform( name, ddata );
 						}
 						break;
 					case MaterialParamType.Vector2:
-						Log.Info( $"parsing vec2 material data {name} {value}" );
 						// TODO make wrapper for vec2 and add TryParse directly to type
 						if ( Parse.TryParse( value, out OpenTKMath.Vector2 vec2data ) )
 						{
@@ -189,14 +179,12 @@ public class Material : IDisposable, IEquatable<Material>
 						}
 						break;
 					case MaterialParamType.Vector3:
-						Log.Info( $"parsing vec3 material data {name} {value}" );
 						if ( Vector3.TryParse( value, out var vec3data ) )
 						{
 							yield return new Vector3Uniform( name, vec3data );
 						}
 						break;
 					case MaterialParamType.Vector4:
-						Log.Info( $"parsing vec4 material data {name} {value}" );
 						// TODO make wrapper for vec4 and add TryParse directly to type
 						if ( Parse.TryParse( value, out OpenTKMath.Vector4 vec4data ) )
 						{
@@ -204,7 +192,6 @@ public class Material : IDisposable, IEquatable<Material>
 						}
 						break;
 					case MaterialParamType.Matrix4:
-						Log.Info( $"parsing mat4 material data {name} {value}" );
 						// TODO make wrapper for mat4 and add TryParse directly to type (?)
 						if ( Parse.TryParse( value, out OpenTKMath.Matrix4 mat4data ) )
 						{
@@ -212,17 +199,13 @@ public class Material : IDisposable, IEquatable<Material>
 						}
 						break;
 					case MaterialParamType.Sampler2D:
-						Log.Info( $"parsing sampler2D material data {name} {value}" );
-						var srgb = name == "diffuse" || name == "albedo";// hacky way to get color textures as srgb, the shader should define this for its texture sampler
-						Log.Info( $"tex {name} {value} srgb: {srgb}" );
+						var srgb = name == "diffuse" || name == "albedo";// hacky way to get color textures as srgb, the shader should define this for its texture sampler in the future
 						yield return new TextureUniform( name, Texture.Load2D( value, true, srgb ) );
 						break;
 					case MaterialParamType.SamplerCube:
-						Log.Info( $"parsing samplerCube material data {name} {value}" );
 						yield return new TextureCubeUniform( name, Texture.LoadCube( value, true ) );
 						break;
 					case MaterialParamType.SamplerHDR:
-						Log.Info( $"parsing samplerHDR material data {name} {value}" );
 						yield return new TextureCubeUniform( name, Texture.LoadHDR( value ) );
 						break;
 					default:
@@ -370,8 +353,6 @@ public class Material : IDisposable, IEquatable<Material>
 	// serialize string type to type enum
 	public void AddParameter( string type, string name )
 	{
-		Log.Info( $"adding parameter {type} {name}" );
-
 		var paramtype = type switch
 		{
 			"bool" => MaterialParamType.Boolean,

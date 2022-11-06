@@ -228,7 +228,6 @@ public class Shader : IDisposable
 
 	private static string HandleIncludes( string data, string path, Material mat )
 	{
-		Log.Info( $"handling includes for {path}" );
 		// scan data for any #include macros
 		var regex = @"#include[\s](.+)";
 		var includeMatches = Regex.Matches( data, regex );
@@ -237,12 +236,11 @@ public class Shader : IDisposable
 		{
 			var matchstring = $"{match}".Clean();
 			var includePath = $"{match.Groups[1]}".Clean();
-			Log.Info( $"include found ({includePath})" );
 
 			// make sure a file isn't trying to include itself
 			if ( includePath == path )
 			{
-				Log.Info( $"Recursive include for {includePath} found! Defusing..." );
+				Log.Warning( $"Recursive include for {includePath} found! Defusing..." );
 				data = data.Replace( matchstring, "" );
 				continue;
 			}
@@ -256,8 +254,6 @@ public class Shader : IDisposable
 
 	private static string HandleMaterial( string data, string path, Material material )
 	{
-		Log.Info( $"handling material for {path}" );
-
 		// scan data for any #material macros
 		var regex = @"#material[\s]\W*(bool|int|uint|float|double|sampler2D|samplerCube|samplerHDR|vec2|vec3|vec4|mat4)\W*[\s](.+)";
 		var includeMatches = Regex.Matches( data, regex );
@@ -272,7 +268,6 @@ public class Shader : IDisposable
 
 			var field = $"uniform {type} {name};";
 
-			Log.Info( $"material found ({field})" );
 			material.AddParameter( type, name );
 
 			data = data.Replace( matchstring, field );
