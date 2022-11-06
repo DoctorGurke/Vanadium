@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanadium.Renderer", "Vanadium.Renderer\Vanadium.Renderer.csproj", "{E4EC712D-DA0F-4E07-959F-A7959306600A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanadium.RenderSystem", "Vanadium.RenderSystem\Vanadium.RenderSystem.csproj", "{E4EC712D-DA0F-4E07-959F-A7959306600A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CA82002E-BA35-4D60-AE18-4E6849706D90} = {CA82002E-BA35-4D60-AE18-4E6849706D90}
 	EndProjectSection
@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanadium.Example", "Vanadiu
 		{E4EC712D-DA0F-4E07-959F-A7959306600A} = {E4EC712D-DA0F-4E07-959F-A7959306600A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanadium.Test", "Vanadium.Test\Vanadium.Test.csproj", "{5D9D05CC-B9A6-42FB-BD85-F626053502E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanadium.Test", "Vanadium.Test\Vanadium.Test.csproj", "{5D9D05CC-B9A6-42FB-BD85-F626053502E3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3CE43D54-E6DE-4580-8EE9-D3BD401985A4} = {3CE43D54-E6DE-4580-8EE9-D3BD401985A4}
 		{CA82002E-BA35-4D60-AE18-4E6849706D90} = {CA82002E-BA35-4D60-AE18-4E6849706D90}

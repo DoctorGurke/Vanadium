@@ -22,6 +22,11 @@ public struct Color
 	public static Color Transparent => new( 0f, 0f, 0f, 0f );
 	public static Color Random => new( Rand.Float( 0, 1 ), Rand.Float( 0, 1 ), Rand.Float( 0, 1 ) );
 
+	public static Color FromBytes( byte r, byte g, byte b, byte a = 255 )
+	{
+		return new Color( r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f );
+	}
+
 	public Color WithRed( float r )
 	{
 		return new Color( r, g, b, a );

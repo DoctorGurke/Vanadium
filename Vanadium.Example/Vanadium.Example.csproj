@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Vanadium.Common\Vanadium.Common.csproj" />
-		<ProjectReference Include="..\Vanadium.Renderer\Vanadium.Renderer.csproj" />
+		<ProjectReference Include="..\Vanadium.RenderSystem\Vanadium.RenderSystem.csproj" />
 		<None Include="..\Resources\**" CopyToOutputDirectory="Always" DestinationFolder="$(OutDir)\Resources" />
 	</ItemGroup>
 </Project>

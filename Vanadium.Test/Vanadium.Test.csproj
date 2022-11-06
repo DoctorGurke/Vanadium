@@ -18,7 +18,7 @@
 
     <ItemGroup>
 	    <ProjectReference Include="..\Vanadium.Common\Vanadium.Common.csproj" />
-		<ProjectReference Include="..\Vanadium.Renderer\Vanadium.Renderer.csproj" />
+		<ProjectReference Include="..\Vanadium.RenderSystem\Vanadium.RenderSystem.csproj" />
     </ItemGroup>
 
 </Project>
