@@ -33,7 +33,7 @@ public static class Json
 			data = sr.ReadToEnd();
 			return true;
 		}
-		catch ( FileNotFoundException )
+		catch
 		{
 			return false;
 		}

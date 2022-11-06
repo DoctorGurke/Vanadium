@@ -16,7 +16,7 @@ public class DebugOverlay
 	public static bool RandomLightColor = false;
 	public static System.Numerics.Vector4 LightColor = Color.White;
 
-	public static void Draw( Window window )
+	public static void Draw( Renderer renderer )
 	{
 		ImGuiWindowFlags flags = 0;
 		flags |= ImGuiWindowFlags.NoMove;
@@ -33,7 +33,7 @@ public class DebugOverlay
 		{
 			ImGui.Text( $"FPS: {FPS}" );
 			ImGui.Text( $"FT: {FT:0.####}s" );
-			ImGui.Text( $"UI: {window.UiMode}" );
+			ImGui.Text( $"UI: " );
 		}
 		if ( ImGui.CollapsingHeader( "Settings" ) )
 		{
@@ -42,7 +42,7 @@ public class DebugOverlay
 			ImGui.ColorPicker4( "", ref AmbientColor, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoAlpha );
 			if ( AmbientColor != PrevAmbientColor )
 			{
-				window.SceneLight.SetAmbientLightColor( AmbientColor );
+				renderer.SceneLight.SetAmbientLightColor( AmbientColor );
 				PrevAmbientColor = AmbientColor;
 			}
 		}

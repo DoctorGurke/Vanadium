@@ -82,7 +82,7 @@ public class Material : IDisposable, IEquatable<Material>
 
 		if ( !Json.ReadFromJson( path, out var data ) )
 		{
-			Log.Info( $"ERROR LOADING MATERIAL {path}! MATERIAL FILE NOT FOUND!" );
+			Log.Warning( $"Error loading material: {path} : File not found" );
 			mat.IsError = true;
 			return mat;
 		}
@@ -90,7 +90,7 @@ public class Material : IDisposable, IEquatable<Material>
 
 		if ( !parameters.ContainsKey( "shader" ) )
 		{
-			Log.Info( $"ERROR LOADING MATERIAL {path}! NO VALID SHADER NAME FOUND!" );
+			Log.Warning( $"Error loading material: {path} : Invalid shader name" );
 			mat.IsError = true;
 			return mat;
 		}
@@ -102,9 +102,9 @@ public class Material : IDisposable, IEquatable<Material>
 			var shader = new Shader( $"core/{shadername}.vfx", mat );
 			mat.Shader = shader;
 		}
-		catch ( Exception ex )
+		catch ( Exception )
 		{
-			Log.Info( $"ERROR LOADING MATERIAL {path}! ERROR BUILDING SHADER! {ex}" );
+			Log.Warning( $"Error loading material: {path} : Error building shader" );
 			mat.IsError = true;
 			return mat;
 		}

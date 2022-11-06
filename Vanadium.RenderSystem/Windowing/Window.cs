@@ -31,10 +31,6 @@ public class Window : GameWindow
 
 	private Stopwatch Timer { get; set; } = new();
 
-	private ImGuiController? _guicontroller;
-	public UniformBufferManager UniformBufferManager = new();
-	public SceneLightManager SceneLight = new();
-
 	protected override void OnLoad()
 	{
 		base.OnLoad();
@@ -71,13 +67,13 @@ public class Window : GameWindow
 		// setup core uniform buffers
 		UniformBuffer.InitCore();
 
-		SceneLight.SetAmbientLightColor( Color.FromBytes( 36, 60, 102 ) );
+		Renderer.SceneLight.SetAmbientLightColor( Color.FromBytes( 36, 60, 102 ) );
 
 		// init debug line buffers
 		DebugDraw.Init();
 
 		// init imgui
-		_guicontroller = new ImGuiController( ClientSize );
+		Renderer.ImguiController = new ImGuiController( ClientSize );
 
 		CursorState = CursorState.Grabbed;
 
@@ -91,7 +87,7 @@ public class Window : GameWindow
 	{
 		base.OnRenderFrame( e );
 
-		PreRender?.Invoke();
+		Renderer.PreRender();
 
 		// reset depth state
 		GL.Enable( EnableCap.DepthTest );
@@ -106,43 +102,11 @@ public class Window : GameWindow
 		GL.BlendFunc( BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha );
 		GL.BlendFuncSeparate( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero );
 
-		// clear buffer
-		GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
+		Renderer.Render( SceneWorld.Main );
 
-		// update per view buffer
-		UniformBufferManager.UpdateSceneUniformBuffer();
-
-		// drawing the scene
-
-		// draw opaques first
-		SceneWorld.Main.DrawOpaqueLayer();
-
-		// draw skybox after opaques
-		SceneWorld.Main.DrawSkyboxLayer();
-
-		DebugDraw.Line( Vector3.Zero, Vector3.Up * 10, Color.Red );
-
-		// process debug lines and sort them into their buffers
-		DebugDraw.PrepareDraw();
-
-		// draw lines with depth first
-		DebugDraw.DrawDepthLines();
-
-		// draw translucents last
-		SceneWorld.Main.DrawTranslucentLayer();
-
-		// draw lines without depth after everything
-		DebugDraw.DrawNoDepthLines();
-
-		// show debugoverlay in top left (fps, frametime and ui mode indicators)
-		DebugOverlay.Draw( this );
-
-		// draw ui
-		_guicontroller?.Draw();
+		Renderer.PostRender();
 
 		SwapBuffers();
-
-		PostRender?.Invoke();
 	}
 
 	private TimeSince TimeSinceSecondTick;
@@ -153,25 +117,23 @@ public class Window : GameWindow
 
 	public bool WasUiMode = false;
 
-	// called at the start of a frame
-	public Action? PreRender;
-	// called at the end of a frame
-	public Action? PostRender;
-	// called at the start of a frame, for separating render locking from general client side processing
-	public Action? OnFrame;
-
 	SceneObject? spheretest;
 
 	protected override void OnUpdateFrame( FrameEventArgs e )
 	{
-		OnFrame?.Invoke();
-
 		base.OnUpdateFrame( e );
 
+		// update input first
 		Input.Update( KeyboardState, MouseState );
 
+		// calc frame statistics
 		FramesPerSecond = (int)(1.0 / e.Time);
 		FrameTime = e.Time;
+		Time.Update( (float)e.Time, Timer.ElapsedMilliseconds * 0.001f );
+
+		Camera.BuildActiveCamera();
+
+		Renderer.OnFrame();
 
 		if ( TimeSinceSecondTick >= 1 )
 		{
@@ -179,11 +141,8 @@ public class Window : GameWindow
 			OnSecondTick();
 		}
 
-		Time.Update( (float)e.Time, Timer.ElapsedMilliseconds * 0.001f );
-		Camera.BuildActiveCamera();
-
 		// update ui
-		_guicontroller?.Update( this, (float)e.Time );
+		Renderer.ImguiController?.Update( this, (float)e.Time );
 
 		// do not process any input if we're not focused
 		if ( !IsFocused )
@@ -257,15 +216,15 @@ public class Window : GameWindow
 			{
 				if ( Input.IsDown( Keys.LeftAlt ) )
 				{
-					SceneLight.AddDirLight( cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, DebugOverlay.LightBrightnessMultiplier );
+					Renderer.SceneLight.AddDirLight( cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, DebugOverlay.LightBrightnessMultiplier );
 				}
 				else if ( Input.IsDown( Keys.LeftShift ) )
 				{
-					SceneLight.AddSpotlight( cam.Position, cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 30, 35, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
+					Renderer.SceneLight.AddSpotlight( cam.Position, cam.Rotation, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 30, 35, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
 				}
 				else
 				{
-					SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
+					Renderer.SceneLight.AddPointlight( cam.Position + cam.Rotation.Forward, DebugOverlay.RandomLightColor ? Color.Random : DebugOverlay.LightColor, 0, 0, 1, DebugOverlay.LightBrightnessMultiplier );
 				}
 			}
 
@@ -276,7 +235,7 @@ public class Window : GameWindow
 	protected override void OnTextInput( TextInputEventArgs e )
 	{
 		base.OnTextInput( e );
-		_guicontroller?.OnTextInput( e );
+		Renderer.ImguiController?.OnTextInput( e );
 	}
 
 	protected override void OnMouseWheel( MouseWheelEventArgs e )
@@ -297,7 +256,7 @@ public class Window : GameWindow
 
 		Screen.UpdateSize( ClientSize );
 		GL.Viewport( 0, 0, ClientSize.X, ClientSize.Y );
-		_guicontroller?.WindowResized( ClientSize );
+		Renderer.ImguiController?.WindowResized( ClientSize );
 	}
 
 	[DebuggerStepThrough]

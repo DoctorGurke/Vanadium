@@ -63,15 +63,15 @@ namespace Vanadium.RenderSystem.RenderData
 			{
 				scene = importer.ImportFile( fileName, PostProcessPreset.TargetRealTimeMaximumQuality | PostProcessSteps.FlipUVs | PostProcessSteps.Triangulate | PostProcessSteps.CalculateTangentSpace );
 			}
-			catch ( FileNotFoundException ex )
+			catch ( FileNotFoundException )
 			{
-				Log.Info( $"ERROR IMPORTING MODEL {fileName} ({ex})" );
+				Log.Warning( $"Error loading model: {fileName} : File not found" );
 				return;
 			}
 
 			if ( scene is null || scene.SceneFlags == SceneFlags.Incomplete || scene.RootNode is null )
 			{
-				Log.Info( "ASSIMP IMPORT ERROR" );
+				Log.Warning( $"Error loading model: {fileName} : Assimp error" );
 				return;
 			}
 
