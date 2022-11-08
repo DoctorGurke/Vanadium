@@ -158,8 +158,10 @@ public class Shader : IDisposable
 	/// <returns>A Key value pair of the shader section and the shader type.</returns>
 	private static ShaderContainer LoadContainer( string path )
 	{
+		// TODO: catch and make error material/shader?
 		if ( !File.Exists( path ) )
 			throw new FileNotFoundException( $"Shader Container file not found! {path}" );
+
 		using var stream = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite );
 		var container = new ShaderContainer();
 		using ( var sr = new StreamReader( stream ) )

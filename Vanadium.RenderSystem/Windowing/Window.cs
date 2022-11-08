@@ -26,9 +26,6 @@ public class Window : GameWindow
 
 	private Renderer Renderer;
 
-	// debugging
-	private static readonly DebugProc _debugProcCallback = DebugCallback;
-
 	private Stopwatch Timer { get; set; } = new();
 
 	protected override void OnLoad()
@@ -36,50 +33,14 @@ public class Window : GameWindow
 		base.OnLoad();
 		Timer.Start();
 
-		Log.Info( $"@ Window OnLoad" );
-		Renderer.OnLoad();
-
-		// enable debugging
-		_ = GCHandle.Alloc( _debugProcCallback );
-		GL.DebugMessageCallback( _debugProcCallback, IntPtr.Zero );
-		GL.Enable( EnableCap.DebugOutput );
-		GL.Enable( EnableCap.DebugOutputSynchronous );
-
-		// setup defaultse
-		GL.ClearColor( 0.6f, 0.1f, 0.8f, 1.0f );
-
-		GL.Enable( EnableCap.CullFace );
-		GL.CullFace( CullFaceMode.Back );
-
-		GL.Enable( EnableCap.DepthTest );
-		GL.DepthFunc( DepthFunction.Less );
-
-		GL.Enable( EnableCap.Blend );
-		GL.BlendFunc( BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha );
-		GL.BlendFuncSeparate( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero );
-
-		GL.Enable( EnableCap.FramebufferSrgb );
-
-		GL.Enable( EnableCap.Multisample );
-
-		GL.Enable( EnableCap.TextureCubeMapSeamless );
-
-		// setup core uniform buffers
-		UniformBuffer.InitCore();
-
-		Renderer.SceneLight.SetAmbientLightColor( Color.FromBytes( 36, 60, 102 ) );
-
-		// init debug line buffers
-		DebugDraw.Init();
-
-		// init imgui
-		Renderer.ImguiController = new ImGuiController( ClientSize );
+		Log.Highlight( $"@ Window OnLoad" );
+		Renderer.Load();
 
 		CursorState = CursorState.Grabbed;
 
 		Timer.Restart();
 
-		Log.Info( "@ Window PostLoad" );
+		Log.Highlight( "@ Window PostLoad" );
 		Renderer.PostLoad();
 	}
 
@@ -88,19 +49,6 @@ public class Window : GameWindow
 		base.OnRenderFrame( e );
 
 		Renderer.PreRender();
-
-		// reset depth state
-		GL.Enable( EnableCap.DepthTest );
-		GL.DepthFunc( DepthFunction.Less );
-
-		// reset cull state
-		GL.Enable( EnableCap.CullFace );
-		GL.CullFace( CullFaceMode.Back );
-
-		// reset blending
-		GL.Enable( EnableCap.Blend );
-		GL.BlendFunc( BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha );
-		GL.BlendFuncSeparate( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero );
 
 		Renderer.Render( SceneWorld.Main );
 
@@ -133,8 +81,6 @@ public class Window : GameWindow
 
 		Camera.BuildActiveCamera();
 
-		Renderer.OnFrame();
-
 		if ( TimeSinceSecondTick >= 1 )
 		{
 			TimeSinceSecondTick = 0;
@@ -143,6 +89,8 @@ public class Window : GameWindow
 
 		// update ui
 		Renderer.ImguiController?.Update( this, (float)e.Time );
+
+		Renderer.Update();
 
 		// do not process any input if we're not focused
 		if ( !IsFocused )
@@ -257,18 +205,5 @@ public class Window : GameWindow
 		Screen.UpdateSize( ClientSize );
 		GL.Viewport( 0, 0, ClientSize.X, ClientSize.Y );
 		Renderer.ImguiController?.WindowResized( ClientSize );
-	}
-
-	[DebuggerStepThrough]
-	private static void DebugCallback( DebugSource source, DebugType type, int id, DebugSeverity severity, int length, IntPtr message, IntPtr userParam )
-	{
-		string messageString = Marshal.PtrToStringAnsi( message, length );
-		if ( !(severity == DebugSeverity.DebugSeverityNotification) )
-			Console.WriteLine( $"{severity} : {type} | {messageString}" );
-
-		if ( type == DebugType.DebugTypeError )
-		{
-			throw new Exception( messageString );
-		}
 	}
 }

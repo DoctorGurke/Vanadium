@@ -11,7 +11,7 @@ namespace Vanadium.Example
 	{
 		public ExampleRenderer() : base() { }
 
-		public override void PostLoad()
+		public override void OnPostLoad()
 		{
 			// set skybox
 			_ = new SceneSkyBox( Material.Load( "materials/skybox/skybox03.vanmat" ) );

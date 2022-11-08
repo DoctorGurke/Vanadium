@@ -23,5 +23,7 @@ public static class Log
 	private static void Print( object message )
 	{
 		Console.WriteLine( $"[{DateTime.Now.ToString( "hh:mm:ss" )}] {message}" );
+		// reset color
+		Console.ForegroundColor = ConsoleColor.White;
 	}
 }

@@ -15,6 +15,7 @@
 		<PackageReference Include="NUnit.Console" Version="3.15.2" />
 		<PackageReference Include="OpenTK" Version="4.7.5" />
 		<PackageReference Include="StbImageSharp" Version="2.27.13" />
+		<PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

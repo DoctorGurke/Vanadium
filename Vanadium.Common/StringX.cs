@@ -8,7 +8,7 @@ public static class StringX
 	/// </summary>
 	/// <remarks>Will trim the string, replace '\' with '/' and remove newline and carry return characters.</remarks>
 	/// <param name="s">String extension.</param>
-	/// <returns>The cleaned st ring.</returns>
+	/// <returns>The cleaned string.</returns>
 	public static string Clean( this string s )
 	{
 		return s.Trim().Replace( "\\", "/" ).Replace( "\n", "" ).Replace( "\r", "" );

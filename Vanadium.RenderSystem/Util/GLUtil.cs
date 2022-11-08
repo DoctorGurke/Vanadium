@@ -59,6 +59,13 @@ static class GLUtil
 	}
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
+	public static void CreateFrameBuffer( string Name, out int Buffer )
+	{
+		GL.CreateFramebuffers( 1, out Buffer );
+		LabelObject( ObjectLabelIdentifier.Framebuffer, Buffer, $"FrameBuffer: {Name}" );
+	}
+
+	[MethodImpl( MethodImplOptions.AggressiveInlining )]
 	public static void CreateVertexBuffer( string Name, out int Buffer ) => CreateBuffer( $"VBO: {Name}", out Buffer );
 
 	[MethodImpl( MethodImplOptions.AggressiveInlining )]
